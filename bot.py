@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from telegram import Update
+from telegram import Update, BotCommand
 from telegram.ext import Application, CommandHandler, MessageHandler, ContextTypes, filters
 import logging
 
@@ -49,12 +49,32 @@ async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE):
             "⚠️ Xəta baş verdi / Произошла ошибка / Something went wrong. 🙏"
         )
 
+# Меню команд на трёх языках (выполняется один раз при запуске)
+async def set_commands(app: Application):
+    # По умолчанию (английский), для всех остальных языков
+    await app.bot.set_my_commands([
+        BotCommand("start", "Start Fintra"),
+        BotCommand("help", "What can Fintra do?"),
+    ])
+    # Азербайджанский
+    await app.bot.set_my_commands([
+        BotCommand("start", "Fintra-nı başlat"),
+        BotCommand("help", "Fintra nə edə bilər?"),
+    ], language_code="az")
+    # Русский
+    await app.bot.set_my_commands([
+        BotCommand("start", "Запустить Fintra"),
+        BotCommand("help", "Что умеет Fintra?"),
+    ], language_code="ru")
+
+    logger.info("Меню команд установлено")
+
 def main():
     if not TOKEN:
         raise ValueError("TELEGRAM_BOT_TOKEN не найден в .env")
 
-    app = Application.builder().token(TOKEN).build()
-
+    app = Application.builder().token(TOKEN).post_init(set_commands).build()
+    
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("help", help_command))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
