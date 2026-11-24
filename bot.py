@@ -52,7 +52,13 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.send_message(chat_id=chat_id, text=f"🔧 {tool_name}")
         await context.bot.send_chat_action(chat_id=chat_id, action=ChatAction.TYPING)
 
-    reply = await run_agent(user_id, update.message.text, on_tool_call=show_step)
+    reply, images = await run_agent(user_id, update.message.text, on_tool_call=show_step)
+
+    # Сначала картинки (если инструменты их создали), потом текст
+    for path in images:
+        with open(path, "rb") as photo:
+            await context.bot.send_photo(chat_id=chat_id, photo=photo)
+
     await update.message.reply_text(reply)
 
 # Обработчик ошибок: логируем и вежливо отвечаем пользователю

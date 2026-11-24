@@ -38,6 +38,7 @@ def build_system_prompt():
         "(Azerbaijani, Russian or English). "
         "When the user mentions spending money, save it with add_expense. "
         "When the user asks about their spending, use get_summary. "
+        "When the user asks for a chart or 'where does my money go', use make_chart. "
         "Default currency is AZN (manat). "
         f"Today is {today}. Use it to understand words like 'yesterday'. "
         "Keep answers short and clear."
@@ -45,7 +46,7 @@ def build_system_prompt():
 
 
 async def generate_with_fallback(contents, config):
-    """Запрос к Gemini с перебором моделей (логика со вчерашнего дня)."""
+    """Запрос к Gemini с перебором моделей."""
     last_error = None
 
     for model in GEMINI_MODELS:
@@ -73,25 +74,25 @@ async def generate_with_fallback(contents, config):
 
 
 async def run_agent(user_id, user_text, on_tool_call=None):
-    """Цикл агента: модель думает → вызывает инструменты → смотрит результат → отвечает."""
+    """Цикл агента. Возвращает (текст ответа, список путей к картинкам)."""
     config = types.GenerateContentConfig(
         system_instruction=build_system_prompt(),
         tools=[types.Tool(function_declarations=TOOL_DECLARATIONS)],
-        # Выключаем автоматический вызов: цикл ведём сами, чтобы подставлять user_id и показывать шаги
+        # Цикл ведём сами, чтобы подставлять user_id и показывать шаги
         automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
     )
 
-    # История диалога внутри одного запроса
     contents = [
         types.Content(role="user", parts=[types.Part.from_text(text=user_text)])
     ]
+    images = []  # пути к картинкам, которые создали инструменты
 
     for step in range(1, MAX_STEPS + 1):
         response = await generate_with_fallback(contents, config)
 
         # Модель не просит инструментов → это финальный ответ
         if not response.function_calls:
-            return response.text
+            return response.text, images
 
         # Сохраняем «решение» модели в историю
         contents.append(response.candidates[0].content)
@@ -106,6 +107,10 @@ async def run_agent(user_id, user_text, on_tool_call=None):
                 await on_tool_call(call.name)
 
             result = execute_tool(call.name, args, user_id)
+
+            if isinstance(result, dict) and result.get("chart_path"):
+                images.append(result["chart_path"])
+
             result_parts.append(
                 types.Part.from_function_response(name=call.name, response={"result": result})
             )
@@ -113,4 +118,4 @@ async def run_agent(user_id, user_text, on_tool_call=None):
         # Возвращаем результаты модели, и цикл продолжается
         contents.append(types.Content(role="user", parts=result_parts))
 
-    return "⚠️ Çox addım oldu / Слишком много шагов / Too many steps. 🙏"
+    return "⚠️ Çox addım oldu / Слишком много шагов / Too many steps. 🙏", images
