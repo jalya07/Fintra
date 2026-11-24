@@ -3,6 +3,8 @@ from dotenv import load_dotenv
 from telegram import Update, BotCommand
 from telegram.ext import Application, CommandHandler, MessageHandler, ContextTypes, filters
 import logging
+from telegram.constants import ChatAction
+from agent import ask_agent
 
 load_dotenv()
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
@@ -37,8 +39,15 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "/help — Kömək / Помощь / Help"
     )
 
-async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(f"Ты написала: {update.message.text}")
+# Любой текст отправляем агенту
+async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # Показываем «печатает...», пока ИИ думает
+    await context.bot.send_chat_action(
+        chat_id=update.effective_chat.id,
+        action=ChatAction.TYPING,
+    )
+    reply = await ask_agent(update.message.text)
+    await update.message.reply_text(reply)
 
 # Обработчик ошибок: логируем и вежливо отвечаем пользователю
 async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE):
@@ -73,11 +82,17 @@ def main():
     if not TOKEN:
         raise ValueError("TELEGRAM_BOT_TOKEN не найден в .env")
 
-    app = Application.builder().token(TOKEN).post_init(set_commands).build()
+    app = (
+        Application.builder()
+        .token(TOKEN)
+        .post_init(set_commands)
+        .concurrent_updates(True)
+        .build()
+    )
     
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("help", help_command))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
     app.add_error_handler(error_handler)
 
     logger.info("Fintra запущен... (остановить: Control + C)")
