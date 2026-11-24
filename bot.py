@@ -4,7 +4,8 @@ from telegram import Update, BotCommand
 from telegram.ext import Application, CommandHandler, MessageHandler, ContextTypes, filters
 import logging
 from telegram.constants import ChatAction
-from agent import ask_agent
+from agent import run_agent
+import database
 
 load_dotenv()
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
@@ -41,12 +42,17 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Любой текст отправляем агенту
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Показываем «печатает...», пока ИИ думает
-    await context.bot.send_chat_action(
-        chat_id=update.effective_chat.id,
-        action=ChatAction.TYPING,
-    )
-    reply = await ask_agent(update.message.text)
+    chat_id = update.effective_chat.id
+    user_id = update.effective_user.id
+
+    await context.bot.send_chat_action(chat_id=chat_id, action=ChatAction.TYPING)
+
+    # Показываем пользователю каждый шаг агента
+    async def show_step(tool_name):
+        await context.bot.send_message(chat_id=chat_id, text=f"🔧 {tool_name}")
+        await context.bot.send_chat_action(chat_id=chat_id, action=ChatAction.TYPING)
+
+    reply = await run_agent(user_id, update.message.text, on_tool_call=show_step)
     await update.message.reply_text(reply)
 
 # Обработчик ошибок: логируем и вежливо отвечаем пользователю
@@ -81,6 +87,8 @@ async def set_commands(app: Application):
 def main():
     if not TOKEN:
         raise ValueError("TELEGRAM_BOT_TOKEN не найден в .env")
+
+    database.init_db()
 
     app = (
         Application.builder()

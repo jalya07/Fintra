@@ -1,14 +1,17 @@
 import os
 import logging
+from datetime import datetime
 from dotenv import load_dotenv
 from google import genai
-from google.genai import types
-from google.genai import errors
+from google.genai import types, errors
+
+from tools import TOOL_DECLARATIONS, execute_tool
 
 load_dotenv()
 logger = logging.getLogger("fintra.agent")
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
 # Список моделей по приоритету: если первая недоступна, пробуем следующую
 GEMINI_MODELS = os.getenv(
     "GEMINI_MODELS", "gemini-3.7-flash,gemini-3.6-flash,gemini-3.5-flash"
@@ -16,50 +19,98 @@ GEMINI_MODELS = os.getenv(
 
 client = genai.Client(
     api_key=GEMINI_API_KEY,
-    http_options=types.HttpOptions(timeout=15_000),  # 15 секунд, в миллисекундах
+    http_options=types.HttpOptions(timeout=15_000),  # 15 секунд
 )
-
-# Временный системный промпт. Полный напишем позже через мета-промпт
-SYSTEM_PROMPT = (
-    "You are Fintra, a friendly AI finance agent in Telegram. "
-    "Always reply in the same language the user writes in "
-    "(Azerbaijani, Russian or English). "
-    "Keep answers short and clear."
-)
-
 
 # Коды ошибок, при которых есть смысл попробовать другую модель
 RETRYABLE_CODES = {429, 500, 503}
 
+# Защита от бесконечного цикла
+MAX_STEPS = 5
 
-async def ask_agent(user_text: str) -> str:
-    """Отправляет текст в Gemini. Если модель недоступна, пробует следующую."""
+
+def build_system_prompt():
+    """Системный промпт. Дата каждый раз свежая, чтобы модель понимала «вчера»."""
+    today = datetime.now().strftime("%Y-%m-%d")
+    return (
+        "You are Fintra, a friendly AI finance agent in Telegram. "
+        "Always reply in the same language the user writes in "
+        "(Azerbaijani, Russian or English). "
+        "When the user mentions spending money, save it with add_expense. "
+        "When the user asks about their spending, use get_summary. "
+        "Default currency is AZN (manat). "
+        f"Today is {today}. Use it to understand words like 'yesterday'. "
+        "Keep answers short and clear."
+    )
+
+
+async def generate_with_fallback(contents, config):
+    """Запрос к Gemini с перебором моделей (логика со вчерашнего дня)."""
     last_error = None
 
     for model in GEMINI_MODELS:
         model = model.strip()
         try:
             response = await client.aio.models.generate_content(
-                model=model,
-                contents=user_text,
-                config=types.GenerateContentConfig(
-                    system_instruction=SYSTEM_PROMPT,
-                ),
+                model=model, contents=contents, config=config,
             )
             logger.info("Ответила модель: %s", model)
-            return response.text
+            return response
 
         except errors.APIError as e:
             if e.code in RETRYABLE_CODES:
                 logger.warning("Модель %s недоступна (%s), пробую следующую", model, e.code)
                 last_error = e
                 continue
-            raise # другие ошибки (например, неверный ключ) не скрываем
+            raise  # другие ошибки (например, неверный ключ) не скрываем
+
         except Exception as e:
-            # Таймаут или сетевая ошибка: тоже пробуем следующую модель
             logger.warning("Модель %s не ответила (%s), пробую следующую", model, type(e).__name__)
             last_error = e
             continue
 
-    # Все модели недоступны
     raise last_error
+
+
+async def run_agent(user_id, user_text, on_tool_call=None):
+    """Цикл агента: модель думает → вызывает инструменты → смотрит результат → отвечает."""
+    config = types.GenerateContentConfig(
+        system_instruction=build_system_prompt(),
+        tools=[types.Tool(function_declarations=TOOL_DECLARATIONS)],
+        # Выключаем автоматический вызов: цикл ведём сами, чтобы подставлять user_id и показывать шаги
+        automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
+    )
+
+    # История диалога внутри одного запроса
+    contents = [
+        types.Content(role="user", parts=[types.Part.from_text(text=user_text)])
+    ]
+
+    for step in range(1, MAX_STEPS + 1):
+        response = await generate_with_fallback(contents, config)
+
+        # Модель не просит инструментов → это финальный ответ
+        if not response.function_calls:
+            return response.text
+
+        # Сохраняем «решение» модели в историю
+        contents.append(response.candidates[0].content)
+
+        # Выполняем каждый инструмент, который она попросила
+        result_parts = []
+        for call in response.function_calls:
+            args = dict(call.args) if call.args else {}
+            logger.info("Шаг %d: вызываю %s(%s)", step, call.name, args)
+
+            if on_tool_call:
+                await on_tool_call(call.name)
+
+            result = execute_tool(call.name, args, user_id)
+            result_parts.append(
+                types.Part.from_function_response(name=call.name, response={"result": result})
+            )
+
+        # Возвращаем результаты модели, и цикл продолжается
+        contents.append(types.Content(role="user", parts=result_parts))
+
+    return "⚠️ Çox addım oldu / Слишком много шагов / Too many steps. 🙏"
