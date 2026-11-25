@@ -74,6 +74,29 @@ def check_limits(user_id, category, card=None):
             })
     return warnings
 
+def list_limits(user_id):
+    """Все лимиты пользователя."""
+    return {"limits": database.get_limits(user_id)}
+
+
+def request_remove_limit(user_id, scope, target):
+    """🔐 НЕ удаляет лимит! Только создаёт запрос, который должен подтвердить человек."""
+    if scope == "card":
+        target = normalize_card(target)
+
+    existing = [l for l in database.get_limits(user_id)
+                if l["scope"] == scope and l["target"] == target]
+    if not existing:
+        return {"error": "No such limit", "current_limits": database.get_limits(user_id)}
+
+    return {
+        "status": "confirmation_required",
+        "message": "The limit is NOT removed yet. The user must press the Confirm button.",
+        "confirmation": {
+            "action": "remove_limit", "scope": scope,
+            "target": target, "amount": existing[0]["amount"],
+        },
+    }
 
 # ---------- «Sayır»: учёт ----------
 
@@ -325,6 +348,7 @@ TOOL_DECLARATIONS = [
             "Set a monthly spending limit on a category or on a card. "
             "Call it only when the user explicitly agrees to the limit."
         ),
+
         "parameters_json_schema": {
             "type": "object",
             "properties": {
@@ -334,6 +358,26 @@ TOOL_DECLARATIONS = [
                 "amount": {"type": "number", "description": "Monthly limit"},
             },
             "required": ["scope", "target", "amount"],
+        },
+    },
+    {
+        "name": "list_limits",
+        "description": "Show all spending limits of the user.",
+        "parameters_json_schema": {"type": "object", "properties": {}},
+    },
+    {
+        "name": "request_remove_limit",
+        "description": (
+            "Ask to remove a limit. This does NOT remove it: the user must confirm "
+            "with a button. Tell the user to press the button."
+        ),
+        "parameters_json_schema": {
+            "type": "object",
+            "properties": {
+                "scope": {"type": "string", "enum": ["category", "card"]},
+                "target": {"type": "string", "description": "Category name or card NAME"},
+            },
+            "required": ["scope", "target"],
         },
     },
 ]
@@ -348,6 +392,8 @@ TOOL_FUNCTIONS = {
     "plan_budget": plan_budget,
     "get_daily_allowance": get_daily_allowance,
     "set_limit": set_limit,
+    "list_limits": list_limits,
+    "request_remove_limit": request_remove_limit,
 }
 
 

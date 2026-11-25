@@ -1,9 +1,14 @@
 import os
+import time
+import secrets
 import logging
 from dotenv import load_dotenv
-from telegram import Update, BotCommand
+from telegram import Update, BotCommand, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.constants import ChatAction
-from telegram.ext import Application, CommandHandler, MessageHandler, ContextTypes, filters
+from telegram.ext import (
+    Application, CommandHandler, MessageHandler, CallbackQueryHandler,
+    ContextTypes, filters,
+)
 
 from agent import run_agent
 import database
@@ -21,10 +26,12 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger("fintra")
 
+# 🔐 Сколько секунд действует запрос на подтверждение
+CONFIRM_TTL_SECONDS = 300
+
 
 # ---------- Команды ----------
 
-# Ответ на команду /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "Salam! Mən Fintra 🛡\n"
@@ -33,7 +40,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-# Ответ на команду /help
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "🛡 Fintra — AI finance agent\n\n"
@@ -48,9 +54,70 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
+# ---------- 🔐 Подтверждение опасных действий ----------
+
+def describe_confirmation(conf):
+    """Текст запроса на трёх языках."""
+    if conf["action"] == "remove_limit":
+        return (
+            "🔐 Limit silinsin? / Снять лимит? / Remove limit?\n"
+            f"{conf['scope']}: {conf['target']} — {conf['amount']} AZN"
+        )
+    return "🔐 Təsdiq edin / Подтвердите / Please confirm"
+
+
+async def ask_confirmation(update, context, conf):
+    """Сохраняет запрос у себя и показывает кнопки. В кнопке — только случайный код."""
+    token = secrets.token_hex(4)
+    pending = context.user_data.setdefault("pending", {})
+    pending[token] = {
+        "data": conf,
+        "user_id": update.effective_user.id,
+        "created": time.time(),
+    }
+
+    keyboard = InlineKeyboardMarkup([[
+        InlineKeyboardButton("✅ Bəli / Да / Yes", callback_data=f"confirm:{token}"),
+        InlineKeyboardButton("❌ Xeyr / Нет / No", callback_data=f"cancel:{token}"),
+    ]])
+    await update.message.reply_text(describe_confirmation(conf), reply_markup=keyboard)
+
+
+async def handle_confirmation(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Нажатие кнопки. Действие выполняется только здесь — по нажатию человека."""
+    query = update.callback_query
+    await query.answer()
+
+    action, token = query.data.split(":", 1)
+    item = context.user_data.get("pending", {}).pop(token, None)
+
+    # Запроса нет или кнопку нажал не тот пользователь
+    if item is None or item["user_id"] != query.from_user.id:
+        await query.edit_message_text("⚠️ Sorğu tapılmadı / Запрос не найден / Request not found")
+        return
+
+    # Запрос устарел
+    if time.time() - item["created"] > CONFIRM_TTL_SECONDS:
+        await query.edit_message_text("⌛ Vaxt bitdi / Время истекло / Request expired")
+        return
+
+    if action == "cancel":
+        await query.edit_message_text("❌ Ləğv edildi / Отменено / Cancelled")
+        return
+
+    conf = item["data"]
+    if conf["action"] == "remove_limit":
+        removed = database.remove_limit(item["user_id"], conf["scope"], conf["target"])
+        logger.info("Пользователь %s подтвердил снятие лимита %s:%s",
+                    item["user_id"], conf["scope"], conf["target"])
+        if removed:
+            await query.edit_message_text("✅ Limit silindi / Лимит снят / Limit removed")
+        else:
+            await query.edit_message_text("⚠️ Limit tapılmadı / Лимит не найден / Limit not found")
+
+
 # ---------- Сообщения: текст, фото, голос ----------
 
-# Общая логика: отправить агенту, показать шаги, вернуть картинки и текст
 async def process_with_agent(update, context, text, media=None):
     chat_id = update.effective_chat.id
     user_id = update.effective_user.id
@@ -62,22 +129,27 @@ async def process_with_agent(update, context, text, media=None):
         await context.bot.send_message(chat_id=chat_id, text=f"🔧 {tool_name}")
         await context.bot.send_chat_action(chat_id=chat_id, action=ChatAction.TYPING)
 
-    reply, images = await run_agent(user_id, text, on_tool_call=show_step, media=media)
+    reply, images, confirmations = await run_agent(
+        user_id, text, on_tool_call=show_step, media=media
+    )
 
-    # Сначала картинки (если инструменты их создали), потом текст
+    # Сначала картинки (если инструменты их создали)
     for path in images:
         with open(path, "rb") as photo:
             await context.bot.send_photo(chat_id=chat_id, photo=photo)
 
+    # Потом ответ агента
     await update.message.reply_text(reply)
 
+    # 🔐 И кнопки подтверждения, если агент попросил опасное действие
+    for conf in confirmations:
+        await ask_confirmation(update, context, conf)
 
-# Текстовое сообщение
+
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await process_with_agent(update, context, update.message.text)
 
 
-# Фото (например, чек)
 async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     photo = update.message.photo[-1]  # последнее = самое большое разрешение
     file = await photo.get_file()
@@ -87,7 +159,6 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await process_with_agent(update, context, text, media=(data, "image/jpeg"))
 
 
-# Голосовое сообщение
 async def handle_voice(update: Update, context: ContextTypes.DEFAULT_TYPE):
     file = await update.message.voice.get_file()
     data = bytes(await file.download_as_bytearray())
@@ -98,7 +169,6 @@ async def handle_voice(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # ---------- Служебное ----------
 
-# Обработчик ошибок: логируем и вежливо отвечаем пользователю
 async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE):
     logger.error("Ошибка при обработке сообщения", exc_info=context.error)
 
@@ -108,19 +178,15 @@ async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE):
         )
 
 
-# Меню команд на трёх языках (выполняется один раз при запуске)
 async def set_commands(app: Application):
-    # По умолчанию (английский), для всех остальных языков
     await app.bot.set_my_commands([
         BotCommand("start", "Start Fintra"),
         BotCommand("help", "What can Fintra do?"),
     ])
-    # Азербайджанский
     await app.bot.set_my_commands([
         BotCommand("start", "Fintra-nı başlat"),
         BotCommand("help", "Fintra nə edə bilər?"),
     ], language_code="az")
-    # Русский
     await app.bot.set_my_commands([
         BotCommand("start", "Запустить Fintra"),
         BotCommand("help", "Что умеет Fintra?"),
@@ -146,6 +212,9 @@ def main():
     # Команды
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("help", help_command))
+
+    # 🔐 Кнопки подтверждения
+    app.add_handler(CallbackQueryHandler(handle_confirmation, pattern=r"^(confirm|cancel):"))
 
     # Сообщения
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
