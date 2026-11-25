@@ -3,6 +3,8 @@ import time
 import secrets
 import logging
 import security
+from pathlib import Path
+from tools import CHARTS_DIR
 from dotenv import load_dotenv
 from telegram import Update, BotCommand, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.constants import ChatAction
@@ -54,7 +56,9 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "/help — Kömək / Помощь / Help"
     )
 
-
+# 🔐 Удаление всех своих данных (только с подтверждением)
+async def delete_my_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await ask_confirmation(update, context, {"action": "delete_my_data"})
 # ---------- 🔐 Подтверждение опасных действий ----------
 
 def describe_confirmation(conf):
@@ -63,6 +67,12 @@ def describe_confirmation(conf):
         return (
             "🔐 Limit silinsin? / Снять лимит? / Remove limit?\n"
             f"{conf['scope']}: {conf['target']} — {conf['amount']} AZN"
+        )
+    if conf["action"] == "delete_my_data":
+        return (
+            "🔐 Bütün məlumatların silinsin? Bunu geri qaytarmaq olmaz.\n"
+            "🔐 Удалить все твои данные? Это нельзя отменить.\n"
+            "🔐 Delete all your data? This cannot be undone."
         )
     return "🔐 Təsdiq edin / Подтвердите / Please confirm"
 
@@ -115,7 +125,18 @@ async def handle_confirmation(update: Update, context: ContextTypes.DEFAULT_TYPE
             await query.edit_message_text("✅ Limit silindi / Лимит снят / Limit removed")
         else:
             await query.edit_message_text("⚠️ Limit tapılmadı / Лимит не найден / Limit not found")
+    elif conf["action"] == "delete_my_data":
+        user_id = item["user_id"]
+        counts = database.delete_user_data(user_id)
 
+        # Удаляем и файлы графиков этого пользователя
+        for path in Path(CHARTS_DIR).glob(f"{user_id}_*.png"):
+            path.unlink(missing_ok=True)
+
+        logger.info("Пользователь %s удалил все свои данные: %s", user_id, counts)
+        await query.edit_message_text(
+            "🗑 Bütün məlumatların silindi / Все твои данные удалены / All your data has been deleted"
+        )
 
 # ---------- Сообщения: текст, фото, голос ----------
 # ---------- 🔐 Фильтр номеров карт (до модели) ----------
@@ -248,6 +269,7 @@ def main():
     # Команды
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("help", help_command))
+    app.add_handler(CommandHandler("delete_my_data", delete_my_data))
 
     # 🔐 Кнопки подтверждения
     app.add_handler(CallbackQueryHandler(handle_confirmation, pattern=r"^(confirm|cancel):"))

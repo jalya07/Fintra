@@ -196,6 +196,17 @@ def get_limits(user_id):
         return [dict(r) for r in rows]
 
 
+# ---------- Удаление данных пользователя ----------
+
+def delete_user_data(user_id):
+    """🔐 Удаляет ВСЕ данные пользователя одной транзакцией. Возвращает, сколько строк удалено."""
+    counts = {}
+    with get_connection() as conn:
+        for table in ("expenses", "obligations", "limits", "budgets"):
+            cursor = conn.execute(f"DELETE FROM {table} WHERE user_id = ?", (user_id,))
+            counts[table] = cursor.rowcount
+    return counts
+
 # Быстрая проверка: запускается только при `python database.py`
 if __name__ == "__main__":
     init_db()
