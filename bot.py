@@ -2,6 +2,7 @@ import os
 import time
 import secrets
 import logging
+import security
 from dotenv import load_dotenv
 from telegram import Update, BotCommand, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.constants import ChatAction
@@ -117,6 +118,34 @@ async def handle_confirmation(update: Update, context: ContextTypes.DEFAULT_TYPE
 
 
 # ---------- Сообщения: текст, фото, голос ----------
+# ---------- 🔐 Фильтр номеров карт (до модели) ----------
+
+CARD_WARNING = (
+    "🚫 Mesajını sildim: orada kart nömrəsi var idi. "
+    "Kart nömrəsini, CVV və ya PIN-i heç kimə göndərmə — mənə də.\n\n"
+    "🚫 Я удалил твоё сообщение: в нём был номер карты. "
+    "Никогда не отправляй номер карты, CVV или PIN — даже мне.\n\n"
+    "🚫 I deleted your message: it contained a card number. "
+    "Never send card numbers, CVV or PIN — not even to me."
+)
+
+
+async def block_if_card_number(update, context, text):
+    """Если в тексте номер карты: удалить сообщение, предупредить и НЕ передавать агенту."""
+    if not security.find_card_numbers(text):
+        return False
+
+    try:
+        await update.message.delete()
+    except Exception as e:
+        logger.warning("Не удалось удалить сообщение с номером карты: %s", type(e).__name__)
+
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=CARD_WARNING)
+
+    # В лог пишем только факт, без самого номера
+    logger.warning("Заблокировано сообщение с номером карты от пользователя %s",
+                   update.effective_user.id)
+    return True
 
 async def process_with_agent(update, context, text, media=None):
     chat_id = update.effective_chat.id
@@ -147,15 +176,22 @@ async def process_with_agent(update, context, text, media=None):
 
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await process_with_agent(update, context, update.message.text)
+    text = update.message.text
+    if await block_if_card_number(update, context, text):
+        return  # 🔐 номер карты не уходит в модель
+    await process_with_agent(update, context, text)
 
 
 async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    caption = update.message.caption
+    if caption and await block_if_card_number(update, context, caption):
+        return  # 🔐
+
     photo = update.message.photo[-1]  # последнее = самое большое разрешение
     file = await photo.get_file()
     data = bytes(await file.download_as_bytearray())
 
-    text = update.message.caption or "Here is a photo of my receipt."
+    text = caption or "Here is a photo of my receipt."
     await process_with_agent(update, context, text, media=(data, "image/jpeg"))
 
 
