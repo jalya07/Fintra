@@ -97,7 +97,22 @@ def request_remove_limit(user_id, scope, target):
             "target": target, "amount": existing[0]["amount"],
         },
     }
+# ---------- «Qoruyur»: защита ----------
 
+def check_scam(user_id, text):
+    """Гибрид: правила в коде + объяснение модели. Правила задают минимальный риск."""
+    result = security.analyze_scam(text)
+    return {
+        "rule_risk": result["rule_risk"],
+        "red_flags": result["red_flags"],
+        "risk_banner": security.RISK_BANNERS.get(result["rule_risk"]),
+        "instructions": (
+            "Explain the red flags simply, in the user's language. "
+            "Your risk level must NOT be lower than rule_risk; you may raise it if you see other signs. "
+            "Advise: do not click links, never share CVV/PIN/SMS codes, "
+            "call the bank using the number on the back of the card."
+        ),
+    }
 # ---------- «Sayır»: учёт ----------
 
 def add_expense(user_id, amount, category, description=None, date=None,
@@ -380,6 +395,21 @@ TOOL_DECLARATIONS = [
             "required": ["scope", "target"],
         },
     },
+    {
+        "name": "check_scam",
+        "description": (
+            "Check a suspicious SMS, message, call description or link for fraud. "
+            "Use it when the user forwards or pastes such a message or asks if something is a scam. "
+            "Pass the full text."
+        ),
+        "parameters_json_schema": {
+            "type": "object",
+            "properties": {
+                "text": {"type": "string", "description": "The full suspicious text"},
+            },
+            "required": ["text"],
+        },
+    },
 ]
 
 
@@ -394,6 +424,7 @@ TOOL_FUNCTIONS = {
     "set_limit": set_limit,
     "list_limits": list_limits,
     "request_remove_limit": request_remove_limit,
+    "check_scam": check_scam,
 }
 
 
