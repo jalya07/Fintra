@@ -46,14 +46,25 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "🛡 Fintra — AI finance agent\n\n"
-        "🇦🇿 Xərclərini yaz, çekin şəklini göndər və ya səsli mesaj at — "
-        "mən sayıram, planlayıram və qoruyuram.\n\n"
-        "🇷🇺 Напиши трату, отправь фото чека или голосовое — "
-        "я считаю, планирую и защищаю.\n\n"
-        "🇬🇧 Type an expense, send a receipt photo or a voice message — "
-        "I count, plan and protect.\n\n"
+
+        "🇦🇿 Mən nə edirəm:\n"
+        "💰 Sayıram — xərci yaz, çekin şəklini və ya səsli mesaj göndər\n"
+        "📅 Planlayıram — maaş və ödənişlərə görə büdcə, bu gün nə qədər xərcləyə bilərsən, limitlər\n"
+        "🛡 Qoruyuram — şübhəli SMS-i yoxlayıram, kart nömrələrini silirəm\n\n"
+
+        "🇷🇺 Что я умею:\n"
+        "💰 Считаю — напиши трату, отправь фото чека или голосовое\n"
+        "📅 Планирую — бюджет от зарплаты, сколько можно сегодня, лимиты\n"
+        "🛡 Защищаю — проверяю подозрительные SMS, удаляю номера карт\n\n"
+
+        "🇬🇧 What I do:\n"
+        "💰 Count — type an expense, send a receipt photo or a voice note\n"
+        "📅 Plan — budget from your salary, today's allowance, limits\n"
+        "🛡 Protect — check suspicious SMS, delete card numbers\n\n"
+
         "/start — Başla / Начать / Start\n"
-        "/help — Kömək / Помощь / Help"
+        "/help — Kömək / Помощь / Help\n"
+        "/delete_my_data — Məlumatlarımı sil / Удалить мои данные / Delete my data"
     )
 
 # 🔐 Удаление всех своих данных (только с подтверждением)
@@ -236,17 +247,23 @@ async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def set_commands(app: Application):
+    # По умолчанию (английский)
     await app.bot.set_my_commands([
         BotCommand("start", "Start Fintra"),
         BotCommand("help", "What can Fintra do?"),
+        BotCommand("delete_my_data", "Delete all my data"),
     ])
+    # Азербайджанский
     await app.bot.set_my_commands([
         BotCommand("start", "Fintra-nı başlat"),
         BotCommand("help", "Fintra nə edə bilər?"),
+        BotCommand("delete_my_data", "Bütün məlumatlarımı sil"),
     ], language_code="az")
+    # Русский
     await app.bot.set_my_commands([
         BotCommand("start", "Запустить Fintra"),
         BotCommand("help", "Что умеет Fintra?"),
+        BotCommand("delete_my_data", "Удалить все мои данные"),
     ], language_code="ru")
 
     logger.info("Меню команд установлено")
