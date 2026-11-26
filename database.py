@@ -1,5 +1,7 @@
 import sqlite3
-from datetime import datetime
+import hashlib
+import secrets
+from datetime import datetime, timedelta
 
 DB_PATH = "fintra.db"
 
@@ -63,7 +65,23 @@ def init_db():
                 UNIQUE (user_id, scope, target)
             )
         """)
-
+        # 🔐 Одноразовые коды для входа на сайт (хранится только хеш)
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS web_tokens (
+                token_hash TEXT PRIMARY KEY,
+                user_id    INTEGER NOT NULL,
+                expires_at TEXT    NOT NULL,
+                used       INTEGER NOT NULL DEFAULT 0
+            )
+        """)
+        # 🔐 Сессии сайта (хранится только хеш)
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS web_sessions (
+                session_hash TEXT PRIMARY KEY,
+                user_id      INTEGER NOT NULL,
+                expires_at   TEXT    NOT NULL
+            )
+        """)
 
 # ---------- Траты ----------
 
@@ -195,6 +213,72 @@ def get_limits(user_id):
         ).fetchall()
         return [dict(r) for r in rows]
 
+# ---------- 🔐 Вход на сайт ----------
+
+def _hash(token):
+    """В базе храним только хеш: по нему нельзя восстановить сам код."""
+    return hashlib.sha256(token.encode()).hexdigest()
+
+
+def create_login_token(user_id, minutes=10):
+    """Одноразовый код для входа. Возвращает сам код (он попадёт в ссылку)."""
+    token = secrets.token_urlsafe(32)
+    expires_at = (datetime.now() + timedelta(minutes=minutes)).strftime("%Y-%m-%d %H:%M:%S")
+    with get_connection() as conn:
+        conn.execute(
+            "INSERT INTO web_tokens (token_hash, user_id, expires_at) VALUES (?, ?, ?)",
+            (_hash(token), user_id, expires_at),
+        )
+    return token
+
+
+def use_login_token(token):
+    """Проверяет код и сразу «сжигает» его. Возвращает user_id или None."""
+    token_hash = _hash(token)
+    with get_connection() as conn:
+        # Помечаем использованным, только если он не использован и не истёк
+        cursor = conn.execute(
+            "UPDATE web_tokens SET used = 1 WHERE token_hash = ? AND used = 0 AND expires_at > ?",
+            (token_hash, now_str()),
+        )
+        if cursor.rowcount != 1:
+            return None
+        row = conn.execute(
+            "SELECT user_id FROM web_tokens WHERE token_hash = ?", (token_hash,)
+        ).fetchone()
+        return row["user_id"]
+
+
+def create_session(user_id, hours=24):
+    """Новая сессия сайта. Возвращает код сессии (он попадёт в cookie)."""
+    session_token = secrets.token_urlsafe(32)
+    expires_at = (datetime.now() + timedelta(hours=hours)).strftime("%Y-%m-%d %H:%M:%S")
+    with get_connection() as conn:
+        conn.execute(
+            "INSERT INTO web_sessions (session_hash, user_id, expires_at) VALUES (?, ?, ?)",
+            (_hash(session_token), user_id, expires_at),
+        )
+    return session_token
+
+
+def get_session_user(session_token):
+    """Кто владелец сессии. None, если сессии нет или она истекла."""
+    if not session_token:
+        return None
+    with get_connection() as conn:
+        row = conn.execute(
+            "SELECT user_id FROM web_sessions WHERE session_hash = ? AND expires_at > ?",
+            (_hash(session_token), now_str()),
+        ).fetchone()
+        return row["user_id"] if row else None
+
+
+def delete_session(session_token):
+    """Выход: удаляем сессию."""
+    if not session_token:
+        return
+    with get_connection() as conn:
+        conn.execute("DELETE FROM web_sessions WHERE session_hash = ?", (_hash(session_token),))
 
 # ---------- Удаление данных пользователя ----------
 
@@ -202,7 +286,7 @@ def delete_user_data(user_id):
     """🔐 Удаляет ВСЕ данные пользователя одной транзакцией. Возвращает, сколько строк удалено."""
     counts = {}
     with get_connection() as conn:
-        for table in ("expenses", "obligations", "limits", "budgets"):
+        for table in ("expenses", "obligations", "limits", "budgets", "web_tokens", "web_sessions"):
             cursor = conn.execute(f"DELETE FROM {table} WHERE user_id = ?", (user_id,))
             counts[table] = cursor.rowcount
     return counts
