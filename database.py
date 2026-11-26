@@ -138,6 +138,29 @@ def get_spent(user_id, start_date, end_date, category=None, card=None):
     with get_connection() as conn:
         return conn.execute(query, params).fetchone()[0]
 
+def get_recent_expenses(user_id, limit=5):
+    """Последние траты пользователя (самые новые сверху)."""
+    with get_connection() as conn:
+        rows = conn.execute(
+            """
+            SELECT amount, currency, category, description, card, date, source
+            FROM expenses
+            WHERE user_id = ?
+            ORDER BY date DESC, id DESC
+            LIMIT ?
+            """,
+            (user_id, limit),
+        ).fetchall()
+        return [dict(r) for r in rows]
+
+
+def count_expenses(user_id, start_date, end_date):
+    """Сколько трат за период."""
+    with get_connection() as conn:
+        return conn.execute(
+            "SELECT COUNT(*) FROM expenses WHERE user_id = ? AND date BETWEEN ? AND ?",
+            (user_id, start_date, end_date),
+        ).fetchone()[0]
 
 # ---------- План бюджета ----------
 
