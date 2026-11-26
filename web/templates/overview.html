@@ -1,0 +1,537 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "tertiary": "#000c0a", "on-primary-container": "#7687b2", "inverse-on-surface": "#fcefd9", "error": "#ba1a1a", "primary-fixed": "#d9e2ff", "on-secondary-fixed-variant": "#584400", "surface-variant": "#ede1cb", "on-surface": "#211b0d", "error-container": "#ffdad6", "outline": "#75777f", "background": "#fff8f1", "primary-container": "#0b1f44", "surface-tint": "#4d5e86", "inverse-surface": "#363021", "tertiary-container": "#002621", "on-surface-variant": "#44464e", "on-tertiary": "#ffffff", "surface-container-lowest": "#ffffff", "primary": "#00081f", "on-tertiary-container": "#22988a", "surface-container": "#f9edd6", "inverse-primary": "#b5c6f4", "on-tertiary-fixed-variant": "#005048", "on-secondary-fixed": "#241a00", "surface-container-low": "#fff2dc", "on-background": "#211b0d", "surface": "#fff8f1", "tertiary-fixed-dim": "#6fd8c8", "primary-fixed-dim": "#b5c6f4", "on-tertiary-fixed": "#00201c", "surface-container-highest": "#ede1cb", "on-error-container": "#93000a", "tertiary-fixed": "#8cf5e4", "secondary-fixed": "#ffe08e", "secondary-fixed-dim": "#ecc246", "secondary": "#755b00", "secondary-container": "#fed255", "on-secondary": "#ffffff", "outline-variant": "#c5c6cf", "surface-container-high": "#f3e7d0", "on-secondary-container": "#735a00", "surface-bright": "#fff8f1", "on-primary": "#ffffff", "on-error": "#ffffff", "surface-dim": "#e5d9c3", "on-primary-fixed": "#051a3f", "on-primary-fixed-variant": "#35466d" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "gutter-lg": "2rem", "space-xl": "2.5rem", "space-md": "1rem", "margin-mobile": "1rem", "margin": "2rem", "gutter-sm": "1rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "space-lg": "1.5rem", "gutter": "1.5rem", "margin-desktop": "2.5rem" }, "fontFamily": { "headline-xl-mobile": ["Playfair Display"], "headline-xl": ["Playfair Display"], "label-lg": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "headline-lg": ["Playfair Display"], "numeral-lg": ["Plus Jakarta Sans"], "headline-sm": ["Playfair Display"], "body-md": ["Plus Jakarta Sans"], "title-md": ["Plus Jakarta Sans"], "title-lg": ["Plus Jakarta Sans"], "numeral-md": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Playfair Display"], "headline-md": ["Playfair Display"] }, "fontSize": { "headline-xl-mobile": ["2rem", { "lineHeight": "2.5rem", "letterSpacing": "-0.01em", "fontWeight": "600" }], "headline-xl": ["3rem", { "lineHeight": "3.5rem", "letterSpacing": "-0.02em", "fontWeight": "600" }], "label-lg": ["0.875rem", { "lineHeight": "1.25rem", "letterSpacing": "0.02em", "fontWeight": "600" }], "label-md": ["0.75rem", { "lineHeight": "1rem", "letterSpacing": "0.05em", "fontWeight": "600" }], "body-sm": ["0.8125rem", { "lineHeight": "1.25rem", "fontWeight": "400" }], "body-lg": ["1.125rem", { "lineHeight": "1.75rem", "fontWeight": "400" }], "headline-lg": ["2.25rem", { "lineHeight": "2.75rem", "letterSpacing": "-0.015em", "fontWeight": "600" }], "numeral-lg": ["2rem", { "lineHeight": "2.25rem", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-sm": ["1.25rem", { "lineHeight": "1.75rem", "fontWeight": "500" }], "body-md": ["0.9375rem", { "lineHeight": "1.5rem", "fontWeight": "400" }], "title-md": ["1rem", { "lineHeight": "1.5rem", "fontWeight": "600" }], "title-lg": ["1.125rem", { "lineHeight": "1.625rem", "fontWeight": "600" }], "numeral-md": ["1.25rem", { "lineHeight": "1.5rem", "fontWeight": "600" }], "headline-lg-mobile": ["1.75rem", { "lineHeight": "2.25rem", "letterSpacing": "-0.01em", "fontWeight": "600" }], "headline-md": ["1.5rem", { "lineHeight": "2rem", "fontWeight": "500" }] } } } }</script></head><body class="bg-surface font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-screen w-72 bg-primary-container text-on-primary z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col px-space-lg pt-space-lg"><div class="flex items-center gap-space-sm"><img alt="Fintra Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ALJJyrBH5QBj_ljWN4G2cBLSwmiEeVDmMKXqnKGVqKA-BSQg4xDRelUp40s1ikruOuNzdpGIgmIDCez7_jafTV-9EzJtgs0yUMLjO1YstFO64_Snl6QmjlTmCT9nNF8oJawJGZJ860mCldy7MUeyMqM57fo-wYX7mzTIgELkROqzO_DZfJiZVt5_tQjobgYwQEO5IuH020Q4XFbEyVyjgxoCkCcjDQECWEhP4dKUzKYSxl4n"><div class="flex flex-col"><span class="font-headline-sm text-headline-sm font-semibold tracking-tight text-on-primary">Fintra</span><span class="font-label-md text-label-md text-secondary-fixed tracking-wider uppercase">Count. Plan. Protect.</span></div></div><div class="mt-space-lg p-space-sm rounded-xl bg-primary flex items-center justify-between shadow-inner"><div class="flex items-center gap-space-xs overflow-hidden"><span class="w-2 h-2 rounded-full bg-on-tertiary-container animate-pulse shrink-0"></span><span class="font-label-md text-label-md text-primary-fixed truncate">@myfintra_bot</span></div><span class="font-label-md text-label-md text-secondary-fixed bg-secondary/30 px-space-xs py-0.5 rounded">Active</span></div><nav class="mt-space-lg flex flex-col gap-space-xs" data-active-classes="bg-primary text-secondary-fixed font-semibold rounded-xl"><a aria-current="page" class="flex items-center gap-space-sm px-space-sm py-space-sm transition-colors bg-primary text-secondary-fixed font-semibold rounded-xl" data-path="overview" href="#"><span class="material-symbols-outlined text-xl">dashboard</span><span class="font-title-md text-title-md">Overview</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-xl text-on-primary-container hover:bg-primary hover:text-on-primary transition-colors" data-path="expenses" href="#"><span class="material-symbols-outlined text-xl">receipt_long</span><span class="font-title-md text-title-md">Expenses</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-xl text-on-primary-container hover:bg-primary hover:text-on-primary transition-colors" data-path="plan-and-limits" href="#"><span class="material-symbols-outlined text-xl">tune</span><span class="font-title-md text-title-md">Plan &amp; Limits</span></a><a class="flex items-center justify-between px-space-sm py-space-sm rounded-xl text-on-primary-container hover:bg-primary hover:text-on-primary transition-colors" data-path="chat" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-xl">smart_toy</span><span class="font-title-md text-title-md">Chat</span></div><span class="font-label-md text-label-md bg-secondary text-primary px-space-xs py-0.5 rounded-full font-bold">AI Online</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-xl text-on-primary-container hover:bg-primary hover:text-on-primary transition-colors" data-path="security" href="#"><span class="material-symbols-outlined text-xl">verified_user</span><span class="font-title-md text-title-md">Security</span></a></nav></div><div class="p-space-lg mt-auto"><div class="p-space-sm rounded-xl bg-primary flex items-center justify-between"><div class="flex items-center gap-space-sm"><div class="w-8 h-8 rounded-full bg-secondary text-primary font-bold flex items-center justify-center text-sm shrink-0">TU</div><div class="flex flex-col"><span class="font-title-md text-title-md text-on-primary leading-none">Telegram user</span></div></div><button aria-label="Log Out" class="p-space-xs text-on-primary-container hover:text-secondary-fixed transition-colors"><span class="material-symbols-outlined text-lg">logout</span></button></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/80 backdrop-blur-xl z-40 flex items-center justify-between px-gutter-lg shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm italic text-on-surface">Fintra</span><span class="material-symbols-outlined text-outline text-sm">chevron_right</span><span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant font-semibold">Overview</span></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs bg-surface-container-high px-space-sm py-1.5 rounded-lg shadow-sm"><span class="font-label-md text-label-md font-bold text-on-surface-variant">AZN</span><span class="font-title-md text-title-md font-semibold text-secondary">₼</span></div><button class="flex items-center gap-space-xs bg-surface-container px-space-sm py-1.5 rounded-lg text-on-surface hover:bg-surface-container-highest transition-colors shadow-sm"><span class="w-2 h-2 rounded-full bg-on-tertiary-container shrink-0"></span><span class="font-label-md text-label-md font-semibold">Telegram Synced</span></button><div class="flex items-center bg-surface-container-high p-0.5 rounded-lg shadow-sm"><button class="px-space-xs py-1 rounded font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors">AZ</button><button class="px-space-xs py-1 rounded font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors">RU</button><button class="px-space-xs py-1 rounded-md font-label-md text-label-md bg-secondary text-primary font-bold shadow-sm">EN</button></div><button aria-label="Notifications" class="relative p-2 text-on-surface-variant hover:text-on-surface transition-colors"><span class="material-symbols-outlined">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 bg-secondary rounded-full ring-2 ring-surface"></span></button><img alt="Profile" class="w-8 h-8 rounded-full object-cover shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcek4-F3oAbuD1SBsYrFFyzVp2iumYkmIWaRhchYnbaCmSHCSipbfrFqSplok_ThSW1cC_9J1NsK-bs9sFT2xBY6SiasUgPWqDrUkuOG_h49ByhsjDkoYEIGTKsbFPpq31p-txPf3-jar9ih60H_gpquk2stdav96U_LYZa3E9B5lI7W2kB-iiRaNSbSOW6IsuIKr8hxBECmdL3At18MKJeiuoQr7Kb7S7lToCUD4"></div></header><main class="w-full pt-16 bg-surface px-margin-desktop py-space-lg"><div class="flex flex-col w-full">
+<div class="max-w-[1540px] w-full mx-auto space-y-gutter-lg pb-space-xl">
+<!-- TOP NOTIFICATION BANNER / TELEGRAM SYNC -->
+
+<!-- 1. HERO DAILY ALLOWANCE CARD -->
+<div class="relative overflow-hidden rounded-xl bg-gradient-to-br from-surface-container-low via-surface-container to-surface-container-high p-gutter-lg shadow-xl shadow-primary/5">
+<!-- Decorative Warm Ambient Depth Glow -->
+<div class="absolute -right-20 -top-24 w-96 h-96 rounded-full bg-secondary-fixed/30 blur-3xl pointer-events-none"></div>
+<div class="absolute -left-16 -bottom-16 w-80 h-80 rounded-full bg-primary-fixed/20 blur-2xl pointer-events-none"></div>
+<!-- Inset Gold Signature Indicator on the Left -->
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-secondary"></div>
+<div class="relative z-10 flex flex-col xl:flex-row xl:items-center justify-between gap-gutter">
+<div class="space-y-space-sm max-w-3xl">
+<div class="flex flex-wrap items-center gap-space-sm">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-label-md text-label-md bg-secondary/15 text-secondary font-bold tracking-wider uppercase">
+<span class="w-2 h-2 rounded-full bg-secondary animate-ping"></span>
+              Paced Daily Velocity
+            </span>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-label-md text-label-md bg-surface-container-highest text-on-surface-variant font-medium">
+<span class="material-symbols-outlined text-sm">calendar_month</span>
+              12 days until payday (Oct 25)
+            </span>
+</div>
+<div class="pt-space-xs">
+<p class="font-label-lg text-label-lg text-on-surface-variant font-medium uppercase tracking-widest">Safe Spendable Balance</p>
+<h1 class="font-headline-xl text-headline-xl text-primary font-bold tracking-tight mt-1">
+              You can spend today: <span class="text-secondary">23.50</span> <span class="font-headline-sm text-headline-sm font-normal text-on-surface-variant">₼</span>
+</h1>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+            Carefully paced for your <span class="font-semibold text-on-surface">1,200.00 ₼</span> monthly discretionary allowance. 
+            <span class="inline-block mx-1 font-semibold text-on-tertiary-container bg-tertiary-container/10 px-2 py-0.5 rounded">0.00 ₼ spent today</span>. Remaining safe reserve intact.
+          </p>
+</div>
+<!-- Quick CTAs -->
+<div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-space-sm shrink-0">
+<button class="flex items-center justify-center gap-space-xs px-space-lg py-3 rounded-lg bg-primary text-on-primary font-title-md text-title-md hover:bg-primary-container shadow-md hover:shadow-lg transition-all duration-200" id="quick-expense-trigger">
+<span class="material-symbols-outlined text-secondary-fixed text-lg">add_circle</span>
+<span>+ Log Quick Expense</span>
+</button>
+<button class="flex items-center justify-center gap-space-xs px-space-md py-3 rounded-lg bg-surface-container-highest text-primary font-title-md text-title-md hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-secondary text-lg" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span>Ask Fintra</span>
+</button>
+</div>
+</div>
+</div>
+<!-- 2. TRIO METRIC CARDS -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Card A -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container-low p-space-lg shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="font-label-lg text-label-lg font-semibold tracking-wide uppercase">Spent this month</span>
+<div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-xl">account_balance_wallet</span>
+</div>
+</div>
+<div class="mt-space-md flex items-baseline gap-1.5">
+<span class="font-numeral-lg text-numeral-lg text-primary tabular-nums tracking-tight">642.80</span>
+<span class="font-title-lg text-title-lg text-on-surface-variant font-medium">₼</span>
+</div>
+<div class="mt-space-sm flex items-center gap-2">
+<span class="inline-flex items-center text-on-surface font-label-md text-label-md font-semibold bg-surface-container-high px-2 py-0.5 rounded">
+            +4.2%
+          </span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">vs. historical pace (within safe zone)</span>
+</div>
+<!-- Progress track visual -->
+<div class="w-full bg-surface-container-highest h-1 rounded-full mt-space-md overflow-hidden">
+<div class="bg-primary h-1 rounded-full" style="width: 53.5%;"></div>
+</div>
+</div>
+<!-- Card B -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container-low p-space-lg shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="font-label-lg text-label-lg font-semibold tracking-wide uppercase">Saved this month</span>
+<div class="w-9 h-9 rounded-lg bg-on-tertiary-container/15 flex items-center justify-center text-on-tertiary-container">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">savings</span>
+</div>
+</div>
+<div class="mt-space-md flex items-baseline gap-1.5">
+<span class="font-numeral-lg text-numeral-lg text-primary tabular-nums tracking-tight">350.00</span>
+<span class="font-title-lg text-title-lg text-on-surface-variant font-medium">₼</span>
+</div>
+<div class="mt-space-sm flex items-center gap-2">
+<span class="inline-flex items-center gap-1 font-label-md text-label-md font-bold text-on-tertiary-container bg-tertiary-container/10 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+            87.5% Target
+          </span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Target: 400.00 ₼ set aside</span>
+</div>
+<!-- Progress track visual -->
+<div class="w-full bg-surface-container-highest h-1 rounded-full mt-space-md overflow-hidden">
+<div class="bg-on-tertiary-container h-1 rounded-full" style="width: 87.5%;"></div>
+</div>
+</div>
+<!-- Card C -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container-low p-space-lg shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="font-label-lg text-label-lg font-semibold tracking-wide uppercase">Remaining Until Payday</span>
+<div class="w-9 h-9 rounded-lg bg-secondary/15 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-xl">event_available</span>
+</div>
+</div>
+<div class="mt-space-md flex items-baseline gap-1.5">
+<span class="font-numeral-lg text-numeral-lg text-secondary tabular-nums tracking-tight">282.00</span>
+<span class="font-title-lg text-title-lg text-secondary font-medium">₼</span>
+</div>
+<div class="mt-space-sm flex items-center justify-between text-body-sm">
+<span class="font-body-sm text-body-sm text-on-surface font-medium flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+            Safe daily avg: <strong class="text-primary font-semibold">23.50 ₼/day</strong>
+</span>
+<span class="text-on-surface-variant font-label-md text-label-md">12d left</span>
+</div>
+<!-- Progress track visual -->
+<div class="w-full bg-surface-container-highest h-1 rounded-full mt-space-md overflow-hidden">
+<div class="bg-secondary h-1 rounded-full" style="width: 68%;"></div>
+</div>
+</div>
+</div>
+<!-- 3. TWO-COLUMN ANALYTICS & ACTIVITY -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- LEFT: SPENDING BREAKDOWN WITH SVG DONUT -->
+<div class="lg:col-span-5 rounded-xl bg-surface-container-low p-space-lg shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-space-sm">
+<div>
+<span class="font-label-md text-label-md uppercase tracking-widest text-secondary font-bold">Categorical Flow</span>
+<h2 class="font-headline-sm text-headline-sm text-primary font-semibold">Spending Breakdown</h2>
+</div>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" title="Filter timeframe">
+<span class="material-symbols-outlined text-xl">tune</span>
+</button>
+</div>
+<!-- DONUT CHART CONTAINER -->
+<div class="relative py-space-md flex items-center justify-center">
+<div class="relative w-56 h-56 flex items-center justify-center">
+<svg class="w-full h-full -rotate-90 transform" viewBox="0 0 100 100">
+<!-- Groceries (Navy): 38% -> dasharray 38, 62 -->
+<circle cx="50" cy="50" fill="transparent" r="38" stroke="#0B1F44" stroke-dasharray="89.8 238.8" stroke-dashoffset="0" stroke-width="11"></circle>
+<!-- Cafe & Dining (Honey): 24% -> dasharray 57.6 -->
+<circle cx="50" cy="50" fill="transparent" r="38" stroke="#D9922B" stroke-dasharray="57.2 238.8" stroke-dashoffset="-89.8" stroke-width="11"></circle>
+<!-- Transport (Teal/Green): 16% -->
+<circle cx="50" cy="50" fill="transparent" r="38" stroke="#2A9D8F" stroke-dasharray="38.2 238.8" stroke-dashoffset="-147" stroke-width="11"></circle>
+<!-- Entertainment (Red): 14% -->
+<circle cx="50" cy="50" fill="transparent" r="38" stroke="#8B1E2D" stroke-dasharray="33.4 238.8" stroke-dashoffset="-185.2" stroke-width="11"></circle>
+<!-- Subscriptions & Other (Gold): 8% -->
+<circle cx="50" cy="50" fill="transparent" r="38" stroke="#C9A227" stroke-dasharray="19.1 238.8" stroke-dashoffset="-218.6" stroke-width="11"></circle>
+</svg>
+<!-- Center Display Text -->
+<div class="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Disbursed</span>
+<span class="font-headline-sm text-headline-sm font-bold text-primary mt-0.5">642.80 ₼</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">October MTD</span>
+</div>
+</div>
+</div>
+<!-- REFINED LUXURY LEGEND -->
+<div class="space-y-space-xs mt-space-sm">
+<div class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-space-sm">
+<span class="w-3 h-3 rounded-full bg-primary-container shrink-0"></span>
+<span class="font-title-md text-title-md text-on-surface">Groceries &amp; Home</span>
+<span class="font-label-md text-label-md text-on-surface-variant bg-surface-container-high px-1.5 py-0.5 rounded">38%</span>
+</div>
+<span class="font-title-md text-title-md tabular-nums font-semibold text-primary">244.20 ₼</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-space-sm">
+<span class="w-3 h-3 rounded-full bg-[#D9922B] shrink-0"></span>
+<span class="font-title-md text-title-md text-on-surface">Cafe &amp; Dining</span>
+<span class="font-label-md text-label-md text-on-surface-variant bg-surface-container-high px-1.5 py-0.5 rounded">24%</span>
+</div>
+<span class="font-title-md text-title-md tabular-nums font-semibold text-primary">154.30 ₼</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-space-sm">
+<span class="w-3 h-3 rounded-full bg-[#2A9D8F] shrink-0"></span>
+<span class="font-title-md text-title-md text-on-surface">Transport &amp; Fuel</span>
+<span class="font-label-md text-label-md text-on-surface-variant bg-surface-container-high px-1.5 py-0.5 rounded">16%</span>
+</div>
+<span class="font-title-md text-title-md tabular-nums font-semibold text-primary">102.80 ₼</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-space-sm">
+<span class="w-3 h-3 rounded-full bg-[#8B1E2D] shrink-0"></span>
+<span class="font-title-md text-title-md text-on-surface">Entertainment</span>
+<span class="font-label-md text-label-md text-on-surface-variant bg-surface-container-high px-1.5 py-0.5 rounded">14%</span>
+</div>
+<span class="font-title-md text-title-md tabular-nums font-semibold text-primary">90.10 ₼</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-space-sm">
+<span class="w-3 h-3 rounded-full bg-secondary shrink-0"></span>
+<span class="font-title-md text-title-md text-on-surface">Subscriptions &amp; Other</span>
+<span class="font-label-md text-label-md text-on-surface-variant bg-surface-container-high px-1.5 py-0.5 rounded">8%</span>
+</div>
+<span class="font-title-md text-title-md tabular-nums font-semibold text-primary">51.40 ₼</span>
+</div>
+</div>
+</div>
+<!-- AI Micro advice footer -->
+<div class="mt-space-md p-space-sm rounded-lg bg-surface-container flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-secondary text-lg" style="font-variation-settings: 'FILL' 1;">tips_and_updates</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Dining is <span class="font-semibold text-on-surface">5% higher</span> than optimal pace. Fintra suggests 2 zero-cafe days before weekend.
+          </p>
+</div>
+</div>
+<!-- RIGHT: 5 LATEST EXPENSES -->
+<div class="lg:col-span-7 rounded-xl bg-surface-container-low p-space-lg shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-space-md">
+<div>
+<span class="font-label-md text-label-md uppercase tracking-widest text-secondary font-bold">Ledger Journal</span>
+<h2 class="font-headline-sm text-headline-sm text-primary font-semibold">5 Latest Expenses</h2>
+</div>
+<a class="inline-flex items-center gap-1 font-headline-sm text-headline-sm italic text-primary hover:text-secondary transition-colors text-base font-semibold" data-path="expenses" href="#">
+<span>View all in Expenses</span>
+<span class="material-symbols-outlined text-base">arrow_forward</span>
+</a>
+</div>
+<!-- LIST OF TRANSACTIONS -->
+<div class="space-y-space-xs">
+<!-- Row 1 -->
+<div class="group flex items-center justify-between p-space-sm rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-11 h-11 rounded-lg bg-surface-container-lowest flex items-center justify-center text-xl shrink-0 shadow-sm">
+                  ☕
+                </div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-primary font-bold truncate">Espresso &amp; Croissant</span>
+<span class="font-label-md text-label-md bg-secondary/15 text-secondary px-1.5 py-0.5 rounded font-semibold shrink-0">Cafe</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Paul Bakery • Nizami St</span>
+</div>
+</div>
+<div class="flex items-center gap-space-md shrink-0 text-right">
+<div class="hidden sm:flex flex-col items-end">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Today, 09:40</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-primary shrink-0"></span>
+                    Pasha Bank Black
+                  </span>
+</div>
+<span class="font-title-lg text-title-lg font-bold tabular-nums text-primary group-hover:text-error transition-colors">-7.50 ₼</span>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="group flex items-center justify-between p-space-sm rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-11 h-11 rounded-lg bg-surface-container-lowest flex items-center justify-center text-xl shrink-0 shadow-sm">
+                  🛒
+                </div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-primary font-bold truncate">Bravo Supermarket</span>
+<span class="font-label-md text-label-md bg-primary-container/10 text-primary-container px-1.5 py-0.5 rounded font-semibold shrink-0">Groceries</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Weekly organic staples • Koroglu</span>
+</div>
+</div>
+<div class="flex items-center gap-space-md shrink-0 text-right">
+<div class="hidden sm:flex flex-col items-end">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Yesterday, 19:15</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-outline-variant shrink-0"></span>
+                    ABB Platinum
+                  </span>
+</div>
+<span class="font-title-lg text-title-lg font-bold tabular-nums text-primary group-hover:text-error transition-colors">-64.20 ₼</span>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="group flex items-center justify-between p-space-sm rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-11 h-11 rounded-lg bg-surface-container-lowest flex items-center justify-center text-xl shrink-0 shadow-sm">
+                  🚕
+                </div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-primary font-bold truncate">Bolt Business Ride</span>
+<span class="font-label-md text-label-md bg-on-tertiary-container/15 text-on-tertiary-container px-1.5 py-0.5 rounded font-semibold shrink-0">Transport</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Port Baku to Icharishahar</span>
+</div>
+</div>
+<div class="flex items-center gap-space-md shrink-0 text-right">
+<div class="hidden sm:flex flex-col items-end">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Yesterday, 08:50</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-primary shrink-0"></span>
+                    Pasha Bank Black
+                  </span>
+</div>
+<span class="font-title-lg text-title-lg font-bold tabular-nums text-primary group-hover:text-error transition-colors">-4.80 ₼</span>
+</div>
+</div>
+<!-- Row 4 -->
+<div class="group flex items-center justify-between p-space-sm rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-11 h-11 rounded-lg bg-surface-container-lowest flex items-center justify-center text-xl shrink-0 shadow-sm">
+                  🎬
+                </div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-primary font-bold truncate">Cinema Plus 2x VIP</span>
+<span class="font-label-md text-label-md bg-[#8B1E2D]/15 text-[#8B1E2D] px-1.5 py-0.5 rounded font-semibold shrink-0">Entertainment</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Mall 28 Premiere Lounge</span>
+</div>
+</div>
+<div class="flex items-center gap-space-md shrink-0 text-right">
+<div class="hidden sm:flex flex-col items-end">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Oct 11, 21:00</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-secondary shrink-0"></span>
+                    Cash Reserve
+                  </span>
+</div>
+<span class="font-title-lg text-title-lg font-bold tabular-nums text-primary group-hover:text-error transition-colors">-32.00 ₼</span>
+</div>
+</div>
+<!-- Row 5 -->
+<div class="group flex items-center justify-between p-space-sm rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-11 h-11 rounded-lg bg-surface-container-lowest flex items-center justify-center text-xl shrink-0 shadow-sm">
+                  💊
+                </div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-primary font-bold truncate">Zeytun Pharmacy</span>
+<span class="font-label-md text-label-md bg-surface-container-highest text-on-surface-variant px-1.5 py-0.5 rounded font-semibold shrink-0">Health</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Magnesium + Zinc Complex</span>
+</div>
+</div>
+<div class="flex items-center gap-space-md shrink-0 text-right">
+<div class="hidden sm:flex flex-col items-end">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Oct 10, 14:20</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-outline-variant shrink-0"></span>
+                    ABB Platinum
+                  </span>
+</div>
+<span class="font-title-lg text-title-lg font-bold tabular-nums text-primary group-hover:text-error transition-colors">-18.50 ₼</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Summary Strip -->
+<div class="mt-space-md pt-space-sm flex items-center justify-between text-body-sm text-on-surface-variant bg-surface-container/60 p-space-sm rounded-lg"><span class="flex items-center gap-1 font-body-sm text-on-surface-variant"><span class="material-symbols-outlined text-base text-secondary">receipt_long</span> Recent ledger entries</span><span class="font-title-md text-title-md text-primary font-bold">5 Txns = 127.00 ₼</span></div>
+</div>
+</div>
+<!-- 4. CATEGORY LIMITS & BUDGET HEALTH WIDGET -->
+<div class="rounded-xl bg-surface-container-low p-gutter-lg shadow-sm">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between pb-gutter gap-space-sm">
+<div><span class="font-label-md text-label-md uppercase tracking-wider text-secondary font-bold">Spending Plan</span><h2 class="font-headline-sm text-headline-sm text-primary font-semibold mt-0.5">Your limits &amp; category status</h2></div>
+<div class="flex items-center gap-space-sm">
+<div class="flex items-center gap-1.5 bg-surface-container-high px-3 py-1.5 rounded-lg text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-on-tertiary-container animate-pulse"></span>
+<span class="font-label-md text-label-md">Updated 4m ago via Telegram</span>
+</div>
+<button class="flex items-center gap-1 text-primary hover:text-secondary font-title-md text-title-md transition-colors px-2 py-1"><span>Manage limits</span><span class="material-symbols-outlined text-sm">tune</span></button>
+</div>
+</div>
+<!-- PROGRESS BARS GRID -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-gutter-lg gap-y-space-lg">
+<!-- Progress Bar 1: Cafe & Restaurants -->
+<div class="space-y-space-xs bg-surface-container p-space-md rounded-xl">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="text-lg">☕</span>
+<span class="font-title-md text-title-md text-primary font-bold">Cafe &amp; Restaurants</span>
+</div>
+<span class="font-label-md text-label-md font-bold px-2 py-0.5 rounded bg-[#D9922B]/15 text-[#D9922B]">
+              Close to cap (87%)
+            </span>
+</div>
+<div class="w-full bg-surface-container-highest h-2.5 rounded-full overflow-hidden">
+<div class="bg-[#D9922B] h-2.5 rounded-full transition-all duration-500" style="width: 87.8%;"></div>
+</div>
+<div class="flex items-center justify-between font-body-sm text-body-sm pt-0.5">
+<span class="text-on-surface-variant">Spent: <strong class="text-primary tabular-nums font-semibold">154.30 ₼</strong></span>
+<span class="text-on-surface-variant">Budget: <span class="tabular-nums font-medium text-on-surface">175.00 ₼</span> (20.70 ₼ remaining)</span>
+</div>
+</div>
+<!-- Progress Bar 2: Transport & Fuel -->
+<div class="space-y-space-xs bg-surface-container p-space-md rounded-xl">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="text-lg">🚕</span>
+<span class="font-title-md text-title-md text-primary font-bold">Transport &amp; Fuel</span>
+</div>
+<span class="font-label-md text-label-md font-bold px-2 py-0.5 rounded bg-on-tertiary-container/15 text-on-tertiary-container">
+              On track (40%)
+            </span>
+</div>
+<div class="w-full bg-surface-container-highest h-2.5 rounded-full overflow-hidden">
+<div class="bg-[#2A9D8F] h-2.5 rounded-full transition-all duration-500" style="width: 40%;"></div>
+</div>
+<div class="flex items-center justify-between font-body-sm text-body-sm pt-0.5">
+<span class="text-on-surface-variant">Spent: <strong class="text-primary tabular-nums font-semibold">48.00 ₼</strong></span>
+<span class="text-on-surface-variant">Budget: <span class="tabular-nums font-medium text-on-surface">120.00 ₼</span> (72.00 ₼ remaining)</span>
+</div>
+</div>
+<!-- Progress Bar 3: Entertainment & Leisure -->
+<div class="space-y-space-xs bg-surface-container p-space-md rounded-xl">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="text-lg">🎬</span>
+<span class="font-title-md text-title-md text-primary font-bold">Entertainment &amp; Leisure</span>
+</div>
+<span class="font-label-md text-label-md font-bold px-2 py-0.5 rounded bg-[#8B1E2D]/15 text-[#8B1E2D]">
+              Exceeded by 5.00 ₼ (105%)
+            </span>
+</div>
+<div class="w-full bg-surface-container-highest h-2.5 rounded-full overflow-hidden">
+<div class="bg-[#8B1E2D] h-2.5 rounded-full transition-all duration-500" style="width: 100%;"></div>
+</div>
+<div class="flex items-center justify-between font-body-sm text-body-sm pt-0.5">
+<span class="text-[#8B1E2D] font-medium">Spent: <strong class="tabular-nums font-bold">105.00 ₼</strong></span>
+<span class="text-on-surface-variant">Cap: <span class="tabular-nums font-medium text-on-surface">100.00 ₼</span> (Rebalanced from Groceries)</span>
+</div>
+</div>
+<!-- Progress Bar 4: Groceries -->
+<div class="space-y-space-xs bg-surface-container p-space-md rounded-xl">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="text-lg">🛒</span>
+<span class="font-title-md text-title-md text-primary font-bold">Groceries &amp; Staples</span>
+</div>
+<span class="font-label-md text-label-md font-bold px-2 py-0.5 rounded bg-on-tertiary-container/15 text-on-tertiary-container">
+              Healthy (61%)
+            </span>
+</div>
+<div class="w-full bg-surface-container-highest h-2.5 rounded-full overflow-hidden">
+<div class="bg-[#2A9D8F] h-2.5 rounded-full transition-all duration-500" style="width: 61%;"></div>
+</div>
+<div class="flex items-center justify-between font-body-sm text-body-sm pt-0.5">
+<span class="text-on-surface-variant">Spent: <strong class="text-primary tabular-nums font-semibold">244.20 ₼</strong></span>
+<span class="text-on-surface-variant">Budget: <span class="tabular-nums font-medium text-on-surface">400.00 ₼</span> (155.80 ₼ remaining)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 5. PRIVATE BANKING CONCIERGE FOOTER CALLOUT -->
+<div class="rounded-xl bg-primary text-on-primary p-gutter-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-space-lg shadow-xl shadow-primary/10"><div class="flex items-center gap-space-md"><div class="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center text-primary shrink-0 font-bold"><span class="material-symbols-outlined text-2xl">lightbulb</span></div><div><h3 class="font-headline-sm text-headline-sm font-semibold text-secondary-fixed">Tips for staying on track</h3><p class="font-body-md text-body-md text-on-primary-container max-w-2xl mt-0.5">Log expenses via Telegram (<span class="text-secondary-fixed font-semibold">@myfintra_bot</span>) by sending text, voice notes, or receipt photos anytime.</p></div></div><div class="flex items-center gap-space-sm shrink-0"><a class="px-space-md py-2.5 rounded-lg bg-surface-container-lowest text-primary font-title-md text-title-md hover:bg-surface-container-high transition-colors inline-flex items-center gap-1.5" data-path="chat" href="#"><span class="material-symbols-outlined text-base">chat</span><span>Open Chat</span></a></div></div>
+</div>
+<!-- INTERACTIVE MODAL FOR QUICK EXPENSE LOGGING (VANILLA JS TRIGGERED) -->
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-primary/40 backdrop-blur-sm hidden transition-opacity duration-200" id="quick-expense-modal">
+<div class="w-full max-w-md bg-surface-container-low rounded-xl p-gutter shadow-2xl relative">
+<div class="flex items-center justify-between pb-space-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-xl">edit_note</span>
+<h3 class="font-headline-sm text-headline-sm text-primary font-semibold">Log Instant Expense</h3>
+</div>
+<button class="p-1 rounded-lg hover:bg-surface-container text-on-surface-variant hover:text-on-surface" id="close-modal-btn">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+        Synced directly to your Telegram bot and Sovereign ledger in real-time.
+      </p>
+<form class="space-y-space-md" id="expense-form">
+<div>
+<label class="block font-label-md text-label-md font-semibold text-on-surface uppercase tracking-wider mb-1">Amount (AZN ₼)</label>
+<div class="relative flex items-center">
+<input class="w-full h-11 px-space-md rounded-lg bg-surface-container text-primary font-title-lg text-title-lg focus:outline-none focus:ring-2 focus:ring-secondary/50 placeholder:text-outline-variant" placeholder="0.00" required="" step="0.01" type="number">
+<span class="absolute right-4 font-bold text-secondary text-lg">₼</span>
+</div>
+</div>
+<div>
+<label class="block font-label-md text-label-md font-semibold text-on-surface uppercase tracking-wider mb-1">Merchant / Note</label>
+<input class="w-full h-11 px-space-md rounded-lg bg-surface-container text-primary font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-secondary/50 placeholder:text-outline-variant" placeholder="e.g. Entrée Bakery, Bravo, Bolt" required="" type="text">
+</div>
+<div>
+<label class="block font-label-md text-label-md font-semibold text-on-surface uppercase tracking-wider mb-1">Category</label>
+<select class="w-full h-11 px-space-md rounded-lg bg-surface-container text-primary font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-secondary/50">
+<option>☕ Cafe &amp; Dining</option>
+<option>🛒 Groceries &amp; Staples</option>
+<option>🚕 Transport &amp; Fuel</option>
+<option>🎬 Entertainment &amp; Leisure</option>
+<option>📦 Subscriptions &amp; Other</option>
+</select>
+</div>
+<div class="pt-space-sm flex items-center justify-end gap-space-sm">
+<button class="px-space-md py-2.5 rounded-lg bg-surface-container-high text-on-surface font-title-md text-title-md hover:bg-surface-container-highest transition-colors" id="cancel-modal-btn" type="button">
+            Cancel
+          </button>
+<button class="px-space-lg py-2.5 rounded-lg bg-primary text-on-primary font-title-md text-title-md hover:bg-primary-container shadow-md transition-all" type="submit">
+            Record Expense
+          </button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<script>
+  (function() {
+    const trigger = document.getElementById('quick-expense-trigger');
+    const modal = document.getElementById('quick-expense-modal');
+    const closeBtn = document.getElementById('close-modal-btn');
+    const cancelBtn = document.getElementById('cancel-modal-btn');
+    const form = document.getElementById('expense-form');
+
+    function openModal() {
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      if (modal) modal.classList.add('hidden');
+    }
+
+    if (trigger) trigger.addEventListener('click', openModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+
+    if (modal) {
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeModal();
+      });
+    }
+
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        closeModal();
+      });
+    }
+  })();
+</script></main></div>
+
+</body></html>
