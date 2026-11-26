@@ -179,6 +179,7 @@ def build_overview(user_id):
         else:
             status, color = "On track", OK_COLOR
         limits.append({"emoji": emoji, "label": label, "spent": spent,
+                       "scope": lim["scope"], "target": lim["target"],
                        "amount": lim["amount"], "percent": percent,
                        "status": status, "color": color})
 
@@ -271,10 +272,106 @@ async def delete_expense_from_web(request: Request, expense_id: int):
     return RedirectResponse("/expenses?deleted=1", status_code=303)
 
 
-@app.get("/plan", response_class=HTMLResponse)
-async def plan(request: Request):
-    return render_page(request, "plan.html", "plan")
+# ---------- Plan & Limits ----------
 
+def build_plan_page(user_id):
+    """Данные страницы Plan & Limits."""
+    budget = database.get_budget(user_id)
+    plan = None
+    if budget:
+        obligations_total = round(sum(o["amount"] for o in budget["obligations"]), 2)
+        free = budget["income"] - obligations_total
+        savings = round(free * budget["savings_percent"] / 100, 2)
+        spendable = round(free - savings, 2)
+        income = budget["income"]
+        plan = {
+            "income": income, "payday": budget["payday"],
+            "savings_percent": budget["savings_percent"],
+            "obligations": budget["obligations"], "obligations_total": obligations_total,
+            "savings": savings, "spendable": spendable,
+            # Доли для полосы распределения дохода (в процентах)
+            "share_obligations": round(obligations_total / income * 100),
+            "share_savings": round(savings / income * 100),
+            "share_spendable": round(spendable / income * 100),
+        }
+    allowance = tools.get_daily_allowance(user_id) if budget else None
+    return {
+        "plan": plan,
+        "allowance": allowance,
+        "limits": build_overview(user_id)["limits"],
+        "category_options": [(k, v) for k, v in CATEGORY_INFO.items()],
+    }
+
+
+@app.get("/plan", response_class=HTMLResponse)
+async def plan(request: Request, message: str = "", error: str = ""):
+    user_id = current_user(request)
+    if user_id is None:
+        return RedirectResponse("/welcome", status_code=303)
+    return render_page(request, "plan.html", "plan",
+                       message=message, error=error, **build_plan_page(user_id))
+
+
+def plan_redirect(message="", error=""):
+    """Возврат на страницу плана с сообщением (паттерн Post/Redirect/Get)."""
+    from urllib.parse import urlencode
+    query = urlencode({k: v for k, v in {"message": message, "error": error}.items() if v})
+    return RedirectResponse(f"/plan?{query}", status_code=303)
+
+
+@app.post("/plan/save")
+async def save_plan(request: Request):
+    user_id = current_user(request)
+    if user_id is None:
+        return RedirectResponse("/welcome", status_code=303)
+
+    form = await request.form()
+    try:
+        income = float(form["income"])
+        payday = int(form["payday"])
+        savings_percent = float(form["savings_percent"])
+    except (KeyError, ValueError):
+        return plan_redirect(error="Please fill income, payday and savings with numbers")
+
+    # Обязательные платежи: пары «название + сумма», пустые строки пропускаем
+    obligations = []
+    for name, amount in zip(form.getlist("ob_name"), form.getlist("ob_amount")):
+        name = name.strip()
+        if name and amount:
+            obligations.append({"name": name[:40], "amount": float(amount)})
+
+    # 🔐 Те же проверки, что у агента
+    result = tools.plan_budget(user_id, income, payday, savings_percent, obligations)
+    if result.get("error"):
+        return plan_redirect(error=result["error"])
+    return plan_redirect(message="Plan saved")
+
+
+@app.post("/limits/add")
+async def add_limit(request: Request,
+                    scope: str = Form(...),
+                    amount: float = Form(...),
+                    category: str = Form(""),
+                    card: str = Form("")):
+    user_id = current_user(request)
+    if user_id is None:
+        return RedirectResponse("/welcome", status_code=303)
+
+    target = category if scope == "category" else card.strip()
+    result = tools.set_limit(user_id, scope, target, amount)  # 🔐 номер карты будет отклонён
+    if result.get("error"):
+        return plan_redirect(error=result.get("message", result["error"]))
+    return plan_redirect(message="Limit saved")
+
+
+@app.post("/limits/remove")
+async def remove_limit(request: Request, scope: str = Form(...), target: str = Form(...)):
+    user_id = current_user(request)
+    if user_id is None:
+        return RedirectResponse("/welcome", status_code=303)
+    # Человек сам нажал кнопку и подтвердил в окне. Удаляем только свой лимит
+    removed = database.remove_limit(user_id, scope, target)
+    return plan_redirect(message="Limit removed") if removed else plan_redirect(error="Limit not found")
 
 @app.get("/chat", response_class=HTMLResponse)
 async def chat(request: Request):
