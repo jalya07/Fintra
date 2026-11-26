@@ -1,0 +1,324 @@
+{% extends "base.html" %}
+{% block page_title %}Chat{% endblock %}
+{% block breadcrumb %}Chat{% endblock %}
+{% block content %}
+<div class="flex flex-col w-full">
+<!-- Top Context Ribbon / Ambient Strip -->
+<div class="flex items-center justify-between pb-space-md mb-space-sm"><div class="flex items-center gap-space-sm"><span class="font-headline-md text-headline-md text-primary tracking-tight">Fintra Assistant</span><span class="font-label-md text-label-md bg-secondary/15 text-secondary px-space-xs py-0.5 rounded-full font-semibold">Online via Telegram</span></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs text-on-surface-variant font-label-md text-label-md"><span class="w-2 h-2 rounded-full bg-on-tertiary-container animate-pulse"></span><span>Ready</span></div></div></div>
+<!-- Primary Messenger Layout Grid -->
+<div class="grid grid-cols-12 gap-gutter items-start">
+<!-- LEFT PANEL: Context, Quick Actions, Channel Synchronization (4 cols) -->
+<div class="col-span-12 lg:col-span-4 flex flex-col gap-space-md">
+<!-- Session Agent Status Card -->
+<div class="bg-surface-container-low rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-12 h-12 rounded-xl bg-primary-container text-secondary flex items-center justify-center shadow-md">
+<span translate="no" class="notranslate material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-lg text-title-lg text-primary">Fintra AI Assistant</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Personal Finance Assistant</span>
+</div>
+</div>
+<span class="font-label-md text-label-md text-secondary-fixed bg-primary px-space-xs py-1 rounded-md font-bold tracking-wider">LIVE</span>
+</div>
+<!-- Channel Sync Banner -->
+<div class="bg-surface-container rounded-lg p-space-sm flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span translate="no" class="notranslate material-symbols-outlined text-base text-secondary">send</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-primary">Telegram Synchronized</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Personal Finance Assistant</span>
+</div>
+</div>
+<span class="w-2.5 h-2.5 rounded-full bg-on-tertiary-container"></span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Send text messages, voice memos, or receipt photos to log expenses and check your spending limits.</p>
+<div class="grid grid-cols-2 gap-space-xs pt-space-xs">
+<div class="bg-surface-container-high p-space-sm rounded-lg flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Safe Run-Rate</span>
+<span class="font-numeral-md text-numeral-md text-primary mt-0.5">19.33 ₼<span class="text-xs text-on-surface-variant font-normal">/day</span></span>
+</div>
+<div class="bg-surface-container-high p-space-sm rounded-lg flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Next Settlement</span>
+<span class="font-numeral-md text-numeral-md text-primary mt-0.5">12 Days</span>
+</div>
+</div>
+</div>
+<!-- Quick Context Prompts -->
+<div class="bg-surface-container-low rounded-xl p-space-lg shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-title-md text-title-md text-primary">Inquiry Blueprints</span>
+<span class="font-label-md text-label-md text-secondary">Instant AI triggers</span>
+</div>
+<button class="group text-left p-space-sm bg-surface-container hover:bg-primary transition-all duration-200 rounded-lg flex items-center justify-between" onclick="insertPrompt('How much can I spend on dinner tonight?')">
+<div class="flex items-center gap-space-xs">
+<span translate="no" class="notranslate material-symbols-outlined text-sm text-secondary group-hover:text-secondary-fixed">restaurant</span>
+<span class="font-body-sm text-body-sm text-on-surface group-hover:text-surface-container-lowest transition-colors">How much can I spend on dinner tonight?</span>
+</div>
+<span translate="no" class="notranslate material-symbols-outlined text-xs text-outline-variant group-hover:text-secondary-fixed">arrow_forward</span>
+</button>
+<button class="group text-left p-space-sm bg-surface-container hover:bg-primary transition-all duration-200 rounded-lg flex items-center justify-between" onclick="insertPrompt('Analyze my grocery spending this week')">
+<div class="flex items-center gap-space-xs">
+<span translate="no" class="notranslate material-symbols-outlined text-sm text-secondary group-hover:text-secondary-fixed">shopping_bag</span>
+<span class="font-body-sm text-body-sm text-on-surface group-hover:text-surface-container-lowest transition-colors">Analyze my grocery spending this week</span>
+</div>
+<span translate="no" class="notranslate material-symbols-outlined text-xs text-outline-variant group-hover:text-secondary-fixed">arrow_forward</span>
+</button>
+<button class="group text-left p-space-sm bg-surface-container hover:bg-primary transition-all duration-200 rounded-lg flex items-center justify-between" onclick="insertPrompt('Log 15 ₼ for taxi to airport')">
+<div class="flex items-center gap-space-xs">
+<span translate="no" class="notranslate material-symbols-outlined text-sm text-secondary group-hover:text-secondary-fixed">local_taxi</span>
+<span class="font-body-sm text-body-sm text-on-surface group-hover:text-surface-container-lowest transition-colors">Log 15 ₼ for taxi to airport</span>
+</div>
+<span translate="no" class="notranslate material-symbols-outlined text-xs text-outline-variant group-hover:text-secondary-fixed">arrow_forward</span>
+</button>
+<button class="group text-left p-space-sm bg-surface-container hover:bg-primary transition-all duration-200 rounded-lg flex items-center justify-between" onclick="insertPrompt('Simulate saving 500 ₼ next month')">
+<div class="flex items-center gap-space-xs">
+<span translate="no" class="notranslate material-symbols-outlined text-sm text-secondary group-hover:text-secondary-fixed">savings</span>
+<span class="font-body-sm text-body-sm text-on-surface group-hover:text-surface-container-lowest transition-colors">Simulate saving 500 ₼ next month</span>
+</div>
+<span translate="no" class="notranslate material-symbols-outlined text-xs text-outline-variant group-hover:text-secondary-fixed">arrow_forward</span>
+</button>
+</div>
+<!-- Telegram Omnipresent QR Quick Connect Card -->
+<div class="bg-primary-container text-on-primary rounded-xl p-space-lg shadow-md relative overflow-hidden flex flex-col gap-space-md">
+<div class="absolute -right-12 -bottom-12 w-40 h-40 bg-secondary/10 rounded-full blur-2xl pointer-events-none"></div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span translate="no" class="notranslate material-symbols-outlined text-secondary-fixed text-xl">qr_code_scanner</span>
+<span class="font-title-md text-title-md text-surface-container-lowest">Voice &amp; Receipt Engine</span>
+</div>
+<span class="font-label-md text-label-md text-secondary-fixed bg-primary px-space-xs py-0.5 rounded">T.ME Sync</span>
+</div>
+<div class="flex items-center gap-space-md">
+<!-- Stylized Mock QR SVG -->
+<div class="bg-surface-container-lowest p-2 rounded-lg shrink-0 shadow-sm flex items-center justify-center">
+<svg class="w-20 h-20 text-primary" fill="currentColor" viewBox="0 0 100 100">
+<path d="M10 10h30v30h-30zM15 15v20h20v-20z M60 10h30v30h-30zM65 15v20h20v-20z M10 60h30v30h-30zM15 65v20h20v-20z M22 22h6v6h-6z M72 22h6v6h-6z M22 72h6v6h-6z M50 15h5v15h-5z M80 50h10v5h-10z M50 60h10v10h-10z M70 60h20v5h-20z M60 75h10v15h-10z M75 85h15v5h-15z M50 85h5v5h-5z"></path>
+</svg>
+</div>
+<div class="flex flex-col justify-center">
+<span class="font-body-sm text-body-sm text-surface-variant font-medium">Open in Telegram to record audio memos, drop receipt photos, or query limits seamlessly on iOS or Android.</span>
+<a class="mt-space-xs inline-flex items-center gap-1 font-label-md text-label-md text-secondary-fixed hover:underline" href="https://t.me/myfintra_bot" target="_blank"><span>Launch @myfintra_bot</span><span translate="no" class="notranslate material-symbols-outlined text-xs">open_in_new</span></a>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT PANEL: Luxury Dialogue Window & Interactive Tool Stream (8 cols) -->
+<div class="col-span-12 lg:col-span-8 flex flex-col bg-surface-container-low rounded-xl shadow-sm overflow-hidden">
+<!-- Dialogue Luxury Header -->
+<div class="bg-surface-container-high px-space-lg py-space-md flex flex-wrap items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="relative">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-inner">
+<span translate="no" class="notranslate material-symbols-outlined text-secondary text-lg" style="font-variation-settings: 'FILL' 1;">neurology</span>
+</div>
+<span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-on-tertiary-container ring-2 ring-surface-container-high"></span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-title-md text-title-md text-primary font-semibold">Fintra AI Agent</span>
+<span translate="no" class="notranslate material-symbols-outlined text-secondary text-base">verified</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Online • Telemetry Connected • English (AZ / RU Ready)</span>
+</div>
+</div>
+<!-- Action Bar -->
+<div class="flex items-center gap-space-xs">
+<button class="flex items-center gap-1 px-space-sm py-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-highest transition-colors font-label-md text-label-md">
+<span translate="no" class="notranslate material-symbols-outlined text-sm">tune</span>
+<span>Agent Preferences</span>
+</button>
+<button class="flex items-center gap-1 px-space-sm py-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-highest transition-colors font-label-md text-label-md">
+<span translate="no" class="notranslate material-symbols-outlined text-sm">download</span>
+<span>Transcript</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/20 transition-colors" title="Clear Conversation">
+<span translate="no" class="notranslate material-symbols-outlined text-base">delete_sweep</span>
+</button>
+</div>
+</div>
+<!-- Dialogue History Viewport -->
+<div class="p-space-lg flex flex-col gap-space-lg overflow-y-auto max-h-[640px]" id="chatHistory">
+<!-- Timestamp Partition -->
+<div class="flex items-center justify-center my-space-xs">
+<span class="font-label-md text-label-md tracking-wider uppercase text-outline px-space-sm py-0.5 rounded-full bg-surface-container font-medium">Today • Baku Standard Time</span>
+</div>
+<!-- USER MESSAGE 1 -->
+<div class="flex flex-col items-end gap-1 ml-auto max-w-xl">
+<div class="bg-primary text-surface-container-lowest px-space-lg py-space-sm rounded-xl rounded-tr-none shadow-sm">
+<p class="font-body-md text-body-md text-surface-container-lowest">
+              Hey Fintra, just paid 7.50 AZN at Paul Bakery for coffee and a croissant with my Pasha card.
+            </p>
+</div>
+<div class="flex items-center gap-1 font-label-md text-label-md text-on-surface-variant mr-1">
+<span>09:38</span>
+<span translate="no" class="notranslate material-symbols-outlined text-xs text-on-tertiary-container">done_all</span>
+</div>
+</div>
+<!-- AGENT INTERACTION 1 -->
+<div class="flex flex-col items-start gap-space-xs mr-auto max-w-2xl">
+<!-- Tool Execution Chip -->
+<div class="inline-flex items-center gap-space-xs bg-primary-container text-surface-container-lowest px-space-sm py-1 rounded-md shadow-sm">
+<span translate="no" class="notranslate material-symbols-outlined text-xs text-secondary-fixed">bolt</span>
+<code class="font-mono text-xs tracking-tight text-primary-fixed">add_expense</code>
+<span translate="no" class="notranslate material-symbols-outlined text-xs text-on-tertiary-container ml-1">check_circle</span>
+</div>
+<!-- Agent Message Container with Gold Inset Bar -->
+<div class="bg-surface-container rounded-xl rounded-tl-none p-space-md shadow-sm relative pl-space-lg">
+<div class="absolute left-0 top-3 bottom-3 w-1 bg-secondary rounded-r"></div>
+<div class="flex flex-col gap-space-xs">
+<p class="font-body-md text-body-md text-on-surface leading-relaxed">
+                Logged <span class="font-semibold text-primary font-numeral-md">7.50 ₼</span> for <strong class="font-semibold text-primary">Paul Bakery</strong> under <em class="font-headline-sm italic text-secondary">Cafe &amp; Dining</em>. ☕
+              </p>
+<div class="mt-1 pt-space-xs flex flex-col gap-1 text-on-surface-variant font-body-sm text-body-sm">
+<div class="flex items-center justify-between">
+<span>October Cafe &amp; Dining Limit</span>
+<span class="font-semibold text-primary">20.70 ₼ remaining (87% utilized)</span>
+</div>
+<!-- Mini Progress Meter -->
+<div class="w-full bg-surface-container-highest rounded-full h-1.5 overflow-hidden">
+<div class="bg-secondary h-1.5 rounded-full" style="width: 87%;"></div>
+</div>
+<p class="mt-1 text-on-surface italic">
+                  Since payday is in 12 days, I recommend pacing cafe visits to about <strong class="text-primary not-italic font-semibold">1.70 ₼/day</strong> to remain safely within your tier goals.
+                </p>
+</div>
+</div>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant ml-1">09:38 • Telegram</span>
+</div>
+<!-- USER MESSAGE 2 -->
+<div class="flex flex-col items-end gap-1 ml-auto max-w-xl">
+<div class="bg-primary text-surface-container-lowest px-space-lg py-space-sm rounded-xl rounded-tr-none shadow-sm">
+<p class="font-body-md text-body-md text-surface-container-lowest">
+              Can I afford to buy concert tickets tonight for 80 AZN?
+            </p>
+</div>
+<div class="flex items-center gap-1 font-label-md text-label-md text-on-surface-variant mr-1">
+<span>11:15</span>
+<span translate="no" class="notranslate material-symbols-outlined text-xs text-on-tertiary-container">done_all</span>
+</div>
+</div>
+<!-- AGENT INTERACTION 2 (Dual Tool Step + Prudent Caution Card) -->
+<div class="flex flex-col items-start gap-space-xs mr-auto max-w-2xl">
+<!-- Multi-step Tool Pipeline -->
+<div class="flex flex-wrap items-center gap-space-xs"><div class="inline-flex items-center gap-1.5 bg-primary-container text-surface-container-lowest px-space-sm py-1 rounded-md shadow-sm"><span translate="no" class="notranslate material-symbols-outlined text-xs text-secondary-fixed">bolt</span><code class="font-mono text-xs tracking-tight text-primary-fixed">check_budget_limit</code><span translate="no" class="notranslate material-symbols-outlined text-xs text-on-tertiary-container">check_circle</span></div><div class="inline-flex items-center gap-1.5 bg-primary-container text-surface-container-lowest px-space-sm py-1 rounded-md shadow-sm"><span translate="no" class="notranslate material-symbols-outlined text-xs text-secondary-fixed">schema</span><code class="font-mono text-xs tracking-tight text-primary-fixed">get_daily_allowance</code><span translate="no" class="notranslate material-symbols-outlined text-xs text-on-tertiary-container">check_circle</span></div></div>
+<!-- Prudent Caution Message Box -->
+<div class="bg-surface-container rounded-xl rounded-tl-none p-space-md shadow-sm relative pl-space-lg">
+<div class="absolute left-0 top-3 bottom-3 w-1 bg-secondary rounded-r"></div>
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center gap-space-xs">
+<span translate="no" class="notranslate material-symbols-outlined text-secondary text-base">warning</span>
+<span class="font-title-md text-title-md text-primary font-semibold">Gentle caution.</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface">
+                Your <em class="font-headline-sm italic text-secondary">Entertainment</em> budget is already at <strong class="text-primary font-semibold">105.00 ₼ / 100.00 ₼</strong> (105% spent).
+              </p>
+<div class="bg-surface-container-high p-space-sm rounded-lg flex flex-col gap-space-xs">
+<span class="font-label-md text-label-md font-semibold text-primary">Simulation Impact Analysis:</span>
+<ul class="flex flex-col gap-1 text-on-surface-variant font-body-sm text-body-sm pl-1">
+<li class="flex items-start gap-2"><span translate="no" class="notranslate material-symbols-outlined text-xs mt-1 shrink-0" style="color: rgb(139, 30, 45);">trending_down</span><span>Direct outlay reduces your safe daily living allowance from <strong class="text-primary font-semibold">23.50 ₼</strong> down to <strong class="font-semibold" style="color: #8B1E2D;">16.83 ₼/day</strong> for the remaining 12 days.</span></li>
+<li class="flex items-start gap-2">
+<span translate="no" class="notranslate material-symbols-outlined text-xs text-secondary mt-1 shrink-0">swap_horiz</span>
+<span>Alternatively, we can seamlessly reallocate <strong class="text-primary font-semibold">50.00 ₼</strong> from your remaining <strong class="text-primary">Transport</strong> surplus (which has 72.00 ₼ headroom left).</span>
+</li>
+</ul>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="font-body-sm text-body-sm text-primary font-medium">Would you like me to adjust the category buffers?</span>
+<button class="bg-secondary text-primary font-label-md text-label-md px-space-sm py-1.5 rounded-md font-bold hover:bg-secondary-fixed transition-colors shadow-sm" onclick="insertPrompt('Yes, reallocate 50 AZN from Transport to Entertainment and log the tickets!')">
+                  One-Tap Reallocate
+                </button>
+</div>
+</div>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant ml-1">11:15 • Telegram</span>
+</div>
+<!-- USER MESSAGE 3 -->
+<div class="flex flex-col items-end gap-1 ml-auto max-w-xl">
+<div class="bg-primary text-surface-container-lowest px-space-lg py-space-sm rounded-xl rounded-tr-none shadow-sm">
+<p class="font-body-md text-body-md text-surface-container-lowest">
+              Yes, reallocate 50 AZN from Transport to Entertainment and log the tickets!
+            </p>
+</div>
+<div class="flex items-center gap-1 font-label-md text-label-md text-on-surface-variant mr-1">
+<span>11:18</span>
+<span translate="no" class="notranslate material-symbols-outlined text-xs text-on-tertiary-container">done_all</span>
+</div>
+</div>
+<!-- AGENT INTERACTION 3 (Multi-tool Execution + Reconciliation Summary) -->
+<div class="flex flex-col items-start gap-space-xs mr-auto max-w-2xl">
+<!-- Tool Execution Pipeline -->
+<div class="flex flex-wrap items-center gap-space-xs"><div class="inline-flex items-center gap-1.5 bg-primary-container text-surface-container-lowest px-space-sm py-1 rounded-md shadow-sm"><span translate="no" class="notranslate material-symbols-outlined text-xs text-secondary-fixed">sync_alt</span><code class="font-mono text-xs tracking-tight text-primary-fixed">plan_budget</code><span translate="no" class="notranslate material-symbols-outlined text-xs text-on-tertiary-container">check_circle</span></div><div class="inline-flex items-center gap-1.5 bg-primary-container text-surface-container-lowest px-space-sm py-1 rounded-md shadow-sm"><span translate="no" class="notranslate material-symbols-outlined text-xs text-secondary-fixed">receipt_long</span><code class="font-mono text-xs tracking-tight text-primary-fixed">add_expense</code><span translate="no" class="notranslate material-symbols-outlined text-xs text-on-tertiary-container">check_circle</span></div></div>
+<!-- Agent Response Card -->
+<div class="bg-surface-container rounded-xl rounded-tl-none p-space-md shadow-sm relative pl-space-lg">
+<div class="absolute left-0 top-3 bottom-3 w-1 bg-secondary rounded-r"></div>
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center gap-space-xs">
+<span translate="no" class="notranslate material-symbols-outlined text-secondary text-base">verified</span>
+<span class="font-title-md text-title-md text-primary font-semibold">Budget Reallocated</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface">
+                Done! ✨ Transferred <span class="font-semibold text-primary font-numeral-md">50.00 ₼</span> from <strong class="text-primary font-semibold">Transport</strong> to <strong class="text-primary font-semibold">Entertainment</strong>.
+              </p>
+<!-- Ledger Rebalance Visual Card -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-xs bg-surface-container-high p-space-sm rounded-lg">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase">Entertainment Limit</span>
+<span class="font-numeral-md text-numeral-md text-primary font-semibold mt-0.5">150.00 ₼</span>
+<span class="text-xs text-secondary font-medium">185 ₼ spent (123%)</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase">Transport Adjusted</span>
+<span class="font-numeral-md text-numeral-md text-primary font-semibold mt-0.5">70.00 ₼</span>
+<span class="text-xs text-on-surface-variant">48 ₼ spent (22 ₼ safe)</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase">Safe Living Allowance</span>
+<span class="font-numeral-md text-numeral-md text-secondary font-semibold mt-0.5">19.33 ₼</span>
+<span class="text-xs text-on-surface-variant">Paced for next 12 days</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant italic">Your monthly plan remains balanced. Concert tickets have been logged under Entertainment.</p>
+</div>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant ml-1">11:18 • Telegram</span>
+</div>
+</div>
+<!-- Dialogue Input Composer -->
+<div class="bg-surface-container-high p-space-md flex flex-col gap-space-sm">
+<!-- Input Area Container -->
+<div class="bg-surface-container-lowest rounded-xl p-space-sm shadow-sm flex flex-col gap-space-xs focus-within:ring-2 focus-within:ring-secondary/40 transition-all">
+<textarea class="w-full bg-transparent resize-none border-none outline-none font-body-md text-body-md text-primary placeholder:text-on-surface-variant/60 py-1 px-space-xs" id="chatInput" placeholder="Message Fintra or paste receipt text... (Type or drop receipt photo)" rows="2"></textarea>
+<div class="flex items-center justify-between pt-1">
+<!-- Composer Actions -->
+<div class="flex items-center gap-space-xs">
+<button class="flex items-center gap-1 p-space-xs rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" title="Attach Receipt or PDF">
+<span translate="no" class="notranslate material-symbols-outlined text-lg">attach_file</span>
+<span class="font-label-md text-label-md hidden sm:inline">Receipt</span>
+</button>
+<button class="flex items-center gap-1 p-space-xs rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" title="Record Voice Note">
+<span translate="no" class="notranslate material-symbols-outlined text-lg">mic</span>
+<span class="font-label-md text-label-md hidden sm:inline">Voice Note</span>
+</button>
+<button class="flex items-center gap-1 p-space-xs rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" title="Prompt Presets">
+<span translate="no" class="notranslate material-symbols-outlined text-lg text-secondary">lightbulb</span>
+<span class="font-label-md text-label-md hidden sm:inline">Presets</span>
+</button>
+</div>
+<!-- Send Action Button -->
+<button class="bg-secondary hover:bg-secondary-fixed text-primary px-space-md py-2 rounded-lg font-title-md text-title-md font-bold flex items-center gap-space-xs shadow-sm transition-transform active:scale-95" onclick="handleSend()">
+<span>Execute</span>
+<span translate="no" class="notranslate material-symbols-outlined text-base">arrow_upward</span>
+</button>
+</div>
+</div>
+<!-- Privacy & Security Guarantee Footnote -->
+<div class="flex items-center justify-between px-space-xs"><div class="flex items-center gap-1 text-on-surface-variant font-label-md text-label-md"><span translate="no" class="notranslate material-symbols-outlined text-xs text-on-tertiary-container">verified_user</span><span>Your messages are processed by Google Gemini. Card numbers are deleted automatically.</span></div><span class="font-label-md text-label-md text-outline hidden md:inline">Shift + Return for new line</span></div>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}

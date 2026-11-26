@@ -1,0 +1,343 @@
+{% extends "base.html" %}
+{% block page_title %}Plan & Limits{% endblock %}
+{% block breadcrumb %}Plan & Limits{% endblock %}
+{% block content %}
+<div class="flex flex-col w-full gap-space-lg pb-space-xl">
+<!-- Top Command & Header Tier -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
+<div class="flex flex-col"><div class="flex items-center gap-space-xs mb-1"><span class="font-label-md text-label-md uppercase tracking-wider text-secondary font-bold">Monthly Plan</span></div><h1 class="font-headline-lg text-headline-lg text-primary tracking-tight">Monthly Financial Plan &amp; Category Limits</h1><p class="font-body-md text-body-md text-on-surface-variant mt-1"><span class="font-headline-sm italic text-secondary">Count. Plan. Protect.</span> Plan your income, fixed expenses, savings, and money to live on.</p></div>
+<!-- Cycle Indicator and Target Action -->
+<div class="flex items-center gap-space-sm shrink-0">
+<div class="flex items-center gap-space-xs bg-surface-container px-space-sm py-2 rounded-xl shadow-sm">
+<span translate="no" class="notranslate material-symbols-outlined text-secondary text-lg">calendar_month</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-bold leading-tight">October 2024</span>
+<span class="font-body-sm text-[10px] text-on-surface-variant leading-none">Cycle: 25th - 24th</span>
+</div>
+</div>
+<button class="flex items-center gap-space-xs bg-primary text-on-primary hover:bg-primary-container px-space-md py-2.5 rounded-xl shadow-md transition-all group">
+<span translate="no" class="notranslate material-symbols-outlined text-secondary-fixed text-lg transition-transform group-hover:rotate-45">tune</span>
+<span class="font-label-lg text-label-lg font-semibold tracking-wide">Edit Monthly Target</span>
+</button>
+</div>
+</div>
+<!-- Four Pillars Analytical Bento -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-gutter">
+<!-- Pillar 1: Total Expected Income -->
+<div class="bg-surface-container-low rounded-xl p-space-lg shadow-sm flex flex-col justify-between relative overflow-hidden group hover:shadow-md transition-shadow">
+<div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-tertiary-fixed/20 to-transparent pointer-events-none rounded-tr-xl"></div>
+<div class="flex items-center justify-between mb-space-md">
+<span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Pillar I</span>
+<span class="inline-flex items-center gap-1 font-label-md text-[11px] font-bold px-2 py-0.5 rounded-full bg-on-tertiary-container/15 text-on-tertiary-container">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container animate-ping"></span> 100% Arrived
+        </span>
+</div>
+<div>
+<p class="font-title-md text-title-md text-primary font-bold">Total Expected Income</p>
+<div class="flex items-baseline gap-1 mt-1">
+<span class="font-numeral-lg text-numeral-lg text-primary tracking-tight">3,200.00</span>
+<span class="font-title-lg text-title-lg text-secondary font-bold">₼</span>
+</div>
+</div>
+<div class="mt-space-lg pt-space-sm bg-surface-container-high/40 rounded-lg p-space-xs">
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Fixed Salary &amp; Retainer</p>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full mt-2 overflow-hidden">
+<div class="bg-on-tertiary-container h-full rounded-full w-full"></div>
+</div>
+</div>
+</div>
+<!-- Pillar 2: Fixed Obligations & Bills -->
+<div class="bg-surface-container-low rounded-xl p-space-lg shadow-sm flex flex-col justify-between relative overflow-hidden group hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between mb-space-md">
+<span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Pillar II</span>
+<span class="font-label-md text-[11px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+          36.0% Allocated
+        </span>
+</div>
+<div>
+<p class="font-title-md text-title-md text-primary font-bold">Fixed Obligations &amp; Bills</p>
+<div class="flex items-baseline gap-1 mt-1">
+<span class="font-numeral-lg text-numeral-lg text-primary tracking-tight">1,150.00</span>
+<span class="font-title-lg text-title-lg text-secondary font-bold">₼</span>
+</div>
+</div>
+<div class="mt-space-lg pt-space-sm bg-surface-container-high/40 rounded-lg p-space-xs">
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Rent, Utilities, Fiber, Insurance</p>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full mt-2 overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 36%"></div>
+</div>
+</div>
+</div>
+<!-- Pillar 3: Protected Savings & Investments -->
+<div class="bg-surface-container-low rounded-xl p-space-lg shadow-sm flex flex-col justify-between relative overflow-hidden group hover:shadow-md transition-shadow"><div class="flex items-center justify-between mb-space-md"><span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Pillar III</span><span class="font-label-md text-[11px] font-bold px-2 py-0.5 rounded-full bg-secondary/15 text-secondary">26.5% Saved</span></div><div><p class="font-title-md text-title-md text-primary font-bold">Savings</p><div class="flex items-baseline gap-1 mt-1"><span class="font-numeral-lg text-numeral-lg text-primary tracking-tight">850.00</span><span class="font-title-lg text-title-lg text-secondary font-bold">₼</span></div></div><div class="mt-space-lg pt-space-sm bg-surface-container-high/40 rounded-lg p-space-xs"><p class="font-body-sm text-body-sm text-on-surface-variant truncate">Money set aside (26.5% chosen by you)</p><div class="w-full bg-surface-container-highest h-1.5 rounded-full mt-2 overflow-hidden"><div class="bg-secondary h-full rounded-full" style="width: 26.5%"></div></div></div></div>
+<!-- Pillar 4: Money to Live On (Discretionary) -->
+<div class="bg-surface-container-low rounded-xl p-space-lg shadow-sm flex flex-col justify-between relative overflow-hidden group hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between mb-space-md">
+<span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Pillar IV</span>
+<span class="font-label-md text-[11px] font-bold px-2 py-0.5 rounded-full bg-primary-container text-primary-fixed">
+          557.20 ₼ Unspent
+        </span>
+</div>
+<div>
+<p class="font-title-md text-title-md text-primary font-bold">Money to live on</p>
+<div class="flex items-baseline gap-1 mt-1">
+<span class="font-numeral-lg text-numeral-lg text-primary tracking-tight">1,200.00</span>
+<span class="font-title-lg text-title-lg text-secondary font-bold">₼</span>
+</div>
+</div>
+<div class="mt-space-lg pt-space-sm bg-surface-container-high/40 rounded-lg p-space-xs">
+<div class="flex justify-between text-[11px] font-label-md text-on-surface-variant mb-1">
+<span>Current Remaining</span>
+<span class="font-bold text-primary">46.4% available</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary-container h-full rounded-full" style="width: 53.6%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Visual Allocation Continuum Ribbon -->
+<div class="bg-surface-container-low rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-xs"><div><h2 class="font-title-lg text-title-lg text-primary font-bold">Plan breakdown</h2><p class="font-body-sm text-body-sm text-on-surface-variant">Total inflow of 3,200.00 ₼ categorized prior to first card swipe</p></div></div>
+<!-- Segmented Track -->
+<div class="flex flex-col gap-2">
+<div class="h-6 w-full rounded-xl overflow-hidden flex shadow-inner p-1 bg-surface-container-highest gap-1">
+<!-- Obligations -->
+<div class="h-full bg-primary rounded-lg transition-all hover:opacity-90 relative group flex items-center justify-center" style="width: 35.94%">
+<span class="font-label-md text-[10px] text-on-primary font-bold truncate px-1">Fixed Obligations (36%)</span>
+</div>
+<!-- Protected Savings -->
+<div class="h-full bg-secondary rounded-lg transition-all hover:opacity-90 relative group flex items-center justify-center" style="width: 26.56%"><span class="font-label-md text-[10px] text-surface-container-lowest font-bold truncate px-1">Savings (26.5%)</span></div>
+<!-- Living Discretionary -->
+<div class="h-full bg-surface-tint rounded-lg transition-all hover:opacity-90 relative group flex items-center justify-center" style="width: 37.5%">
+<span class="font-label-md text-[10px] text-surface-container-lowest font-bold truncate px-1">Discretionary Spend (37.5%)</span>
+</div>
+</div>
+<!-- Segment Labels Legend -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md pt-space-xs">
+<div class="flex items-center gap-space-xs">
+<div class="w-3 h-3 rounded-full bg-primary shrink-0"></div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">1,150.00 ₼ (36.0%)</span>
+<span class="font-body-sm text-[12px] text-on-surface-variant">Inflexible overhead &amp; contractuals</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs"><div class="w-3 h-3 rounded-full bg-secondary shrink-0"></div><div class="flex flex-col"><span class="font-label-md text-label-md text-on-surface font-semibold">850.00 ₼ (26.5%)</span><span class="font-body-sm text-[12px] text-on-surface-variant">Money set aside</span></div></div>
+<div class="flex items-center gap-space-xs">
+<div class="w-3 h-3 rounded-full bg-surface-tint shrink-0"></div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">1,200.00 ₼ (37.5%)</span>
+<span class="font-body-sm text-[12px] text-on-surface-variant">Liveable operating capital</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Active Spending Limits & Safety Cushion Split -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-gutter items-start">
+<!-- Category Limits Ledger (8 Cols) -->
+<div class="xl:col-span-8 bg-surface-container-low rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-space-xs">
+<h2 class="font-headline-sm text-headline-sm text-primary font-bold">Active Spending Limits</h2>
+<span class="font-label-md text-label-md px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-bold">6 Active</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-body-sm text-[12px] text-on-surface-variant">Sorted by Risk Priority</span>
+<span translate="no" class="notranslate material-symbols-outlined text-outline text-base">filter_list</span>
+</div>
+</div>
+<!-- Categories Stream -->
+<div class="flex flex-col gap-space-sm">
+<!-- 1. Entertainment & Social (DANGER RED OVER-LIMIT) -->
+<div class="bg-surface-container rounded-xl p-space-md hover:bg-surface-container-high transition-colors flex flex-col gap-space-xs">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-xl bg-error-container text-error flex items-center justify-center shrink-0" style="background-color: #e5b3b9;">
+<span translate="no" class="notranslate material-symbols-outlined text-xl">theater_comedy</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-primary font-bold">Entertainment &amp; Social</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Cinema, events, night gatherings</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<div class="flex items-baseline gap-1">
+<span class="font-numeral-md text-numeral-md text-error font-bold" style="color: rgb(139, 30, 45);">105.00</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">/ 100.00 ₼</span>
+</div>
+<span class="font-label-md text-[11px] font-bold px-2 py-0.5 rounded-full bg-error-container text-on-error-container mt-0.5" style="background-color: rgb(247, 230, 232); color: rgb(139, 30, 45);">
+                Over by 5.00 ₼ • Paused until payday
+              </span>
+</div>
+</div>
+<!-- Progress Bar with Overfill Stripe -->
+<div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden flex mt-1">
+<div class="bg-error h-full rounded-full" style="width: 100%; background-color: rgb(139, 30, 45);"></div>
+<div class="bg-error-container h-full w-[5%]" title="Over limit overflow" style="background-color: rgb(229, 179, 185);"></div>
+</div>
+</div>
+<!-- 2. Shopping & Apparel (WARNING HONEY) -->
+<div class="bg-surface-container rounded-xl p-space-md hover:bg-surface-container-high transition-colors flex flex-col gap-space-xs">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-xl bg-secondary-container text-secondary flex items-center justify-center shrink-0">
+<span translate="no" class="notranslate material-symbols-outlined text-xl">apparel</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-primary font-bold">Shopping &amp; Apparel</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Clothing, footwear &amp; lifestyle</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<div class="flex items-baseline gap-1">
+<span class="font-numeral-md text-numeral-md text-primary font-bold">140.00</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">/ 150.00 ₼</span>
+</div>
+<span class="font-label-md text-[11px] font-bold px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container mt-0.5">
+                10.00 ₼ remaining (93%)
+              </span>
+</div>
+</div>
+<div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden mt-1">
+<div class="bg-secondary h-full rounded-full transition-all" style="width: 93.3%"></div>
+</div>
+</div>
+<!-- 3. Cafe & Restaurants (WARNING HONEY) -->
+<div class="bg-surface-container rounded-xl p-space-md hover:bg-surface-container-high transition-colors flex flex-col gap-space-xs">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-xl bg-secondary-container text-secondary flex items-center justify-center shrink-0">
+<span translate="no" class="notranslate material-symbols-outlined text-xl">local_cafe</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-primary font-bold">Cafe &amp; Restaurants</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Espressos, lunches, team brunches</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<div class="flex items-baseline gap-1">
+<span class="font-numeral-md text-numeral-md text-primary font-bold">154.30</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">/ 175.00 ₼</span>
+</div>
+<span class="font-label-md text-[11px] font-bold px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container mt-0.5">
+                20.70 ₼ left • 12 days to go (87%)
+              </span>
+</div>
+</div>
+<div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden mt-1">
+<div class="bg-secondary h-full rounded-full transition-all" style="width: 88.1%"></div>
+</div>
+</div>
+<!-- 4. Groceries & Supermarket (SAFE GREEN) -->
+<div class="bg-surface-container rounded-xl p-space-md hover:bg-surface-container-high transition-colors flex flex-col gap-space-xs">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-xl bg-tertiary-fixed-dim/30 text-on-tertiary-container flex items-center justify-center shrink-0">
+<span translate="no" class="notranslate material-symbols-outlined text-xl">shopping_cart</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-primary font-bold">Groceries &amp; Supermarket</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Bravo, Bazarstore, organic provisions</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<div class="flex items-baseline gap-1">
+<span class="font-numeral-md text-numeral-md text-primary font-bold">244.20</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">/ 400.00 ₼</span>
+</div>
+<span class="font-label-md text-[11px] font-bold px-2 py-0.5 rounded-full bg-on-tertiary-container/15 text-on-tertiary-container mt-0.5">
+                155.80 ₼ left • Exactly on target
+              </span>
+</div>
+</div>
+<div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden mt-1">
+<div class="bg-on-tertiary-container h-full rounded-full transition-all" style="width: 61%"></div>
+</div>
+</div>
+<!-- 5. Transport & Fuel (SAFE GREEN) -->
+<div class="bg-surface-container rounded-xl p-space-md hover:bg-surface-container-high transition-colors flex flex-col gap-space-xs">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-xl bg-tertiary-fixed-dim/30 text-on-tertiary-container flex items-center justify-center shrink-0">
+<span translate="no" class="notranslate material-symbols-outlined text-xl">local_gas_station</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-primary font-bold">Transport &amp; Fuel</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Socar Premium 95, metro card, parking</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<div class="flex items-baseline gap-1">
+<span class="font-numeral-md text-numeral-md text-primary font-bold">48.00</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">/ 120.00 ₼</span>
+</div>
+<span class="font-label-md text-[11px] font-bold px-2 py-0.5 rounded-full bg-on-tertiary-container/15 text-on-tertiary-container mt-0.5">
+                72.00 ₼ left • Comfortable pace (40%)
+              </span>
+</div>
+</div>
+<div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden mt-1">
+<div class="bg-on-tertiary-container h-full rounded-full transition-all" style="width: 40%"></div>
+</div>
+</div>
+<!-- 6. Health & Personal Care (SAFE GREEN) -->
+<div class="bg-surface-container rounded-xl p-space-md hover:bg-surface-container-high transition-colors flex flex-col gap-space-xs">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-xl bg-tertiary-fixed-dim/30 text-on-tertiary-container flex items-center justify-center shrink-0">
+<span translate="no" class="notranslate material-symbols-outlined text-xl">health_and_safety</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-primary font-bold">Health &amp; Personal Care</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Apothecary, vitamins, groom</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<div class="flex items-baseline gap-1">
+<span class="font-numeral-md text-numeral-md text-primary font-bold">38.50</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">/ 100.00 ₼</span>
+</div>
+<span class="font-label-md text-[11px] font-bold px-2 py-0.5 rounded-full bg-on-tertiary-container/15 text-on-tertiary-container mt-0.5">
+                61.50 ₼ left (38.5%)
+              </span>
+</div>
+</div>
+<div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden mt-1">
+<div class="bg-on-tertiary-container h-full rounded-full transition-all" style="width: 38.5%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Adjust & Autonomous Controls (4 Cols) -->
+<div class="xl:col-span-4 flex flex-col gap-space-md">
+<!-- Add Limit & Config Panel -->
+<div class="bg-surface-container-low rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md uppercase tracking-wider text-secondary font-bold">Limit Settings &amp; Daily Pace</span>
+<span translate="no" class="notranslate material-symbols-outlined text-outline-variant text-base">admin_panel_settings</span>
+</div>
+<button class="w-full flex items-center justify-center gap-space-sm bg-primary text-on-primary hover:bg-primary-container px-space-md py-3 rounded-xl shadow-sm transition-colors">
+<span translate="no" class="notranslate material-symbols-outlined text-secondary text-xl">add_circle</span>
+<span class="font-title-md text-title-md font-bold">+ Add New Limit</span>
+</button>
+<!-- AI Cushion Card -->
+
+<!-- Weekly Burn Rate Vector -->
+<div class="bg-surface-container rounded-xl p-space-md flex flex-col gap-space-xs">
+<span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant font-bold">Pacing Diagnostic</span>
+<div class="flex items-center justify-between">
+<span class="font-headline-sm italic text-primary">46.43 ₼ / day</span>
+<span class="font-label-md text-label-md text-on-tertiary-container bg-tertiary-fixed-dim/20 px-2 py-0.5 rounded font-bold">Optimal</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            At your current run rate, discretionary capital will last until the 24th with approximately 48.00 ₼ surplus.
+          </p>
+</div>
+</div>
+<!-- Telegram Autonomous Sync Card -->
+
+</div>
+</div>
+</div>
+{% endblock %}

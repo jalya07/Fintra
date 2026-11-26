@@ -13,6 +13,28 @@ def startup():
     database.init_db()
 
 
+# ---------- Страницы ----------
+
 @app.get("/", response_class=HTMLResponse)
 async def overview(request: Request):
-    return templates.TemplateResponse(request, "overview.html", {})
+    return templates.TemplateResponse(request, "overview.html", {"active": "overview"})
+
+
+@app.get("/expenses", response_class=HTMLResponse)
+async def expenses(request: Request):
+    return templates.TemplateResponse(request, "expenses.html", {"active": "expenses"})
+
+
+@app.get("/plan", response_class=HTMLResponse)
+async def plan(request: Request):
+    return templates.TemplateResponse(request, "plan.html", {"active": "plan"})
+
+
+@app.get("/chat", response_class=HTMLResponse)
+async def chat(request: Request):
+    return templates.TemplateResponse(request, "chat.html", {"active": "chat"})
+
+
+@app.get("/security", response_class=HTMLResponse)
+async def security_page(request: Request):
+    return templates.TemplateResponse(request, "security.html", {"active": "security"})
