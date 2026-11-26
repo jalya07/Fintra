@@ -1,0 +1,667 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "tertiary": "#000c0a", "on-primary-container": "#7687b2", "inverse-on-surface": "#fcefd9", "error": "#ba1a1a", "primary-fixed": "#d9e2ff", "on-secondary-fixed-variant": "#584400", "surface-variant": "#ede1cb", "on-surface": "#211b0d", "error-container": "#ffdad6", "outline": "#75777f", "background": "#fff8f1", "primary-container": "#0b1f44", "surface-tint": "#4d5e86", "inverse-surface": "#363021", "tertiary-container": "#002621", "on-surface-variant": "#44464e", "on-tertiary": "#ffffff", "surface-container-lowest": "#ffffff", "primary": "#00081f", "on-tertiary-container": "#22988a", "surface-container": "#f9edd6", "inverse-primary": "#b5c6f4", "on-tertiary-fixed-variant": "#005048", "on-secondary-fixed": "#241a00", "surface-container-low": "#fff2dc", "on-background": "#211b0d", "surface": "#fff8f1", "tertiary-fixed-dim": "#6fd8c8", "primary-fixed-dim": "#b5c6f4", "on-tertiary-fixed": "#00201c", "surface-container-highest": "#ede1cb", "on-error-container": "#93000a", "tertiary-fixed": "#8cf5e4", "secondary-fixed": "#ffe08e", "secondary-fixed-dim": "#ecc246", "secondary": "#755b00", "secondary-container": "#fed255", "on-secondary": "#ffffff", "outline-variant": "#c5c6cf", "surface-container-high": "#f3e7d0", "on-secondary-container": "#735a00", "surface-bright": "#fff8f1", "on-primary": "#ffffff", "on-error": "#ffffff", "surface-dim": "#e5d9c3", "on-primary-fixed": "#051a3f", "on-primary-fixed-variant": "#35466d" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "gutter-lg": "2rem", "space-xl": "2.5rem", "space-md": "1rem", "margin-mobile": "1rem", "margin": "2rem", "gutter-sm": "1rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "space-lg": "1.5rem", "gutter": "1.5rem", "margin-desktop": "2.5rem" }, "fontFamily": { "headline-xl-mobile": ["Playfair Display"], "headline-xl": ["Playfair Display"], "label-lg": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "headline-lg": ["Playfair Display"], "numeral-lg": ["Plus Jakarta Sans"], "headline-sm": ["Playfair Display"], "body-md": ["Plus Jakarta Sans"], "title-md": ["Plus Jakarta Sans"], "title-lg": ["Plus Jakarta Sans"], "numeral-md": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Playfair Display"], "headline-md": ["Playfair Display"] }, "fontSize": { "headline-xl-mobile": ["2rem", { "lineHeight": "2.5rem", "letterSpacing": "-0.01em", "fontWeight": "600" }], "headline-xl": ["3rem", { "lineHeight": "3.5rem", "letterSpacing": "-0.02em", "fontWeight": "600" }], "label-lg": ["0.875rem", { "lineHeight": "1.25rem", "letterSpacing": "0.02em", "fontWeight": "600" }], "label-md": ["0.75rem", { "lineHeight": "1rem", "letterSpacing": "0.05em", "fontWeight": "600" }], "body-sm": ["0.8125rem", { "lineHeight": "1.25rem", "fontWeight": "400" }], "body-lg": ["1.125rem", { "lineHeight": "1.75rem", "fontWeight": "400" }], "headline-lg": ["2.25rem", { "lineHeight": "2.75rem", "letterSpacing": "-0.015em", "fontWeight": "600" }], "numeral-lg": ["2rem", { "lineHeight": "2.25rem", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-sm": ["1.25rem", { "lineHeight": "1.75rem", "fontWeight": "500" }], "body-md": ["0.9375rem", { "lineHeight": "1.5rem", "fontWeight": "400" }], "title-md": ["1rem", { "lineHeight": "1.5rem", "fontWeight": "600" }], "title-lg": ["1.125rem", { "lineHeight": "1.625rem", "fontWeight": "600" }], "numeral-md": ["1.25rem", { "lineHeight": "1.5rem", "fontWeight": "600" }], "headline-lg-mobile": ["1.75rem", { "lineHeight": "2.25rem", "letterSpacing": "-0.01em", "fontWeight": "600" }], "headline-md": ["1.5rem", { "lineHeight": "2rem", "fontWeight": "500" }] } } } }</script></head><body class="bg-surface font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-screen w-72 bg-primary-container text-on-primary z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col px-space-lg pt-space-lg"><div class="flex items-center gap-space-sm"><img alt="Fintra Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ALJJyrBH5QBj_ljWN4G2cBLSwmiEeVDmMKXqnKGVqKA-BSQg4xDRelUp40s1ikruOuNzdpGIgmIDCez7_jafTV-9EzJtgs0yUMLjO1YstFO64_Snl6QmjlTmCT9nNF8oJawJGZJ860mCldy7MUeyMqM57fo-wYX7mzTIgELkROqzO_DZfJiZVt5_tQjobgYwQEO5IuH020Q4XFbEyVyjgxoCkCcjDQECWEhP4dKUzKYSxl4n"><div class="flex flex-col"><span class="font-headline-sm text-headline-sm font-semibold tracking-tight text-on-primary">Fintra</span><span class="font-label-md text-label-md text-secondary-fixed tracking-wider uppercase">Count. Plan. Protect.</span></div></div><div class="mt-space-lg p-space-sm rounded-xl bg-primary flex items-center justify-between shadow-inner"><div class="flex items-center gap-space-xs overflow-hidden"><span class="w-2 h-2 rounded-full bg-on-tertiary-container animate-pulse shrink-0"></span><span class="font-label-md text-label-md text-primary-fixed truncate">@myfintra_bot</span></div><span class="font-label-md text-label-md text-secondary-fixed bg-secondary/30 px-space-xs py-0.5 rounded">Active</span></div><nav class="mt-space-lg flex flex-col gap-space-xs" data-active-classes="bg-primary text-secondary-fixed font-semibold rounded-xl"><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-xl text-on-primary-container hover:bg-primary hover:text-on-primary transition-colors" data-path="overview" href="#"><span class="material-symbols-outlined text-xl">dashboard</span><span class="font-title-md text-title-md">Overview</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-sm py-space-sm transition-colors bg-primary text-secondary-fixed font-semibold rounded-xl" data-path="expenses" href="#"><span class="material-symbols-outlined text-xl">receipt_long</span><span class="font-title-md text-title-md">Expenses</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-xl text-on-primary-container hover:bg-primary hover:text-on-primary transition-colors" data-path="plan-and-limits" href="#"><span class="material-symbols-outlined text-xl">tune</span><span class="font-title-md text-title-md">Plan &amp; Limits</span></a><a class="flex items-center justify-between px-space-sm py-space-sm rounded-xl text-on-primary-container hover:bg-primary hover:text-on-primary transition-colors" data-path="chat" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-xl">smart_toy</span><span class="font-title-md text-title-md">Chat</span></div><span class="font-label-md text-label-md bg-secondary text-primary px-space-xs py-0.5 rounded-full font-bold">AI Online</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-xl text-on-primary-container hover:bg-primary hover:text-on-primary transition-colors" data-path="security" href="#"><span class="material-symbols-outlined text-xl">verified_user</span><span class="font-title-md text-title-md">Security</span></a></nav></div><div class="p-space-lg mt-auto"><div class="p-space-sm rounded-xl bg-primary flex items-center justify-between"><div class="flex items-center gap-space-sm"><div class="w-8 h-8 rounded-full bg-secondary-container text-primary font-bold text-xs flex items-center justify-center shrink-0">TU</div><div class="flex flex-col"><span class="font-title-md text-title-md text-on-primary leading-none">Telegram user</span></div></div><button aria-label="Log Out" class="p-space-xs text-on-primary-container hover:text-secondary-fixed transition-colors"><span class="material-symbols-outlined text-lg">logout</span></button></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/80 backdrop-blur-xl z-40 flex items-center justify-between px-gutter-lg shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm italic text-on-surface">Fintra</span><span class="material-symbols-outlined text-outline text-sm">chevron_right</span><span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant font-semibold">Expenses</span></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs bg-surface-container-high px-space-sm py-1.5 rounded-lg shadow-sm"><span class="font-label-md text-label-md font-bold text-on-surface-variant">AZN</span><span class="font-title-md text-title-md font-semibold text-secondary">₼</span></div><button class="flex items-center gap-space-xs bg-surface-container px-space-sm py-1.5 rounded-lg text-on-surface hover:bg-surface-container-highest transition-colors shadow-sm"><span class="w-2 h-2 rounded-full bg-on-tertiary-container shrink-0"></span><span class="font-label-md text-label-md font-semibold">Telegram Synced</span></button><div class="flex items-center bg-surface-container-high p-0.5 rounded-lg shadow-sm"><button class="px-space-xs py-1 rounded font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors">AZ</button><button class="px-space-xs py-1 rounded font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors">RU</button><button class="px-space-xs py-1 rounded-md font-label-md text-label-md bg-secondary text-primary font-bold shadow-sm">EN</button></div><button aria-label="Notifications" class="relative p-2 text-on-surface-variant hover:text-on-surface transition-colors"><span class="material-symbols-outlined">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 bg-secondary rounded-full ring-2 ring-surface"></span></button><img alt="Profile" class="w-8 h-8 rounded-full object-cover shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcek4-F3oAbuD1SBsYrFFyzVp2iumYkmIWaRhchYnbaCmSHCSipbfrFqSplok_ThSW1cC_9J1NsK-bs9sFT2xBY6SiasUgPWqDrUkuOG_h49ByhsjDkoYEIGTKsbFPpq31p-txPf3-jar9ih60H_gpquk2stdav96U_LYZa3E9B5lI7W2kB-iiRaNSbSOW6IsuIKr8hxBECmdL3At18MKJeiuoQr7Kb7S7lToCUD4"></div></header><main class="w-full pt-16 bg-surface px-margin-desktop py-space-lg"><div class="flex flex-col w-full pb-space-xl">
+<!-- Top Decorative Ambient Glow -->
+<div class="relative w-full">
+<div class="absolute -top-12 right-12 w-96 h-96 rounded-full bg-secondary-fixed/20 blur-3xl pointer-events-none -z-10"></div>
+<div class="absolute top-24 left-1/3 w-80 h-80 rounded-full bg-surface-container-high/40 blur-2xl pointer-events-none -z-10"></div>
+<!-- Editorial Header & Summary Row -->
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-lg mb-space-xl">
+<div class="flex flex-col max-w-2xl">
+<div class="flex items-center gap-space-xs mb-space-xs"><span class="font-label-md text-label-md uppercase tracking-widest text-secondary font-bold">Expense Activity</span></div>
+<h1 class="font-headline-lg text-headline-lg text-primary tracking-tight font-semibold">Expense Ledger</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1 leading-relaxed">
+          Synced continuously from Telegram voice notes, receipt photos, and quick texts with high-conviction AI categorization.
+        </p>
+</div>
+<!-- Action Buttons & Export Flow -->
+<div class="flex flex-wrap items-center gap-space-sm shrink-0">
+
+<button class="flex items-center gap-space-xs px-space-lg py-2.5 rounded-lg bg-secondary-container text-primary font-bold shadow-md hover:shadow-lg hover:bg-secondary-fixed transition-all duration-200 active:scale-95" id="addManualBtn">
+<span class="material-symbols-outlined text-xl">add</span>
+<span class="font-title-md text-title-md">+ Manual Expense</span>
+</button>
+</div>
+</div>
+<!-- Quick Stats Cards Strip -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-space-xl">
+<!-- Stat 1 -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container-low p-space-md shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Ledger Density</span>
+<span class="p-2 rounded-lg bg-surface-container text-primary material-symbols-outlined text-lg">receipt_long</span>
+</div>
+<div class="mt-space-sm flex items-baseline gap-2">
+<span class="font-numeral-lg text-numeral-lg text-primary">48</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Entries in October</span>
+</div>
+<div class="mt-2 flex items-center gap-1.5 text-secondary font-semibold font-label-md text-label-md">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>+8 entries vs last week</span>
+</div>
+</div>
+<!-- Stat 2 (Accent Card) -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container-low p-space-md shadow-sm hover:shadow-md transition-shadow">
+<div class="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-secondary-fixed/20 pointer-events-none"></div>
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Total Disbursed</span>
+<span class="p-2 rounded-lg bg-secondary-container/60 text-secondary material-symbols-outlined text-lg">account_balance_wallet</span>
+</div>
+<div class="mt-space-sm flex items-baseline gap-1">
+<span class="font-numeral-lg text-numeral-lg text-primary tracking-tight">642.80</span>
+<span class="font-headline-sm text-headline-sm text-secondary font-serif">₼</span>
+</div>
+<div class="mt-2 flex items-center justify-between">
+<div class="w-full bg-surface-container-high rounded-full h-1.5 max-w-[120px] overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 42%;"></div>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">42% of monthly cap</span>
+</div>
+</div>
+<!-- Stat 3 -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container-low p-space-md shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Burn Velocity</span>
+<span class="p-2 rounded-lg bg-surface-container text-primary material-symbols-outlined text-lg">speed</span>
+</div>
+<div class="mt-space-sm flex items-baseline gap-1">
+<span class="font-numeral-lg text-numeral-lg text-primary">49.44</span>
+<span class="font-headline-sm text-headline-sm text-on-surface-variant font-serif">₼</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant ml-1">/ day avg</span>
+</div>
+<div class="mt-2 flex items-center gap-1.5 text-on-tertiary-container font-semibold font-label-md text-label-md">
+<span class="material-symbols-outlined text-sm">shield</span>
+<span>14% below conservative projection</span>
+</div>
+</div>
+</div>
+<!-- Filter & Search Controls Bar -->
+<div class="rounded-xl bg-surface-container-low p-space-md shadow-sm mb-space-lg flex flex-col gap-space-md">
+<!-- Top Line: Search and Date Range Pills -->
+<div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-space-md">
+<!-- Search Input -->
+<div class="relative flex-1 max-w-md">
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-lg">search</span>
+<input class="w-full pl-10 pr-4 py-2 rounded-lg bg-surface-container-lowest text-primary font-body-md text-body-md placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-secondary/40 shadow-inner" id="ledgerSearch" placeholder="Search merchant, note, or amount..." type="text">
+<button class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-primary" id="clearSearch">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+</div>
+<!-- Period Selectors -->
+<div class="flex items-center gap-1 overflow-x-auto pb-1 lg:pb-0 scrollbar-none" id="periodFilter">
+<button class="px-space-sm py-1.5 rounded-md font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors shrink-0">All Time</button>
+<button class="px-space-sm py-1.5 rounded-md font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors shrink-0">Last 7 Days</button>
+<button class="px-space-sm py-1.5 rounded-md font-label-md text-label-md bg-secondary-container text-primary font-bold shadow-sm shrink-0">This Month</button>
+<button class="px-space-sm py-1.5 rounded-md font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors shrink-0">September</button>
+<button class="flex items-center gap-1 px-space-sm py-1.5 rounded-md font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors shrink-0">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+            Custom Range
+          </button>
+</div>
+</div>
+<!-- Bottom Line: Category & Source Filters -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-sm pt-space-xs">
+<!-- Category Filter -->
+<div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0" id="categoryFilter">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mr-1 hidden sm:inline">Category:</span>
+<button class="cat-pill active px-3 py-1 rounded-full font-label-md text-label-md bg-primary text-on-primary font-semibold transition-all" data-cat="all">All</button>
+<button class="cat-pill px-3 py-1 rounded-full font-label-md text-label-md bg-surface-container text-on-surface hover:bg-surface-container-high transition-all" data-cat="cafe">☕ Cafe</button>
+<button class="cat-pill px-3 py-1 rounded-full font-label-md text-label-md bg-surface-container text-on-surface hover:bg-surface-container-high transition-all" data-cat="groceries">🛒 Groceries</button>
+<button class="cat-pill px-3 py-1 rounded-full font-label-md text-label-md bg-surface-container text-on-surface hover:bg-surface-container-high transition-all" data-cat="transport">🚕 Transport</button>
+<button class="cat-pill px-3 py-1 rounded-full font-label-md text-label-md bg-surface-container text-on-surface hover:bg-surface-container-high transition-all" data-cat="entertainment">🎬 Entertainment</button>
+<button class="cat-pill px-3 py-1 rounded-full font-label-md text-label-md bg-surface-container text-on-surface hover:bg-surface-container-high transition-all" data-cat="health">💊 Health</button>
+</div>
+<!-- Ingestion Source Filter -->
+<div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0" id="sourceFilter">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mr-1 hidden sm:inline">Channel:</span>
+<button class="source-pill active px-2.5 py-1 rounded-lg font-label-md text-label-md bg-surface-container-high text-primary font-bold transition-all shadow-sm" data-source="all">All</button>
+<button class="source-pill px-2.5 py-1 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all flex items-center gap-1" data-source="text">
+<span>💬</span> Text
+          </button>
+<button class="source-pill px-2.5 py-1 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all flex items-center gap-1" data-source="photo"><span>📸</span> Receipt photo</button>
+<button class="source-pill px-2.5 py-1 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all flex items-center gap-1" data-source="voice">
+<span>🎙️</span> Voice Audio
+          </button>
+</div>
+</div>
+</div>
+<!-- Main Rich Ledger Table Card -->
+<div class="rounded-xl bg-surface-container-low shadow-sm overflow-hidden mb-space-lg">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse" id="ledgerTable">
+<thead>
+<tr class="bg-surface-container text-on-surface-variant">
+<th class="py-3 px-space-md font-label-md text-label-md uppercase tracking-wider font-semibold" scope="col">Date &amp; Time</th>
+<th class="py-3 px-space-md font-label-md text-label-md uppercase tracking-wider font-semibold" scope="col">AI Ingestion Channel</th>
+<th class="py-3 px-space-md font-label-md text-label-md uppercase tracking-wider font-semibold" scope="col">Merchant &amp; Context</th>
+<th class="py-3 px-space-md font-label-md text-label-md uppercase tracking-wider font-semibold" scope="col">Category</th>
+<th class="py-3 px-space-md font-label-md text-label-md uppercase tracking-wider font-semibold" scope="col">Settlement Account</th>
+<th class="py-3 px-space-md font-label-md text-label-md uppercase tracking-wider font-semibold text-right" scope="col">Debit</th>
+<th class="py-3 px-space-md font-label-md text-label-md uppercase tracking-wider font-semibold text-center" scope="col">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<!-- Row 1: Paul Bakery -->
+<tr class="ledger-row hover:bg-surface-container/60 transition-colors group" data-amount="7.50" data-category="cafe" data-merchant="Paul Bakery Morning coffee croissant client" data-source="text">
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-primary font-semibold">Oct 13</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">09:40 AM</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container text-primary font-label-md text-label-md">
+<span>💬</span>
+<span class="font-medium">Telegram Text</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col max-w-sm">
+<span class="font-title-md text-title-md text-primary font-semibold group-hover:text-secondary transition-colors">Paul Bakery Azerbaijan</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Morning coffee &amp; croissant with corporate client</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-secondary-fixed/40 text-on-secondary-fixed-variant font-label-md text-label-md font-semibold">
+                  ☕ Cafe &amp; Dining
+                </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary shrink-0"></span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Pasha Bank Black</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant font-mono">••4092</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-right whitespace-nowrap">
+<span class="font-headline-sm text-headline-sm text-primary font-semibold tracking-tight">-7.50</span>
+<span class="font-title-md text-title-md text-secondary font-serif ml-0.5">₼</span>
+</td>
+<td class="py-3.5 px-space-md text-center whitespace-nowrap">
+<div class="flex items-center justify-center gap-1">
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="View in Telegram">
+<span class="material-symbols-outlined text-base">forum</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="Options">
+<span class="material-symbols-outlined text-base">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2: Bravo Supermarket -->
+<tr class="ledger-row hover:bg-surface-container/60 transition-colors group" data-amount="64.20" data-category="groceries" data-merchant="Bravo Supermarket Ganjlik receipt OCR" data-source="photo">
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-primary font-semibold">Oct 12</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">07:15 PM</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-label-md text-label-md"><span>📸</span><span class="font-semibold">Receipt photo</span></div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col max-w-sm">
+<span class="font-title-md text-title-md text-primary font-semibold group-hover:text-secondary transition-colors">Bravo Supermarket Ganjlik</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Organic produce, pantry staples, sparkling mineral water</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-surface-container text-on-surface font-label-md text-label-md font-semibold">
+                  🛒 Groceries
+                </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-surface-tint shrink-0"></span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">ABB Platinum</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant font-mono">••1184</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-right whitespace-nowrap">
+<span class="font-headline-sm text-headline-sm text-primary font-semibold tracking-tight">-64.20</span>
+<span class="font-title-md text-title-md text-secondary font-serif ml-0.5">₼</span>
+</td>
+<td class="py-3.5 px-space-md text-center whitespace-nowrap">
+<div class="flex items-center justify-center gap-1">
+<button class="p-1.5 text-secondary hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="View Scanned Receipt">
+<span class="material-symbols-outlined text-base">receipt</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="Options">
+<span class="material-symbols-outlined text-base">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3: Mangal Steak House (Voice) -->
+<tr class="ledger-row hover:bg-surface-container/60 transition-colors group" data-amount="12.00" data-category="cafe" data-merchant="Mangal Steak House Port Baku lunch voice transcribed" data-source="voice">
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-primary font-semibold">Oct 12</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">02:02 PM</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-fixed/50 text-on-secondary-fixed font-label-md text-label-md">
+<span>🎙️</span>
+<span class="font-semibold">Voice Audio</span>
+<span class="text-xs italic text-secondary">0:04s</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col max-w-sm">
+<span class="font-title-md text-title-md text-primary font-semibold group-hover:text-secondary transition-colors">Mangal Steak House</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant italic truncate">"Spent 12 manats on lunch near Port Baku"</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-secondary-fixed/40 text-on-secondary-fixed-variant font-label-md text-label-md font-semibold">
+                  ☕ Cafe &amp; Dining
+                </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary shrink-0"></span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Pasha Bank Black</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant font-mono">••4092</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-right whitespace-nowrap">
+<span class="font-headline-sm text-headline-sm text-primary font-semibold tracking-tight">-12.00</span>
+<span class="font-title-md text-title-md text-secondary font-serif ml-0.5">₼</span>
+</td>
+<td class="py-3.5 px-space-md text-center whitespace-nowrap">
+<div class="flex items-center justify-center gap-1">
+<button class="p-1.5 text-secondary hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="Play Audio Snippet">
+<span class="material-symbols-outlined text-base">play_circle</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="Options">
+<span class="material-symbols-outlined text-base">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4: Bolt Azerbaijan -->
+<tr class="ledger-row hover:bg-surface-container/60 transition-colors group" data-amount="4.80" data-category="transport" data-merchant="Bolt Azerbaijan ride Nizami St" data-source="text">
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-primary font-semibold">Oct 12</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">08:50 AM</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container text-primary font-label-md text-label-md">
+<span>💬</span>
+<span class="font-medium">Telegram Text</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col max-w-sm">
+<span class="font-title-md text-title-md text-primary font-semibold group-hover:text-secondary transition-colors">Bolt Azerbaijan</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Premium ride to Landmark Business Center</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-surface-container-high text-on-surface font-label-md text-label-md font-semibold">
+                  🚕 Transport
+                </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary shrink-0"></span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Pasha Bank Black</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant font-mono">••4092</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-right whitespace-nowrap">
+<span class="font-headline-sm text-headline-sm text-primary font-semibold tracking-tight">-4.80</span>
+<span class="font-title-md text-title-md text-secondary font-serif ml-0.5">₼</span>
+</td>
+<td class="py-3.5 px-space-md text-center whitespace-nowrap">
+<div class="flex items-center justify-center gap-1">
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="View in Telegram">
+<span class="material-symbols-outlined text-base">forum</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="Options">
+<span class="material-symbols-outlined text-base">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 5: CinemaPlus 28 Mall -->
+<tr class="ledger-row hover:bg-surface-container/60 transition-colors group" data-amount="32.00" data-category="entertainment" data-merchant="CinemaPlus 28 Mall tickets cash reserve" data-source="photo">
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-primary font-semibold">Oct 11</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">09:00 PM</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-label-md text-label-md"><span>📸</span><span class="font-semibold">Receipt photo</span></div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col max-w-sm">
+<span class="font-title-md text-title-md text-primary font-semibold group-hover:text-secondary transition-colors">CinemaPlus 28 Mall</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">VIP Platinum Hall, 2 admissions + refreshment set</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-surface-container text-on-surface font-label-md text-label-md font-semibold">
+                  🎬 Entertainment
+                </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary shrink-0"></span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Cash Reserve</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant italic">Wallet #1</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-right whitespace-nowrap">
+<span class="font-headline-sm text-headline-sm text-primary font-semibold tracking-tight">-32.00</span>
+<span class="font-title-md text-title-md text-secondary font-serif ml-0.5">₼</span>
+</td>
+<td class="py-3.5 px-space-md text-center whitespace-nowrap">
+<div class="flex items-center justify-center gap-1">
+<button class="p-1.5 text-secondary hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="View Scan">
+<span class="material-symbols-outlined text-base">receipt</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="Options">
+<span class="material-symbols-outlined text-base">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 6: Zeytun Aptek -->
+<tr class="ledger-row hover:bg-surface-container/60 transition-colors group" data-amount="18.50" data-category="health" data-merchant="Zeytun Aptek vitamins health wellness" data-source="text">
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-primary font-semibold">Oct 10</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">02:20 PM</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container text-primary font-label-md text-label-md">
+<span>💬</span>
+<span class="font-medium">Telegram Text</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col max-w-sm">
+<span class="font-title-md text-title-md text-primary font-semibold group-hover:text-secondary transition-colors">Zeytun Aptek</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Daily multivitamin complexes &amp; electrolytes</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-surface-container text-on-surface font-label-md text-label-md font-semibold">
+                  💊 Health
+                </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-surface-tint shrink-0"></span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">ABB Platinum</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant font-mono">••1184</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-right whitespace-nowrap">
+<span class="font-headline-sm text-headline-sm text-primary font-semibold tracking-tight">-18.50</span>
+<span class="font-title-md text-title-md text-secondary font-serif ml-0.5">₼</span>
+</td>
+<td class="py-3.5 px-space-md text-center whitespace-nowrap">
+<div class="flex items-center justify-center gap-1">
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="View in Telegram">
+<span class="material-symbols-outlined text-base">forum</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="Options">
+<span class="material-symbols-outlined text-base">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 7: SOCAR Petroleum (Voice) -->
+<tr class="ledger-row hover:bg-surface-container/60 transition-colors group" data-amount="45.00" data-category="transport" data-merchant="SOCAR Petroleum Babek avenue fuel tank 45 manat" data-source="voice">
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-primary font-semibold">Oct 09</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">06:30 PM</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-fixed/50 text-on-secondary-fixed font-label-md text-label-md">
+<span>🎙️</span>
+<span class="font-semibold">Voice Audio</span>
+<span class="text-xs italic text-secondary">0:06s</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col max-w-sm">
+<span class="font-title-md text-title-md text-primary font-semibold group-hover:text-secondary transition-colors">SOCAR Petroleum</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant italic truncate">"Filled tank at SOCAR Babek avenue 45 manat"</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-surface-container-high text-on-surface font-label-md text-label-md font-semibold">
+                  ⛽ Transport
+                </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-surface-tint shrink-0"></span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">ABB Platinum</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant font-mono">••1184</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-right whitespace-nowrap">
+<span class="font-headline-sm text-headline-sm text-primary font-semibold tracking-tight">-45.00</span>
+<span class="font-title-md text-title-md text-secondary font-serif ml-0.5">₼</span>
+</td>
+<td class="py-3.5 px-space-md text-center whitespace-nowrap">
+<div class="flex items-center justify-center gap-1">
+<button class="p-1.5 text-secondary hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="Play Audio Recording">
+<span class="material-symbols-outlined text-base">play_circle</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="Options">
+<span class="material-symbols-outlined text-base">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 8: Entrée Baku -->
+<tr class="ledger-row hover:bg-surface-container/60 transition-colors group" data-amount="11.20" data-category="cafe" data-merchant="Entrée Baku breakfast meeting pastry" data-source="text">
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-primary font-semibold">Oct 08</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">11:15 AM</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container text-primary font-label-md text-label-md">
+<span>💬</span>
+<span class="font-medium">Telegram Text</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col max-w-sm">
+<span class="font-title-md text-title-md text-primary font-semibold group-hover:text-secondary transition-colors">Entrée Baku</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Artisanal sourdough toast &amp; flat white</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-secondary-fixed/40 text-on-secondary-fixed-variant font-label-md text-label-md font-semibold">
+                  ☕ Cafe &amp; Dining
+                </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary shrink-0"></span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Pasha Bank Black</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant font-mono">••4092</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-right whitespace-nowrap">
+<span class="font-headline-sm text-headline-sm text-primary font-semibold tracking-tight">-11.20</span>
+<span class="font-title-md text-title-md text-secondary font-serif ml-0.5">₼</span>
+</td>
+<td class="py-3.5 px-space-md text-center whitespace-nowrap">
+<div class="flex items-center justify-center gap-1">
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="View in Telegram">
+<span class="material-symbols-outlined text-base">forum</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="Options">
+<span class="material-symbols-outlined text-base">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- No Results State (Hidden by default) -->
+<div class="hidden p-space-xl text-center flex-col items-center justify-center" id="noResults">
+<span class="material-symbols-outlined text-outline text-4xl mb-2">content_paste_off</span>
+<span class="font-title-lg text-title-lg text-primary font-semibold">No matching entries found</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-1">Try relaxing your search terms or active category filters.</span>
+<button class="mt-space-md px-space-md py-1.5 rounded-lg bg-surface-container text-primary font-title-md text-title-md hover:bg-surface-container-high transition-colors" id="resetFilters">Reset All Filters</button>
+</div>
+<!-- Table Footer & Pagination -->
+<div class="p-space-md bg-surface-container/30 border-t border-surface-container flex flex-col sm:flex-row items-center justify-between gap-space-md">
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md text-on-surface-variant" id="paginationNotice">Showing 1-8 of 48 transactions</span>
+<span class="text-outline-variant">•</span>
+<span class="font-label-md text-label-md text-secondary font-medium">Baku Time (GMT+4)</span>
+</div>
+<div class="flex items-center gap-1">
+<button class="p-1.5 rounded-lg text-outline-variant hover:text-primary hover:bg-surface-container transition-colors disabled:opacity-40" disabled="">
+<span class="material-symbols-outlined text-lg">first_page</span>
+</button>
+<button class="p-1.5 rounded-lg text-outline-variant hover:text-primary hover:bg-surface-container transition-colors disabled:opacity-40" disabled="">
+<span class="material-symbols-outlined text-lg">chevron_left</span>
+</button>
+<span class="px-3 py-1 rounded-md bg-surface-container text-primary font-label-md text-label-md font-bold">1</span>
+<button class="px-3 py-1 rounded-md text-on-surface-variant hover:bg-surface-container transition-colors font-label-md text-label-md">2</button>
+<button class="px-3 py-1 rounded-md text-on-surface-variant hover:bg-surface-container transition-colors font-label-md text-label-md">3</button>
+<span class="px-1 text-on-surface-variant text-xs">...</span>
+<button class="px-3 py-1 rounded-md text-on-surface-variant hover:bg-surface-container transition-colors font-label-md text-label-md">6</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-lg">chevron_right</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-lg">last_page</span>
+</button>
+</div>
+</div>
+</div>
+<!-- AI Intelligence Insight Banner -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container-low p-space-lg shadow-sm border-l-4 border-secondary flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md"><div class="flex items-start gap-space-md max-w-3xl"><div class="w-10 h-10 rounded-full bg-secondary/15 flex items-center justify-center shrink-0 mt-0.5"><span class="material-symbols-outlined text-secondary text-2xl">lightbulb</span></div><div class="flex flex-col"><div class="flex items-center gap-2"><span class="font-title-md text-title-md font-semibold text-primary">Helpful Tip</span></div><p class="font-body-md text-body-md text-on-surface-variant mt-1 leading-relaxed">Log expenses anytime by sending a quick message, voice note, or receipt photo directly to <span class="font-semibold text-primary">@myfintra_bot</span>.</p></div></div><div class="flex items-center gap-space-sm shrink-0 self-end md:self-center"><a class="flex items-center gap-space-xs px-space-md py-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-primary font-label-md text-label-md font-semibold transition-all" href="#"><span class="material-symbols-outlined text-lg">chat</span><span>Open Chat</span></a></div></div>
+</div>
+</div>
+<script>
+  (function initLedgerInteractions() {
+    const searchInput = document.getElementById('ledgerSearch');
+    const clearBtn = document.getElementById('clearSearch');
+    const rows = Array.from(document.querySelectorAll('.ledger-row'));
+    const noResults = document.getElementById('noResults');
+    const paginationNotice = document.getElementById('paginationNotice');
+    const catPills = Array.from(document.querySelectorAll('.cat-pill'));
+    const sourcePills = Array.from(document.querySelectorAll('.source-pill'));
+    const resetBtn = document.getElementById('resetFilters');
+
+    let currentCategory = 'all';
+    let currentSource = 'all';
+    let currentQuery = '';
+
+    function applyFilters() {
+      let visibleCount = 0;
+
+      rows.forEach(row => {
+        const cat = row.getAttribute('data-category');
+        const src = row.getAttribute('data-source');
+        const merchant = (row.getAttribute('data-merchant') || '').toLowerCase();
+        const amount = (row.getAttribute('data-amount') || '').toLowerCase();
+
+        const matchesCat = (currentCategory === 'all' || cat === currentCategory);
+        const matchesSrc = (currentSource === 'all' || src === currentSource);
+        const matchesQuery = !currentQuery || merchant.includes(currentQuery) || amount.includes(currentQuery);
+
+        if (matchesCat && matchesSrc && matchesQuery) {
+          row.style.display = '';
+          visibleCount++;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      if (visibleCount === 0) {
+        noResults.classList.remove('hidden');
+        noResults.classList.add('flex');
+        paginationNotice.innerText = 'Showing 0 of 48 transactions';
+      } else {
+        noResults.classList.add('hidden');
+        noResults.classList.remove('flex');
+        paginationNotice.innerText = `Showing 1-${visibleCount} of 48 transactions`;
+      }
+    }
+
+    // Search Input
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        currentQuery = e.target.value.trim().toLowerCase();
+        if (currentQuery.length > 0) {
+          clearBtn.classList.remove('hidden');
+        } else {
+          clearBtn.classList.add('hidden');
+        }
+        applyFilters();
+      });
+    }
+
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        currentQuery = '';
+        clearBtn.classList.add('hidden');
+        applyFilters();
+      });
+    }
+
+    // Category Selection
+    catPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        catPills.forEach(p => {
+          p.classList.remove('bg-primary', 'text-on-primary', 'font-semibold');
+          p.classList.add('bg-surface-container', 'text-on-surface');
+        });
+        pill.classList.remove('bg-surface-container', 'text-on-surface');
+        pill.classList.add('bg-primary', 'text-on-primary', 'font-semibold');
+        currentCategory = pill.getAttribute('data-cat');
+        applyFilters();
+      });
+    });
+
+    // Source Selection
+    sourcePills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        sourcePills.forEach(p => {
+          p.classList.remove('bg-surface-container-high', 'text-primary', 'font-bold', 'shadow-sm');
+          p.classList.add('text-on-surface-variant');
+        });
+        pill.classList.remove('text-on-surface-variant');
+        pill.classList.add('bg-surface-container-high', 'text-primary', 'font-bold', 'shadow-sm');
+        currentSource = pill.getAttribute('data-source');
+        applyFilters();
+      });
+    });
+
+    // Reset Filters Button
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        currentQuery = '';
+        clearBtn.classList.add('hidden');
+        catPills[0].click();
+        sourcePills[0].click();
+      });
+    }
+  })();
+</script></main></div>
+
+</body></html>

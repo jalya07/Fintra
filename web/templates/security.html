@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block page_title %}Security{% endblock %}
+{% block breadcrumb %}Security &amp; Privacy{% endblock %}
+{% block content %}
+<div class="flex flex-col w-full">
+<div class="max-w-[1540px] w-full mx-auto space-y-gutter-lg pb-space-xl">
+
+{% if message %}
+<div class="rounded-xl px-space-lg py-space-sm text-white font-title-md text-title-md" style="background-color:#2A9D8F;">✅ {{ message }}</div>
+{% endif %}
+{% if error %}
+<div class="rounded-xl px-space-lg py-space-sm text-white font-title-md text-title-md" style="background-color:#8B1E2D;">⚠️ {{ error }}</div>
+{% endif %}
+
+<div class="rounded-xl bg-gradient-to-br from-surface-container-low to-surface-container-high p-gutter-lg shadow-sm">
+  <span class="font-label-md text-label-md uppercase tracking-widest text-secondary font-bold">Qoruyur</span>
+  <h1 class="font-headline-lg text-headline-lg text-primary font-semibold">Security &amp; Privacy</h1>
+  <p class="font-body-md text-body-md text-on-surface-variant mt-1 max-w-3xl">
+    Exactly what Fintra stores, what it never stores, and how your messages are processed. You stay in control of your data.
+  </p>
+</div>
+
+<!-- STORED / NEVER STORED -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
+  <div class="rounded-xl bg-surface-container-low p-space-lg shadow-sm border-t-4" style="border-color:#8B1E2D;">
+    <h2 class="font-headline-sm text-headline-sm text-primary font-semibold">Fintra never stores or asks for</h2>
+    <ul class="mt-space-md space-y-space-sm font-body-md text-body-md">
+      <li>🚫 Card numbers, CVV, PIN, SMS codes or passwords. Messages with a card number are deleted automatically.</li>
+      <li>🚫 Bank logins. Fintra has no access to your bank and cannot make payments.</li>
+      <li>🚫 Your receipt photos and voice notes: they are only read once and not saved.</li>
+    </ul>
+  </div>
+  <div class="rounded-xl bg-surface-container-low p-space-lg shadow-sm border-t-4" style="border-color:#2A9D8F;">
+    <h2 class="font-headline-sm text-headline-sm text-primary font-semibold">What Fintra stores</h2>
+    <p class="mt-1 font-body-sm text-body-sm text-on-surface-variant">Separated by your Telegram ID: only you see your data.</p>
+    <ul class="mt-space-md space-y-space-sm font-body-md text-body-md">
+      <li>✅ Expenses: amount, category, short description, date, card <strong>name</strong> (e.g. "Birbank")</li>
+      <li>✅ Your budget plan and spending limits</li>
+      <li>✅ Website sessions (only as a SHA-256 hash, they expire after 24 hours)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- YOUR DATA -->
+<div class="rounded-xl bg-surface-container-low p-space-lg shadow-sm">
+  <h2 class="font-headline-sm text-headline-sm text-primary font-semibold">Your data right now</h2>
+  <div class="mt-space-md grid grid-cols-2 md:grid-cols-4 gap-space-sm">
+    <div class="p-space-sm rounded-lg bg-surface-container">
+      <p class="font-label-md text-label-md uppercase text-on-surface-variant">Expenses</p>
+      <p class="font-title-lg text-title-lg text-primary tabular-nums">{{ data.expenses }}</p>
+    </div>
+    <div class="p-space-sm rounded-lg bg-surface-container">
+      <p class="font-label-md text-label-md uppercase text-on-surface-variant">Limits</p>
+      <p class="font-title-lg text-title-lg text-primary tabular-nums">{{ data.limits }}</p>
+    </div>
+    <div class="p-space-sm rounded-lg bg-surface-container">
+      <p class="font-label-md text-label-md uppercase text-on-surface-variant">Budget plan</p>
+      <p class="font-title-lg text-title-lg text-primary">{{ "Yes" if data.plan else "No" }}</p>
+    </div>
+    <div class="p-space-sm rounded-lg bg-surface-container">
+      <p class="font-label-md text-label-md uppercase text-on-surface-variant">Active web sessions</p>
+      <p class="font-title-lg text-title-lg text-primary tabular-nums">{{ data.sessions }}</p>
+    </div>
+  </div>
+</div>
+
+<!-- HOW MESSAGES ARE PROCESSED -->
+<div class="rounded-xl bg-surface-container-low p-space-lg shadow-sm">
+  <h2 class="font-headline-sm text-headline-sm text-primary font-semibold">How your messages are processed</h2>
+  <div class="mt-space-md grid grid-cols-1 md:grid-cols-2 gap-space-sm font-body-md text-body-md">
+    <div class="p-space-sm rounded-lg bg-surface-container">🤖 Texts, receipt photos and voice notes are sent to <strong>Google Gemini</strong> to understand them.</div>
+    <div class="p-space-sm rounded-lg bg-surface-container">💳 Card numbers are detected with the Luhn algorithm and blocked <strong>before</strong> anything reaches the AI.</div>
+    <div class="p-space-sm rounded-lg bg-surface-container">🔐 Removing a limit or deleting your data needs <strong>your confirmation</strong>. The AI can only ask.</div>
+    <div class="p-space-sm rounded-lg bg-surface-container">🛡 Text inside photos, voice notes and forwarded messages is treated as data, never as commands for the AI.</div>
+    <div class="p-space-sm rounded-lg bg-surface-container">🔗 Website login uses one-time links from the bot: no passwords, each link works once for 10 minutes.</div>
+    <div class="p-space-sm rounded-lg bg-surface-container">🚨 Suspicious SMS are checked by rules in code first; the AI only explains the risk and cannot lower it.</div>
+  </div>
+</div>
+
+<!-- LOG OUT EVERYWHERE -->
+<div class="rounded-xl bg-surface-container-low p-space-lg shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+  <div>
+    <h2 class="font-headline-sm text-headline-sm text-primary font-semibold">Log out on all devices</h2>
+    <p class="font-body-md text-body-md text-on-surface-variant mt-1">Ends every website session, including this one. Your data stays.</p>
+  </div>
+  <form method="post" action="/security/logout-all">
+    <button type="submit" class="h-10 px-space-lg rounded-lg bg-primary text-on-primary font-title-md text-title-md hover:bg-primary-container shadow-md transition-all">Log out everywhere</button>
+  </form>
+</div>
+
+<!-- DELETE ALL DATA -->
+<div class="rounded-xl bg-surface-container-low p-space-lg shadow-sm border-l-4" style="border-color:#8B1E2D;">
+  <p class="font-label-md text-label-md uppercase tracking-widest font-bold" style="color:#8B1E2D;">⚠️ Irreversible action</p>
+  <h2 class="font-headline-sm text-headline-sm text-primary font-semibold mt-1">Delete all my data</h2>
+  <p class="font-body-md text-body-md text-on-surface-variant mt-1">
+    Permanently deletes your expenses, budget plan, limits, charts and website sessions. This cannot be undone.
+    The same as the <strong>/delete_my_data</strong> command in Telegram.
+  </p>
+  <form method="post" action="/security/delete-data" class="mt-space-md flex flex-col sm:flex-row gap-space-sm sm:items-end"
+        onsubmit="return confirm('Delete ALL your data? This cannot be undone.');">
+    <div>
+      <label class="block font-label-md text-label-md font-semibold uppercase tracking-wider text-on-surface-variant mb-1">Type DELETE to confirm</label>
+      <input name="confirm_text" type="text" autocomplete="off" required placeholder="DELETE"
+             class="h-10 px-space-sm rounded-lg bg-surface-container text-primary">
+    </div>
+    <button type="submit" class="h-10 px-space-lg rounded-lg text-white font-title-md text-title-md shadow-md hover:opacity-90 transition" style="background-color:#8B1E2D;">
+      Delete all my data
+    </button>
+  </form>
+</div>
+
+</div>
+</div>
+{% endblock %}

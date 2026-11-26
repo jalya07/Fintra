@@ -1,0 +1,298 @@
+{% extends "base.html" %}
+{% block page_title %}Overview{% endblock %}
+{% block breadcrumb %}Overview{% endblock %}
+{% block content %}
+<div class="flex flex-col w-full">
+<div class="max-w-[1540px] w-full mx-auto space-y-gutter-lg pb-space-xl">
+
+{% if added %}
+<div class="rounded-xl px-space-lg py-space-sm text-white font-title-md text-title-md" style="background-color:#2A9D8F;">
+  ✅ Expense saved
+</div>
+{% endif %}
+{% if form_error %}
+<div class="rounded-xl px-space-lg py-space-sm text-white font-title-md text-title-md" style="background-color:#8B1E2D;">
+  ⚠️ {{ form_error }}
+</div>
+{% endif %}
+
+<!-- 1. HERO: HOW MUCH CAN I SPEND TODAY -->
+<div class="relative overflow-hidden rounded-xl bg-gradient-to-br from-surface-container-low via-surface-container to-surface-container-high p-gutter-lg shadow-xl shadow-primary/5">
+  <div class="absolute -right-20 -top-24 w-96 h-96 rounded-full bg-secondary-fixed/30 blur-3xl pointer-events-none"></div>
+  <div class="absolute -left-16 -bottom-16 w-80 h-80 rounded-full bg-primary-fixed/20 blur-2xl pointer-events-none"></div>
+  <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-secondary"></div>
+  <div class="relative z-10 flex flex-col xl:flex-row xl:items-center justify-between gap-gutter">
+    <div class="space-y-space-sm max-w-3xl">
+      {% if allowance %}
+      <div class="flex flex-wrap items-center gap-space-sm">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-label-md text-label-md bg-surface-container-highest text-on-surface-variant font-medium">
+          <span translate="no" class="notranslate material-symbols-outlined text-sm">calendar_month</span>
+          {{ allowance.days_until_payday }} days until payday ({{ allowance.next_payday }})
+        </span>
+      </div>
+      <div class="pt-space-xs">
+        <p class="font-label-lg text-label-lg text-on-surface-variant font-medium uppercase tracking-widest">Daily allowance</p>
+        <h1 class="font-headline-xl text-headline-xl text-primary font-bold tracking-tight mt-1">
+          You can spend today: <span class="text-secondary">{{ "%.2f"|format(allowance.daily_allowance) }}</span>
+          <span class="font-headline-sm text-headline-sm font-normal text-on-surface-variant">₼</span>
+        </h1>
+      </div>
+      <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+        Based on your plan: <span class="font-semibold text-on-surface">{{ "%.2f"|format(plan.spendable) }} ₼</span> to live on this month.
+        <span class="inline-block mx-1 font-semibold px-2 py-0.5 rounded" style="color:#2A9D8F; background-color:rgba(42,157,143,0.12);">{{ "%.2f"|format(spent_today) }} ₼ spent today</span>
+      </p>
+      {% else %}
+      <div class="pt-space-xs">
+        <p class="font-label-lg text-label-lg text-on-surface-variant font-medium uppercase tracking-widest">Daily allowance</p>
+        <h1 class="font-headline-lg text-headline-lg text-primary font-bold tracking-tight mt-1">Create your plan to see how much you can spend today</h1>
+      </div>
+      <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+        Tell Fintra your income, payday and fixed payments, for example:
+        <span class="font-semibold text-on-surface">"My salary is 1000, it comes on the 5th, rent 350"</span>.
+      </p>
+      {% endif %}
+    </div>
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-space-sm shrink-0">
+      <button type="button" id="quick-expense-trigger" class="flex items-center justify-center gap-space-xs px-space-lg py-3 rounded-lg bg-primary text-on-primary font-title-md text-title-md hover:bg-primary-container shadow-md hover:shadow-lg transition-all duration-200">
+        <span translate="no" class="notranslate material-symbols-outlined text-secondary-fixed text-lg">add_circle</span>
+        <span>Add expense</span>
+      </button>
+      <a href="/chat" class="flex items-center justify-center gap-space-xs px-space-md py-3 rounded-lg bg-surface-container-highest text-primary font-title-md text-title-md hover:bg-surface-container-high transition-colors">
+        <span translate="no" class="notranslate material-symbols-outlined text-secondary text-lg" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+        <span>Ask Fintra</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- 2. THREE METRIC CARDS -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+  <!-- Spent this month -->
+  <div class="relative overflow-hidden rounded-xl bg-surface-container-low p-space-lg shadow-sm hover:shadow-md transition-shadow">
+    <div class="flex items-center justify-between text-on-surface-variant">
+      <span class="font-label-lg text-label-lg font-semibold tracking-wide uppercase">Spent this month</span>
+      <div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+        <span translate="no" class="notranslate material-symbols-outlined text-xl">account_balance_wallet</span>
+      </div>
+    </div>
+    <div class="mt-space-md flex items-baseline gap-1.5">
+      <span class="font-numeral-lg text-numeral-lg text-primary tabular-nums tracking-tight">{{ "%.2f"|format(month.total) }}</span>
+      <span class="font-title-lg text-title-lg text-on-surface-variant font-medium">₼</span>
+    </div>
+    <div class="mt-space-sm flex items-center gap-2">
+      <span class="inline-flex items-center text-on-surface font-label-md text-label-md font-semibold bg-surface-container-high px-2 py-0.5 rounded">{{ month_count }}</span>
+      <span class="font-body-sm text-body-sm text-on-surface-variant">expenses since {{ month.from }}</span>
+    </div>
+  </div>
+
+  <!-- Planned savings -->
+  <div class="relative overflow-hidden rounded-xl bg-surface-container-low p-space-lg shadow-sm hover:shadow-md transition-shadow">
+    <div class="flex items-center justify-between text-on-surface-variant">
+      <span class="font-label-lg text-label-lg font-semibold tracking-wide uppercase">Planned savings</span>
+      <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="color:#2A9D8F; background-color:rgba(42,157,143,0.15);">
+        <span translate="no" class="notranslate material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">savings</span>
+      </div>
+    </div>
+    {% if plan %}
+    <div class="mt-space-md flex items-baseline gap-1.5">
+      <span class="font-numeral-lg text-numeral-lg text-primary tabular-nums tracking-tight">{{ "%.2f"|format(plan.savings) }}</span>
+      <span class="font-title-lg text-title-lg text-on-surface-variant font-medium">₼</span>
+    </div>
+    <div class="mt-space-sm">
+      <span class="font-body-sm text-body-sm text-on-surface-variant">{{ "%g"|format(plan.savings_percent) }}% of free money, chosen by you</span>
+    </div>
+    {% else %}
+    <p class="mt-space-md font-body-md text-body-md text-on-surface-variant">No plan yet</p>
+    {% endif %}
+  </div>
+
+  <!-- Remaining until payday -->
+  <div class="relative overflow-hidden rounded-xl bg-surface-container-low p-space-lg shadow-sm hover:shadow-md transition-shadow">
+    <div class="flex items-center justify-between text-on-surface-variant">
+      <span class="font-label-lg text-label-lg font-semibold tracking-wide uppercase">Remaining until payday</span>
+      <div class="w-9 h-9 rounded-lg bg-secondary/15 flex items-center justify-center text-secondary">
+        <span translate="no" class="notranslate material-symbols-outlined text-xl">event_available</span>
+      </div>
+    </div>
+    {% if allowance %}
+    <div class="mt-space-md flex items-baseline gap-1.5">
+      <span class="font-numeral-lg text-numeral-lg text-secondary tabular-nums tracking-tight">{{ "%.2f"|format(allowance.remaining_until_payday) }}</span>
+      <span class="font-title-lg text-title-lg text-secondary font-medium">₼</span>
+    </div>
+    <div class="mt-space-sm flex items-center justify-between">
+      <span class="font-body-sm text-body-sm text-on-surface font-medium flex items-center gap-1">
+        <span class="w-2 h-2 rounded-full bg-secondary"></span>
+        Spent since payday: <strong class="text-primary font-semibold">{{ "%.2f"|format(allowance.spent_since_payday) }} ₼</strong>
+      </span>
+      <span class="text-on-surface-variant font-label-md text-label-md">{{ allowance.days_until_payday }}d left</span>
+    </div>
+    {% else %}
+    <p class="mt-space-md font-body-md text-body-md text-on-surface-variant">No plan yet</p>
+    {% endif %}
+  </div>
+</div>
+
+<!-- 3. BREAKDOWN + LATEST EXPENSES -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+
+  <!-- Spending breakdown (donut) -->
+  <div class="lg:col-span-5 rounded-xl bg-surface-container-low p-space-lg shadow-sm flex flex-col">
+    <div class="pb-space-sm">
+      <span class="font-label-md text-label-md uppercase tracking-widest text-secondary font-bold">This month</span>
+      <h2 class="font-headline-sm text-headline-sm text-primary font-semibold">Spending breakdown</h2>
+    </div>
+    {% if categories %}
+    <div class="relative py-space-md flex items-center justify-center">
+      <div class="relative w-56 h-56 flex items-center justify-center">
+        <svg class="w-full h-full -rotate-90 transform" viewBox="0 0 100 100">
+          {% for c in categories %}
+          <circle cx="50" cy="50" fill="transparent" r="38" stroke="{{ c.color }}"
+                  stroke-dasharray="{{ c.dash }} 238.8" stroke-dashoffset="-{{ c.offset }}" stroke-width="11"></circle>
+          {% endfor %}
+        </svg>
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+          <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Total</span>
+          <span class="font-headline-sm text-headline-sm font-bold text-primary mt-0.5">{{ "%.2f"|format(month.total) }} ₼</span>
+        </div>
+      </div>
+    </div>
+    <div class="space-y-space-xs mt-space-sm">
+      {% for c in categories %}
+      <div class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-container transition-colors">
+        <div class="flex items-center gap-space-sm">
+          <span class="w-3 h-3 rounded-full shrink-0" style="background-color: {{ c.color }};"></span>
+          <span class="font-title-md text-title-md text-on-surface">{{ c.emoji }} {{ c.label }}</span>
+          <span class="font-label-md text-label-md text-on-surface-variant bg-surface-container-high px-1.5 py-0.5 rounded">{{ c.percent }}%</span>
+        </div>
+        <span class="font-title-md text-title-md tabular-nums font-semibold text-primary">{{ "%.2f"|format(c.total) }} ₼</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="py-space-lg font-body-md text-body-md text-on-surface-variant">No expenses this month yet.</p>
+    {% endif %}
+  </div>
+
+  <!-- Latest expenses -->
+  <div class="lg:col-span-7 rounded-xl bg-surface-container-low p-space-lg shadow-sm flex flex-col">
+    <div class="flex items-center justify-between pb-space-sm">
+      <div>
+        <span class="font-label-md text-label-md uppercase tracking-widest text-secondary font-bold">Latest</span>
+        <h2 class="font-headline-sm text-headline-sm text-primary font-semibold">5 latest expenses</h2>
+      </div>
+      <a href="/expenses" class="flex items-center gap-1 font-label-lg text-label-lg text-secondary font-semibold hover:underline">
+        View all <span translate="no" class="notranslate material-symbols-outlined text-base">arrow_forward</span>
+      </a>
+    </div>
+    <div class="space-y-space-xs mt-space-sm">
+      {% for e in recent %}
+      <div class="flex items-center justify-between gap-space-sm p-space-sm rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors">
+        <div class="flex items-center gap-space-sm min-w-0">
+          <div class="w-10 h-10 rounded-lg bg-surface-container-lowest flex items-center justify-center text-xl shrink-0">{{ e.emoji }}</div>
+          <div class="min-w-0">
+            <p class="font-title-md text-title-md text-on-surface truncate">{{ e.description or e.label }}</p>
+            <p class="font-body-sm text-body-sm text-on-surface-variant truncate">
+              {{ e.label }} · {{ e.date }}{% if e.card %} · {{ e.card }}{% endif %} · {{ e.source_icon }}
+            </p>
+          </div>
+        </div>
+        <span class="font-title-md text-title-md tabular-nums font-semibold text-primary shrink-0">-{{ "%.2f"|format(e.amount) }} {{ "₼" if e.currency == "AZN" else e.currency }}</span>
+      </div>
+      {% else %}
+      <p class="py-space-lg font-body-md text-body-md text-on-surface-variant">
+        No expenses yet. Send one to <a href="https://t.me/myfintra_bot" target="_blank" class="text-secondary font-semibold underline">@myfintra_bot</a>, for example "coffee 3 manat", or press "Add expense".
+      </p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- 4. LIMITS -->
+<div class="rounded-xl bg-surface-container-low p-space-lg shadow-sm">
+  <div class="flex items-center justify-between pb-space-sm">
+    <div>
+      <span class="font-label-md text-label-md uppercase tracking-widest text-secondary font-bold">This month</span>
+      <h2 class="font-headline-sm text-headline-sm text-primary font-semibold">Your limits</h2>
+    </div>
+    <a href="/plan" class="flex items-center gap-1 font-label-lg text-label-lg text-secondary font-semibold hover:underline">
+      Plan &amp; Limits <span translate="no" class="notranslate material-symbols-outlined text-base">arrow_forward</span>
+    </a>
+  </div>
+  {% if limits %}
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter mt-space-sm">
+    {% for l in limits %}
+    <div class="p-space-md rounded-xl bg-surface-container">
+      <div class="flex items-center justify-between gap-2">
+        <span class="font-title-md text-title-md text-on-surface">{{ l.emoji }} {{ l.label }}</span>
+        <span class="font-label-md text-label-md font-bold px-2 py-0.5 rounded text-white" style="background-color: {{ l.color }};">{{ l.status }} ({{ l.percent }}%)</span>
+      </div>
+      <div class="w-full bg-surface-container-highest h-2 rounded-full mt-space-sm overflow-hidden">
+        <div class="h-2 rounded-full" style="width: {{ [l.percent, 100]|min }}%; background-color: {{ l.color }};"></div>
+      </div>
+      <p class="mt-space-xs font-body-sm text-body-sm text-on-surface-variant">
+        Spent: <strong class="text-primary">{{ "%.2f"|format(l.spent) }} ₼</strong> of {{ "%.2f"|format(l.amount) }} ₼
+      </p>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="py-space-md font-body-md text-body-md text-on-surface-variant">
+    No limits yet. Ask Fintra, for example: "Set a limit of 60 manat for cafes".
+  </p>
+  {% endif %}
+</div>
+
+</div>
+</div>
+
+<!-- QUICK EXPENSE MODAL -->
+<div id="quick-expense-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-primary/40 backdrop-blur-sm hidden p-4">
+  <div class="w-full max-w-md bg-surface-container-low rounded-xl p-gutter shadow-2xl relative">
+    <div class="flex items-center justify-between pb-space-sm">
+      <div class="flex items-center gap-2">
+        <span translate="no" class="notranslate material-symbols-outlined text-secondary text-xl">edit_note</span>
+        <h3 class="font-headline-sm text-headline-sm text-primary font-semibold">Add expense</h3>
+      </div>
+      <button type="button" class="close-modal p-1 rounded-lg hover:bg-surface-container text-on-surface-variant hover:text-on-surface">
+        <span translate="no" class="notranslate material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">It will also be visible in the Telegram bot. Never type card numbers here.</p>
+    <form method="post" action="/expenses/add" class="space-y-space-md">
+      <div>
+        <label class="block font-label-md text-label-md font-semibold text-on-surface uppercase tracking-wider mb-1">Amount (₼)</label>
+        <input name="amount" type="number" step="0.01" min="0.01" required placeholder="0.00"
+               class="w-full h-11 px-space-md rounded-lg bg-surface-container text-primary font-title-lg text-title-lg focus:outline-none focus:ring-2 focus:ring-secondary/50">
+      </div>
+      <div>
+        <label class="block font-label-md text-label-md font-semibold text-on-surface uppercase tracking-wider mb-1">Description</label>
+        <input name="description" type="text" maxlength="100" placeholder="e.g. coffee, Bravo, Bolt"
+               class="w-full h-11 px-space-md rounded-lg bg-surface-container text-primary font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-secondary/50">
+      </div>
+      <div>
+        <label class="block font-label-md text-label-md font-semibold text-on-surface uppercase tracking-wider mb-1">Category</label>
+        <select name="category" class="w-full h-11 px-space-md rounded-lg bg-surface-container text-primary font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-secondary/50">
+          {% for key, info in category_options %}
+          <option value="{{ key }}">{{ info[0] }} {{ info[1] }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="pt-space-sm flex items-center justify-end gap-space-sm">
+        <button type="button" class="close-modal px-space-md py-2.5 rounded-lg bg-surface-container-high text-on-surface font-title-md text-title-md hover:bg-surface-container-highest transition-colors">Cancel</button>
+        <button type="submit" class="px-space-lg py-2.5 rounded-lg bg-primary text-on-primary font-title-md text-title-md hover:bg-primary-container shadow-md transition-all">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Открыть / закрыть окно добавления траты
+  (function () {
+    const modal = document.getElementById('quick-expense-modal');
+    document.getElementById('quick-expense-trigger').addEventListener('click', () => modal.classList.remove('hidden'));
+    document.querySelectorAll('.close-modal').forEach(btn => btn.addEventListener('click', () => modal.classList.add('hidden')));
+  })();
+</script>
+{% endblock %}

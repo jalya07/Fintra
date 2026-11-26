@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block page_title %}Expenses{% endblock %}
+{% block breadcrumb %}Expenses{% endblock %}
+{% block content %}
+<div class="flex flex-col w-full">
+<div class="max-w-[1540px] w-full mx-auto space-y-gutter-lg pb-space-xl">
+
+{% if deleted %}
+<div class="rounded-xl px-space-lg py-space-sm text-white font-title-md text-title-md" style="background-color:#2A9D8F;">🗑 Expense deleted</div>
+{% endif %}
+
+<!-- HEADER -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
+  <div>
+    <span class="font-label-md text-label-md uppercase tracking-widest text-secondary font-bold">Your expenses</span>
+    <h1 class="font-headline-lg text-headline-lg text-primary font-semibold">Expenses</h1>
+    <p class="font-body-md text-body-md text-on-surface-variant mt-1">Everything you sent to Fintra: texts, receipt photos and voice notes.</p>
+  </div>
+  <a href="/" class="inline-flex items-center justify-center gap-space-xs px-space-lg py-2.5 rounded-lg bg-primary text-on-primary font-title-md text-title-md hover:bg-primary-container shadow-md transition-all">
+    <span translate="no" class="notranslate material-symbols-outlined text-secondary-fixed text-lg">add</span> Add expense
+  </a>
+</div>
+
+<!-- METRICS -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+  <div class="rounded-xl bg-surface-container-low p-space-lg shadow-sm">
+    <div class="flex items-center justify-between text-on-surface-variant">
+      <span class="font-label-lg text-label-lg font-semibold tracking-wide uppercase">Expenses</span>
+      <span translate="no" class="notranslate material-symbols-outlined text-xl text-primary">receipt_long</span>
+    </div>
+    <p class="mt-space-md font-numeral-lg text-numeral-lg text-primary tabular-nums">{{ stats.count }}</p>
+    <p class="font-body-sm text-body-sm text-on-surface-variant">{{ period_label }}</p>
+  </div>
+  <div class="rounded-xl bg-surface-container-low p-space-lg shadow-sm">
+    <div class="flex items-center justify-between text-on-surface-variant">
+      <span class="font-label-lg text-label-lg font-semibold tracking-wide uppercase">Total</span>
+      <span translate="no" class="notranslate material-symbols-outlined text-xl text-primary">account_balance_wallet</span>
+    </div>
+    <p class="mt-space-md font-numeral-lg text-numeral-lg text-primary tabular-nums">{{ "%.2f"|format(stats.total) }} <span class="font-title-lg text-title-lg text-on-surface-variant">₼</span></p>
+    <p class="font-body-sm text-body-sm text-on-surface-variant">{{ period_label }}</p>
+  </div>
+  <div class="rounded-xl bg-surface-container-low p-space-lg shadow-sm">
+    <div class="flex items-center justify-between text-on-surface-variant">
+      <span class="font-label-lg text-label-lg font-semibold tracking-wide uppercase">Average expense</span>
+      <span translate="no" class="notranslate material-symbols-outlined text-xl text-secondary">speed</span>
+    </div>
+    <p class="mt-space-md font-numeral-lg text-numeral-lg text-secondary tabular-nums">{{ "%.2f"|format(stats.average) }} <span class="font-title-lg text-title-lg">₼</span></p>
+    <p class="font-body-sm text-body-sm text-on-surface-variant">per expense</p>
+  </div>
+</div>
+
+<!-- FILTERS (обычная GET-форма: фильтры видны в адресе страницы) -->
+<form method="get" action="/expenses" class="rounded-xl bg-surface-container-low p-space-md shadow-sm flex flex-col lg:flex-row lg:items-end gap-space-md">
+  <div class="flex-1">
+    <label class="block font-label-md text-label-md font-semibold text-on-surface-variant uppercase tracking-wider mb-1">Period</label>
+    <select name="period" class="w-full h-10 px-space-sm rounded-lg bg-surface-container text-primary font-body-md text-body-md">
+      {% for value, label in period_options %}
+      <option value="{{ value }}" {% if value == period %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="flex-1">
+    <label class="block font-label-md text-label-md font-semibold text-on-surface-variant uppercase tracking-wider mb-1">Category</label>
+    <select name="category" class="w-full h-10 px-space-sm rounded-lg bg-surface-container text-primary font-body-md text-body-md">
+      <option value="">All</option>
+      {% for key, info in category_options %}
+      <option value="{{ key }}" {% if key == category %}selected{% endif %}>{{ info[0] }} {{ info[1] }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="flex-1">
+    <label class="block font-label-md text-label-md font-semibold text-on-surface-variant uppercase tracking-wider mb-1">Source</label>
+    <select name="source" class="w-full h-10 px-space-sm rounded-lg bg-surface-container text-primary font-body-md text-body-md">
+      <option value="">All</option>
+      <option value="text" {% if source == "text" %}selected{% endif %}>💬 Text</option>
+      <option value="photo" {% if source == "photo" %}selected{% endif %}>📸 Receipt photo</option>
+      <option value="voice" {% if source == "voice" %}selected{% endif %}>🎙 Voice</option>
+    </select>
+  </div>
+  <button type="submit" class="h-10 px-space-lg rounded-lg bg-secondary text-on-primary font-title-md text-title-md hover:opacity-90 transition">Apply</button>
+</form>
+
+<!-- TABLE -->
+<div class="rounded-xl bg-surface-container-low shadow-sm overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr class="bg-surface-container font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">
+          <th class="px-space-md py-space-sm">Date</th>
+          <th class="px-space-md py-space-sm">Description</th>
+          <th class="px-space-md py-space-sm">Category</th>
+          <th class="px-space-md py-space-sm">Card</th>
+          <th class="px-space-md py-space-sm">Source</th>
+          <th class="px-space-md py-space-sm text-right">Amount</th>
+          <th class="px-space-md py-space-sm"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for e in expenses %}
+        <tr class="border-t border-surface-container-high hover:bg-surface-container/60 transition-colors">
+          <td class="px-space-md py-space-sm font-body-sm text-body-sm text-on-surface-variant whitespace-nowrap">{{ e.date }}</td>
+          <td class="px-space-md py-space-sm font-title-md text-title-md text-on-surface">{{ e.description or "—" }}</td>
+          <td class="px-space-md py-space-sm whitespace-nowrap">
+            <span class="font-label-md text-label-md bg-surface-container-high px-2 py-1 rounded">{{ e.emoji }} {{ e.label }}</span>
+          </td>
+          <td class="px-space-md py-space-sm font-body-sm text-body-sm text-on-surface-variant whitespace-nowrap">{{ e.card or "—" }}</td>
+          <td class="px-space-md py-space-sm font-body-sm text-body-sm whitespace-nowrap">{{ e.source_icon }} {{ e.source }}</td>
+          <td class="px-space-md py-space-sm font-title-md text-title-md tabular-nums font-semibold text-primary text-right whitespace-nowrap">-{{ "%.2f"|format(e.amount) }} {{ "₼" if e.currency == "AZN" else e.currency }}</td>
+          <td class="px-space-md py-space-sm text-right">
+            <form method="post" action="/expenses/{{ e.id }}/delete" onsubmit="return confirm('Delete this expense?');">
+              <button type="submit" title="Delete" class="p-1.5 rounded-lg text-on-surface-variant hover:text-white hover:bg-[#8B1E2D] transition-colors">
+                <span translate="no" class="notranslate material-symbols-outlined text-lg">delete</span>
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="7" class="px-space-md py-space-xl text-center font-body-md text-body-md text-on-surface-variant">
+            No expenses for these filters.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% if expenses|length >= limit %}
+  <p class="px-space-md py-space-sm font-body-sm text-body-sm text-on-surface-variant border-t border-surface-container-high">
+    Showing the latest {{ limit }} expenses. Use the filters to narrow the list.
+  </p>
+  {% endif %}
+</div>
+
+</div>
+</div>
+{% endblock %}

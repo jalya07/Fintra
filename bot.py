@@ -3,6 +3,7 @@ import time
 import secrets
 import logging
 import security
+from telegram import LinkPreviewOptions
 from pathlib import Path
 from tools import CHARTS_DIR
 from dotenv import load_dotenv
@@ -18,6 +19,7 @@ import database
 
 # Загружаем ключи из .env
 load_dotenv()
+WEB_URL = os.getenv("WEB_URL", "http://127.0.0.1:8000")
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 
 logging.basicConfig(
@@ -64,8 +66,23 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         "/start — Başla / Начать / Start\n"
         "/help — Kömək / Помощь / Help\n"
+        "/web — Sayt / Сайт / Website\n"
         "/delete_my_data — Məlumatlarımı sil / Удалить мои данные / Delete my data"
     )
+# 🔐 Одноразовая ссылка для входа на сайт
+async def web_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    token = database.create_login_token(update.effective_user.id)
+    link = f"{WEB_URL}/login?token={token}"
+
+    await update.message.reply_text(
+        "🌐 Fintra Web\n\n"
+        "🇦🇿 Sayta giriş linki: 10 dəqiqə, bir dəfəlik. Heç kimə göndərmə!\n"
+        "🇷🇺 Ссылка для входа на сайт: 10 минут, одноразовая. Никому не пересылай!\n"
+        "🇬🇧 Your login link: 10 minutes, single use. Don't share it!\n\n"
+        f"{link}",
+        link_preview_options=LinkPreviewOptions(is_disabled=True),
+    )
+    logger.info("Пользователь %s запросил ссылку на сайт", update.effective_user.id)
 
 # 🔐 Удаление всех своих данных (только с подтверждением)
 async def delete_my_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -251,18 +268,21 @@ async def set_commands(app: Application):
     await app.bot.set_my_commands([
         BotCommand("start", "Start Fintra"),
         BotCommand("help", "What can Fintra do?"),
+        BotCommand("web", "Open Fintra website"),
         BotCommand("delete_my_data", "Delete all my data"),
     ])
     # Азербайджанский
     await app.bot.set_my_commands([
         BotCommand("start", "Fintra-nı başlat"),
         BotCommand("help", "Fintra nə edə bilər?"),
+        BotCommand("web", "Fintra saytını aç"),
         BotCommand("delete_my_data", "Bütün məlumatlarımı sil"),
     ], language_code="az")
     # Русский
     await app.bot.set_my_commands([
         BotCommand("start", "Запустить Fintra"),
         BotCommand("help", "Что умеет Fintra?"),
+        BotCommand("web", "Открыть сайт Fintra"),
         BotCommand("delete_my_data", "Удалить все мои данные"),
     ], language_code="ru")
 
@@ -287,6 +307,7 @@ def main():
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("help", help_command))
     app.add_handler(CommandHandler("delete_my_data", delete_my_data))
+    app.add_handler(CommandHandler("web", web_command))
 
     # 🔐 Кнопки подтверждения
     app.add_handler(CallbackQueryHandler(handle_confirmation, pattern=r"^(confirm|cancel):"))

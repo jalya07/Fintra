@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% block page_title %}Chat{% endblock %}
+{% block breadcrumb %}Chat{% endblock %}
+{% block content %}
+<div class="max-w-[1540px] w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-gutter pb-space-lg">
+
+  <!-- LEFT: INFO + SUGGESTIONS -->
+  <div class="lg:col-span-4 space-y-gutter order-2 lg:order-1">
+    <div class="rounded-xl bg-surface-container-low p-space-lg shadow-sm">
+      <div class="flex items-center gap-space-sm">
+        <img src="/static/logo-icon.png" alt="Fintra logo" class="w-12 h-12 rounded-lg">
+        <div>
+          <h2 translate="no" class="notranslate font-headline-sm text-headline-sm text-primary font-semibold">Fintra</h2>
+          <p class="font-body-sm text-body-sm text-on-surface-variant">The same AI agent as in Telegram</p>
+        </div>
+      </div>
+      <p class="mt-space-md font-body-md text-body-md text-on-surface-variant">
+        Type an expense, ask about your spending or paste a suspicious SMS.
+        Everything you save here is also visible in <a href="https://t.me/myfintra_bot" target="_blank" class="text-secondary font-semibold underline">@myfintra_bot</a>.
+      </p>
+    </div>
+
+    <div class="rounded-xl bg-surface-container-low p-space-lg shadow-sm">
+      <span class="font-label-md text-label-md uppercase tracking-widest text-secondary font-bold">Try asking</span>
+      <div class="mt-space-sm space-y-space-xs">
+        {% for icon, text in suggestions %}
+        <button type="button" data-suggestion="{{ text }}"
+                class="suggestion w-full flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-container hover:bg-surface-container-high text-left transition-colors">
+          <span translate="no" class="notranslate material-symbols-outlined text-secondary">{{ icon }}</span>
+          <span class="font-body-md text-body-md text-on-surface">{{ text }}</span>
+        </button>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="rounded-xl bg-primary-container text-on-primary p-space-lg shadow-sm">
+      <p class="font-title-md text-title-md">📸 🎙 Photos and voice notes</p>
+      <p class="mt-1 font-body-sm text-body-sm text-on-primary-container">Send receipt photos and voice messages in Telegram. The website chat supports text.</p>
+      <a href="https://t.me/myfintra_bot" target="_blank" class="mt-space-sm inline-flex items-center gap-1 font-title-md text-title-md text-secondary-fixed hover:underline">
+        Open @myfintra_bot <span translate="no" class="notranslate material-symbols-outlined text-base">open_in_new</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- RIGHT: CHAT -->
+  <div class="lg:col-span-8 order-1 lg:order-2 rounded-xl bg-surface-container-low shadow-sm flex flex-col h-[calc(100vh-8rem)] min-h-[480px]">
+    <div class="flex items-center justify-between px-space-lg py-space-md border-b border-surface-container-high">
+      <div class="flex items-center gap-space-sm">
+        <span class="w-2.5 h-2.5 rounded-full" style="background-color:#2A9D8F;"></span>
+        <span class="font-title-md text-title-md text-on-surface">Chat with Fintra</span>
+      </div>
+      <span class="font-body-sm text-body-sm text-on-surface-variant">AZ · RU · EN</span>
+    </div>
+
+    <!-- Сообщения -->
+    <div id="messages" class="flex-1 overflow-y-auto px-space-lg py-space-md space-y-space-md">
+      <div class="flex justify-start">
+        <div class="max-w-[85%] rounded-2xl rounded-tl-sm bg-surface-container px-space-md py-space-sm">
+          <p class="font-body-md text-body-md text-on-surface">Salam! Привет! Hi! 👋 I am Fintra. How can I help with your money today?</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Поле ввода -->
+    <form id="chat-form" class="px-space-lg py-space-md border-t border-surface-container-high">
+      <div class="flex items-end gap-space-sm">
+        <textarea id="chat-input" rows="1" maxlength="1000" placeholder="Type a message… e.g. coffee 3 manat"
+                  class="flex-1 resize-none max-h-40 px-space-md py-2.5 rounded-lg bg-surface-container text-on-surface font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-secondary/50"></textarea>
+        <button id="chat-send" type="submit"
+                class="h-11 px-space-lg rounded-lg bg-primary text-on-primary font-title-md text-title-md hover:bg-primary-container disabled:opacity-50 transition-all flex items-center gap-1">
+          <span translate="no" class="notranslate material-symbols-outlined text-secondary-fixed">send</span>
+        </button>
+      </div>
+      <p class="mt-1 font-body-sm text-body-sm text-on-surface-variant">Processed by Google Gemini. Messages with card numbers are blocked automatically.</p>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  const messages = document.getElementById('messages');
+  const form = document.getElementById('chat-form');
+  const input = document.getElementById('chat-input');
+  const sendBtn = document.getElementById('chat-send');
+
+  // 🔐 Текст вставляем только через textContent, никогда через innerHTML:
+  // так ни пользователь, ни модель не смогут внедрить HTML/JS в страницу (защита от XSS)
+  function bubble(text, who) {
+    const row = document.createElement('div');
+    row.className = 'flex ' + (who === 'user' ? 'justify-end' : 'justify-start');
+    const box = document.createElement('div');
+    box.className = who === 'user'
+      ? 'max-w-[85%] rounded-2xl rounded-tr-sm bg-primary text-on-primary px-4 py-2'
+      : 'max-w-[85%] rounded-2xl rounded-tl-sm bg-surface-container text-on-surface px-4 py-2';
+    const p = document.createElement('p');
+    p.className = 'font-body-md text-body-md whitespace-pre-line';
+    p.textContent = text;
+    box.appendChild(p);
+    row.appendChild(box);
+    messages.appendChild(row);
+    messages.scrollTop = messages.scrollHeight;
+    return box;
+  }
+
+  // Плашки с шагами агента (🔧 add_expense)
+  function toolChips(steps) {
+    if (!steps || !steps.length) return;
+    const row = document.createElement('div');
+    row.className = 'flex flex-wrap gap-1';
+    steps.forEach(name => {
+      const chip = document.createElement('span');
+      chip.className = 'font-label-md text-label-md px-2 py-0.5 rounded bg-secondary/15 text-secondary font-semibold';
+      chip.textContent = '🔧 ' + name;
+      row.appendChild(chip);
+    });
+    messages.appendChild(row);
+  }
+
+  function image(url) {
+    const img = document.createElement('img');
+    img.src = url;
+    img.alt = 'Chart';
+    img.className = 'max-w-xs rounded-xl shadow-md';
+    messages.appendChild(img);
+  }
+
+  // 🔐 Кнопки подтверждения: действие выполняет сервер только после нажатия человеком
+  function confirmation(conf) {
+    const box = bubble(conf.text, 'agent');
+    const row = document.createElement('div');
+    row.className = 'mt-2 flex gap-2';
+    [['confirm', '✅ Yes', '#2A9D8F'], ['cancel', '❌ No', '#8B1E2D']].forEach(([action, label, color]) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = label;
+      btn.className = 'px-3 py-1 rounded-lg text-white font-title-md text-title-md';
+      btn.style.backgroundColor = color;
+      btn.addEventListener('click', async () => {
+        row.querySelectorAll('button').forEach(b => b.disabled = true);
+        const res = await fetch('/api/confirm', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({token: conf.token, action: action}),
+        });
+        const data = await res.json();
+        bubble(data.message, 'agent');
+      });
+      row.appendChild(btn);
+    });
+    box.appendChild(row);
+  }
+
+  async function send(text) {
+    bubble(text, 'user');
+    input.value = '';
+    sendBtn.disabled = true;
+    const typing = bubble('…', 'agent');
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({message: text}),
+      });
+      if (res.status === 401) { window.location = '/welcome'; return; }
+      const data = await res.json();
+      typing.parentElement.remove();
+      toolChips(data.steps);
+      (data.images || []).forEach(image);
+      bubble(data.reply, 'agent');
+      (data.confirmations || []).forEach(confirmation);
+    } catch (e) {
+      typing.querySelector('p').textContent = '⚠️ Something went wrong. Please try again.';
+    } finally {
+      sendBtn.disabled = false;
+      input.focus();
+    }
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = input.value.trim();
+    if (text) send(text);
+  });
+
+  // Enter отправляет, Shift+Enter переносит строку
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); form.requestSubmit(); }
+  });
+
+  document.querySelectorAll('.suggestion').forEach(btn => {
+    btn.addEventListener('click', () => send(btn.dataset.suggestion));
+  });
+})();
+</script>
+{% endblock %}
