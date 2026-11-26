@@ -11,7 +11,15 @@ import security
 
 # Папка для графиков (она в .gitignore)
 CHARTS_DIR = "charts"
-
+# Фирменные цвета категорий (те же, что на сайте)
+CATEGORY_COLORS = {
+    "food": "#0B1F44", "groceries": "#C9A227", "cafe": "#D9922B",
+    "transport": "#2A9D8F", "education": "#4D5E86", "entertainment": "#8B1E2D",
+    "clothes": "#7687B2", "health": "#5A8F7B", "communication": "#B08D57",
+    "other": "#9A8F7A",
+}
+CHART_BG = "#F5EFE4"     # светлый беж, как карточки сайта
+CHART_TEXT = "#0B1F44"   # Night Sky
 # Фиксированный список категорий, чтобы графики были аккуратными
 CATEGORIES = [
     "food", "groceries", "cafe", "transport", "education",
@@ -165,7 +173,7 @@ def get_summary(user_id, period="month", category=None):
 
 
 def make_chart(user_id, period="month"):
-    """Рисует график-бублик трат по категориям и сохраняет его в PNG."""
+    """Рисует график-бублик трат по категориям в фирменных цветах Fintra."""
     summary = get_summary(user_id, period)
     rows = summary["by_category"]
     if not rows:
@@ -173,15 +181,33 @@ def make_chart(user_id, period="month"):
 
     labels = [r["category"] for r in rows]
     values = [r["total"] for r in rows]
+    colors = [CATEGORY_COLORS.get(r["category"], CATEGORY_COLORS["other"]) for r in rows]
 
     os.makedirs(CHARTS_DIR, exist_ok=True)
     path = os.path.join(CHARTS_DIR, f"{user_id}_{period}.png")
 
-    fig, ax = plt.subplots(figsize=(6, 6))
-    ax.pie(values, labels=labels, autopct="%1.0f%%", startangle=90,
-           wedgeprops={"width": 0.45})
-    ax.set_title(f"Fintra · {period} · {summary['total']} AZN")
-    fig.savefig(path, dpi=150, bbox_inches="tight")
+    fig, ax = plt.subplots(figsize=(6, 6), facecolor=CHART_BG)
+    wedges, texts, autotexts = ax.pie(
+        values,
+        labels=labels,
+        colors=colors,
+        autopct="%1.0f%%",
+        startangle=90,
+        counterclock=False,
+        pctdistance=0.79,
+        wedgeprops={"width": 0.42, "edgecolor": CHART_BG, "linewidth": 3},
+        textprops={"color": CHART_TEXT, "fontsize": 11},
+    )
+    for t in autotexts:              # проценты на секторах
+        t.set_color("white")
+        t.set_fontweight("bold")
+
+    # Сумма в центре бублика
+    ax.text(0, 0, f"{summary['total']:.2f}\nAZN", ha="center", va="center",
+            fontsize=20, fontweight="bold", color=CHART_TEXT)
+    ax.set_title(f"Fintra · {period}", color=CHART_TEXT, fontsize=14, fontweight="bold")
+
+    fig.savefig(path, dpi=150, bbox_inches="tight", facecolor=CHART_BG)
     plt.close(fig)
 
     return {"status": "created", "chart_path": path, "total": summary["total"]}

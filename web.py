@@ -7,6 +7,16 @@ from fastapi.templating import Jinja2Templates
 
 import database
 import tools
+import os
+import time
+import secrets
+
+from fastapi.responses import FileResponse, JSONResponse
+from pydantic import BaseModel
+
+import security
+from agent import run_agent
+from tools import CHARTS_DIR
 
 app = FastAPI(title="Fintra")
 templates = Jinja2Templates(directory="web/templates")
@@ -38,7 +48,26 @@ PERIOD_OPTIONS = [
 
 # Цвета статусов лимитов (из нашей палитры)
 OK_COLOR, WARNING_COLOR, DANGER_COLOR = "#2A9D8F", "#D9922B", "#8B1E2D"
+# Подсказки на странице чата
+CHAT_SUGGESTIONS = [
+    ("local_cafe", "coffee 3.5 manat"),
+    ("today", "How much can I spend today?"),
+    ("donut_large", "Show a chart of my spending this month"),
+    ("shield", "Kartınız bloklanıb, SMS kodu göndərin: kapitalbank-az-secure.com"),
+]
 
+# 🔐 Запросы на подтверждение из веб-чата (хранятся только в памяти сервера)
+PENDING = {}
+CONFIRM_TTL_SECONDS = 300
+
+
+class ChatRequest(BaseModel):
+    message: str
+
+
+class ConfirmRequest(BaseModel):
+    token: str
+    action: str
 
 @app.on_event("startup")
 def startup():
@@ -249,9 +278,83 @@ async def plan(request: Request):
 
 @app.get("/chat", response_class=HTMLResponse)
 async def chat(request: Request):
-    return render_page(request, "chat.html", "chat")
+    return render_page(request, "chat.html", "chat", suggestions=CHAT_SUGGESTIONS)
 
 
 @app.get("/security", response_class=HTMLResponse)
 async def security_page(request: Request):
     return render_page(request, "security.html", "security")
+
+# ---------- API: чат с агентом ----------
+
+@app.post("/api/chat")
+async def api_chat(request: Request, body: ChatRequest):
+    user_id = current_user(request)
+    if user_id is None:
+        return JSONResponse({"error": "unauthorized"}, status_code=401)
+
+    text = body.message.strip()[:1000]
+
+    # 🔐 Номер карты не уходит в модель (как в боте)
+    if security.find_card_numbers(text):
+        return {"reply": "🚫 Your message contained a card number, so it was not sent. "
+                         "Never share card numbers, CVV or PIN — not even with me.",
+                "steps": [], "images": [], "confirmations": []}
+
+    # Собираем шаги агента, чтобы показать их на странице
+    steps = []
+
+    async def on_tool_call(name):
+        steps.append(name)
+
+    reply, images, confirmations = await run_agent(user_id, text, on_tool_call=on_tool_call)
+
+    # 🔐 Подтверждения храним у себя, наружу отдаём только случайный код
+    confirmation_list = []
+    for conf in confirmations:
+        token = secrets.token_urlsafe(16)
+        PENDING[token] = {"user_id": user_id, "data": conf, "created": time.time()}
+        confirmation_list.append({
+            "token": token,
+            "text": f"🔐 Remove limit? {conf['scope']}: {conf['target']} — {conf['amount']} ₼",
+        })
+
+    return {
+        "reply": reply,
+        "steps": steps,
+        "images": [f"/charts/{os.path.basename(p)}?v={int(time.time())}" for p in images],
+        "confirmations": confirmation_list,
+    }
+
+
+@app.post("/api/confirm")
+async def api_confirm(request: Request, body: ConfirmRequest):
+    user_id = current_user(request)
+    if user_id is None:
+        return JSONResponse({"error": "unauthorized"}, status_code=401)
+
+    item = PENDING.pop(body.token, None)
+    if item is None or item["user_id"] != user_id:
+        return {"message": "⚠️ Request not found"}
+    if time.time() - item["created"] > CONFIRM_TTL_SECONDS:
+        return {"message": "⌛ Request expired"}
+    if body.action != "confirm":
+        return {"message": "❌ Cancelled"}
+
+    conf = item["data"]
+    if conf["action"] == "remove_limit":
+        removed = database.remove_limit(user_id, conf["scope"], conf["target"])
+        return {"message": "✅ Limit removed" if removed else "⚠️ Limit not found"}
+    return {"message": "⚠️ Unknown action"}
+
+
+@app.get("/charts/{filename}")
+async def chart_image(request: Request, filename: str):
+    user_id = current_user(request)
+    # 🔐 Только свои графики: имя файла начинается с твоего Telegram ID
+    if user_id is None or not filename.startswith(f"{user_id}_"):
+        return JSONResponse({"error": "forbidden"}, status_code=403)
+    path = os.path.join(CHARTS_DIR, os.path.basename(filename))
+    if not os.path.exists(path):
+        return JSONResponse({"error": "not found"}, status_code=404)
+    return FileResponse(path, headers={"Cache-Control": "no-store"})
