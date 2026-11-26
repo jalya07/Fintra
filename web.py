@@ -7,6 +7,7 @@ from fastapi.templating import Jinja2Templates
 
 import database
 import tools
+import glob
 import os
 import time
 import secrets
@@ -377,10 +378,58 @@ async def remove_limit(request: Request, scope: str = Form(...), target: str = F
 async def chat(request: Request):
     return render_page(request, "chat.html", "chat", suggestions=CHAT_SUGGESTIONS)
 
+SECURITY_MESSAGES = {
+    "logged_out": "You have been logged out on all devices.",
+}
+SECURITY_ERRORS = {
+    "confirm": "Data was NOT deleted: type DELETE exactly to confirm.",
+}
+
 
 @app.get("/security", response_class=HTMLResponse)
-async def security_page(request: Request):
-    return render_page(request, "security.html", "security")
+async def security_page(request: Request, message: str = "", error: str = ""):
+    user_id = current_user(request)
+    if user_id is None:
+        return RedirectResponse("/welcome", status_code=303)
+    return render_page(
+        request, "security.html", "security",
+        data=database.get_data_stats(user_id),
+        message=SECURITY_MESSAGES.get(message, ""),
+        error=SECURITY_ERRORS.get(error, ""),
+    )
+
+
+@app.post("/security/logout-all")
+async def security_logout_all(request: Request):
+    user_id = current_user(request)
+    if user_id is None:
+        return RedirectResponse("/welcome", status_code=303)
+    database.delete_user_sessions(user_id)
+    response = RedirectResponse("/welcome", status_code=303)
+    response.delete_cookie(SESSION_COOKIE)
+    return response
+
+
+@app.post("/security/delete-data")
+async def security_delete_data(request: Request, confirm_text: str = Form("")):
+    user_id = current_user(request)
+    if user_id is None:
+        return RedirectResponse("/welcome", status_code=303)
+    if confirm_text.strip() != "DELETE":
+        return RedirectResponse("/security?error=confirm", status_code=303)
+
+    database.delete_user_data(user_id)
+    for path in glob.glob(os.path.join(CHARTS_DIR, f"{user_id}_*.png")):
+        os.remove(path)
+
+    response = RedirectResponse("/welcome", status_code=303)
+    response.delete_cookie(SESSION_COOKIE)
+    return response
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    return FileResponse("web/static/logo-icon.png")
 
 # ---------- API: чат с агентом ----------
 

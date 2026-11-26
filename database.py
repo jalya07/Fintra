@@ -331,7 +331,32 @@ def delete_session(session_token):
     with get_connection() as conn:
         conn.execute("DELETE FROM web_sessions WHERE session_hash = ?", (_hash(session_token),))
 
-# ---------- Удаление данных пользователя ----------
+
+def delete_user_sessions(user_id):
+    """🔐 Выход на всех устройствах: удаляем все сессии пользователя."""
+    with get_connection() as conn:
+        conn.execute("DELETE FROM web_sessions WHERE user_id = ?", (user_id,))
+
+# ---------- Данные пользователя (страница Security) ----------
+
+def get_data_stats(user_id):
+    """Сколько данных пользователя хранится: для страницы Security."""
+    with get_connection() as conn:
+        expenses = conn.execute(
+            "SELECT COUNT(*) FROM expenses WHERE user_id = ?", (user_id,)
+        ).fetchone()[0]
+        limits = conn.execute(
+            "SELECT COUNT(*) FROM limits WHERE user_id = ?", (user_id,)
+        ).fetchone()[0]
+        plan = conn.execute(
+            "SELECT 1 FROM budgets WHERE user_id = ?", (user_id,)
+        ).fetchone() is not None
+        sessions = conn.execute(
+            "SELECT COUNT(*) FROM web_sessions WHERE user_id = ? AND expires_at > ?",
+            (user_id, now_str()),
+        ).fetchone()[0]
+    return {"expenses": expenses, "limits": limits, "plan": plan, "sessions": sessions}
+
 
 def delete_user_data(user_id):
     """🔐 Удаляет ВСЕ данные пользователя одной транзакцией. Возвращает, сколько строк удалено."""
