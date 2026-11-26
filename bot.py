@@ -1,13 +1,25 @@
 import os
-from dotenv import load_dotenv
-from telegram import Update, BotCommand
-from telegram.ext import Application, CommandHandler, MessageHandler, ContextTypes, filters
+import time
+import secrets
 import logging
+import security
+from pathlib import Path
+from tools import CHARTS_DIR
+from dotenv import load_dotenv
+from telegram import Update, BotCommand, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.constants import ChatAction
-from agent import ask_agent
+from telegram.ext import (
+    Application, CommandHandler, MessageHandler, CallbackQueryHandler,
+    ContextTypes, filters,
+)
 
+from agent import run_agent
+import database
+
+# Загружаем ключи из .env
 load_dotenv()
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+
 logging.basicConfig(
     format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
     level=logging.INFO,
@@ -17,6 +29,11 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger("fintra")
 
+# 🔐 Сколько секунд действует запрос на подтверждение
+CONFIRM_TTL_SECONDS = 300
+
+
+# ---------- Команды ----------
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
@@ -25,31 +42,201 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Hi! I'm Fintra 🛡"
     )
 
-# Ответ на команду /help
+
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "🛡 Fintra — AI finance agent\n\n"
-        "🇦🇿 Xərclərini yaz, çekin şəklini göndər və ya səsli mesaj at — "
-        "mən sayıram, planlayıram və qoruyuram.\n\n"
-        "🇷🇺 Напиши трату, отправь фото чека или голосовое — "
-        "я считаю, планирую и защищаю.\n\n"
-        "🇬🇧 Type an expense, send a receipt photo or a voice message — "
-        "I count, plan and protect.\n\n"
+
+        "🇦🇿 Mən nə edirəm:\n"
+        "💰 Sayıram — xərci yaz, çekin şəklini və ya səsli mesaj göndər\n"
+        "📅 Planlayıram — maaş və ödənişlərə görə büdcə, bu gün nə qədər xərcləyə bilərsən, limitlər\n"
+        "🛡 Qoruyuram — şübhəli SMS-i yoxlayıram, kart nömrələrini silirəm\n\n"
+
+        "🇷🇺 Что я умею:\n"
+        "💰 Считаю — напиши трату, отправь фото чека или голосовое\n"
+        "📅 Планирую — бюджет от зарплаты, сколько можно сегодня, лимиты\n"
+        "🛡 Защищаю — проверяю подозрительные SMS, удаляю номера карт\n\n"
+
+        "🇬🇧 What I do:\n"
+        "💰 Count — type an expense, send a receipt photo or a voice note\n"
+        "📅 Plan — budget from your salary, today's allowance, limits\n"
+        "🛡 Protect — check suspicious SMS, delete card numbers\n\n"
+
         "/start — Başla / Начать / Start\n"
-        "/help — Kömək / Помощь / Help"
+        "/help — Kömək / Помощь / Help\n"
+        "/delete_my_data — Məlumatlarımı sil / Удалить мои данные / Delete my data"
     )
 
-# Любой текст отправляем агенту
-async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Показываем «печатает...», пока ИИ думает
-    await context.bot.send_chat_action(
-        chat_id=update.effective_chat.id,
-        action=ChatAction.TYPING,
+# 🔐 Удаление всех своих данных (только с подтверждением)
+async def delete_my_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await ask_confirmation(update, context, {"action": "delete_my_data"})
+# ---------- 🔐 Подтверждение опасных действий ----------
+
+def describe_confirmation(conf):
+    """Текст запроса на трёх языках."""
+    if conf["action"] == "remove_limit":
+        return (
+            "🔐 Limit silinsin? / Снять лимит? / Remove limit?\n"
+            f"{conf['scope']}: {conf['target']} — {conf['amount']} AZN"
+        )
+    if conf["action"] == "delete_my_data":
+        return (
+            "🔐 Bütün məlumatların silinsin? Bunu geri qaytarmaq olmaz.\n"
+            "🔐 Удалить все твои данные? Это нельзя отменить.\n"
+            "🔐 Delete all your data? This cannot be undone."
+        )
+    return "🔐 Təsdiq edin / Подтвердите / Please confirm"
+
+
+async def ask_confirmation(update, context, conf):
+    """Сохраняет запрос у себя и показывает кнопки. В кнопке — только случайный код."""
+    token = secrets.token_hex(4)
+    pending = context.user_data.setdefault("pending", {})
+    pending[token] = {
+        "data": conf,
+        "user_id": update.effective_user.id,
+        "created": time.time(),
+    }
+
+    keyboard = InlineKeyboardMarkup([[
+        InlineKeyboardButton("✅ Bəli / Да / Yes", callback_data=f"confirm:{token}"),
+        InlineKeyboardButton("❌ Xeyr / Нет / No", callback_data=f"cancel:{token}"),
+    ]])
+    await update.message.reply_text(describe_confirmation(conf), reply_markup=keyboard)
+
+
+async def handle_confirmation(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Нажатие кнопки. Действие выполняется только здесь — по нажатию человека."""
+    query = update.callback_query
+    await query.answer()
+
+    action, token = query.data.split(":", 1)
+    item = context.user_data.get("pending", {}).pop(token, None)
+
+    # Запроса нет или кнопку нажал не тот пользователь
+    if item is None or item["user_id"] != query.from_user.id:
+        await query.edit_message_text("⚠️ Sorğu tapılmadı / Запрос не найден / Request not found")
+        return
+
+    # Запрос устарел
+    if time.time() - item["created"] > CONFIRM_TTL_SECONDS:
+        await query.edit_message_text("⌛ Vaxt bitdi / Время истекло / Request expired")
+        return
+
+    if action == "cancel":
+        await query.edit_message_text("❌ Ləğv edildi / Отменено / Cancelled")
+        return
+
+    conf = item["data"]
+    if conf["action"] == "remove_limit":
+        removed = database.remove_limit(item["user_id"], conf["scope"], conf["target"])
+        logger.info("Пользователь %s подтвердил снятие лимита %s:%s",
+                    item["user_id"], conf["scope"], conf["target"])
+        if removed:
+            await query.edit_message_text("✅ Limit silindi / Лимит снят / Limit removed")
+        else:
+            await query.edit_message_text("⚠️ Limit tapılmadı / Лимит не найден / Limit not found")
+    elif conf["action"] == "delete_my_data":
+        user_id = item["user_id"]
+        counts = database.delete_user_data(user_id)
+
+        # Удаляем и файлы графиков этого пользователя
+        for path in Path(CHARTS_DIR).glob(f"{user_id}_*.png"):
+            path.unlink(missing_ok=True)
+
+        logger.info("Пользователь %s удалил все свои данные: %s", user_id, counts)
+        await query.edit_message_text(
+            "🗑 Bütün məlumatların silindi / Все твои данные удалены / All your data has been deleted"
+        )
+
+# ---------- Сообщения: текст, фото, голос ----------
+# ---------- 🔐 Фильтр номеров карт (до модели) ----------
+
+CARD_WARNING = (
+    "🚫 Mesajını sildim: orada kart nömrəsi var idi. "
+    "Kart nömrəsini, CVV və ya PIN-i heç kimə göndərmə — mənə də.\n\n"
+    "🚫 Я удалил твоё сообщение: в нём был номер карты. "
+    "Никогда не отправляй номер карты, CVV или PIN — даже мне.\n\n"
+    "🚫 I deleted your message: it contained a card number. "
+    "Never send card numbers, CVV or PIN — not even to me."
+)
+
+
+async def block_if_card_number(update, context, text):
+    """Если в тексте номер карты: удалить сообщение, предупредить и НЕ передавать агенту."""
+    if not security.find_card_numbers(text):
+        return False
+
+    try:
+        await update.message.delete()
+    except Exception as e:
+        logger.warning("Не удалось удалить сообщение с номером карты: %s", type(e).__name__)
+
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=CARD_WARNING)
+
+    # В лог пишем только факт, без самого номера
+    logger.warning("Заблокировано сообщение с номером карты от пользователя %s",
+                   update.effective_user.id)
+    return True
+
+async def process_with_agent(update, context, text, media=None):
+    chat_id = update.effective_chat.id
+    user_id = update.effective_user.id
+
+    await context.bot.send_chat_action(chat_id=chat_id, action=ChatAction.TYPING)
+
+    # Показываем пользователю каждый шаг агента
+    async def show_step(tool_name):
+        await context.bot.send_message(chat_id=chat_id, text=f"🔧 {tool_name}")
+        await context.bot.send_chat_action(chat_id=chat_id, action=ChatAction.TYPING)
+
+    reply, images, confirmations = await run_agent(
+        user_id, text, on_tool_call=show_step, media=media
     )
-    reply = await ask_agent(update.message.text)
+
+    # Сначала картинки (если инструменты их создали)
+    for path in images:
+        with open(path, "rb") as photo:
+            await context.bot.send_photo(chat_id=chat_id, photo=photo)
+
+    # Потом ответ агента
     await update.message.reply_text(reply)
 
-# Обработчик ошибок: логируем и вежливо отвечаем пользователю
+    # 🔐 И кнопки подтверждения, если агент попросил опасное действие
+    for conf in confirmations:
+        await ask_confirmation(update, context, conf)
+
+
+async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = update.message.text
+    if await block_if_card_number(update, context, text):
+        return  # 🔐 номер карты не уходит в модель
+    await process_with_agent(update, context, text)
+
+
+async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    caption = update.message.caption
+    if caption and await block_if_card_number(update, context, caption):
+        return  # 🔐
+
+    photo = update.message.photo[-1]  # последнее = самое большое разрешение
+    file = await photo.get_file()
+    data = bytes(await file.download_as_bytearray())
+
+    text = caption or "Here is a photo of my receipt."
+    await process_with_agent(update, context, text, media=(data, "image/jpeg"))
+
+
+async def handle_voice(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    file = await update.message.voice.get_file()
+    data = bytes(await file.download_as_bytearray())
+
+    text = "This is my voice message."
+    await process_with_agent(update, context, text, media=(data, "audio/ogg"))
+
+
+# ---------- Служебное ----------
+
 async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE):
     logger.error("Ошибка при обработке сообщения", exc_info=context.error)
 
@@ -58,29 +245,35 @@ async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE):
             "⚠️ Xəta baş verdi / Произошла ошибка / Something went wrong. 🙏"
         )
 
-# Меню команд на трёх языках (выполняется один раз при запуске)
+
 async def set_commands(app: Application):
-    # По умолчанию (английский), для всех остальных языков
+    # По умолчанию (английский)
     await app.bot.set_my_commands([
         BotCommand("start", "Start Fintra"),
         BotCommand("help", "What can Fintra do?"),
+        BotCommand("delete_my_data", "Delete all my data"),
     ])
     # Азербайджанский
     await app.bot.set_my_commands([
         BotCommand("start", "Fintra-nı başlat"),
         BotCommand("help", "Fintra nə edə bilər?"),
+        BotCommand("delete_my_data", "Bütün məlumatlarımı sil"),
     ], language_code="az")
     # Русский
     await app.bot.set_my_commands([
         BotCommand("start", "Запустить Fintra"),
         BotCommand("help", "Что умеет Fintra?"),
+        BotCommand("delete_my_data", "Удалить все мои данные"),
     ], language_code="ru")
 
     logger.info("Меню команд установлено")
 
+
 def main():
     if not TOKEN:
         raise ValueError("TELEGRAM_BOT_TOKEN не найден в .env")
+
+    database.init_db()
 
     app = (
         Application.builder()
@@ -89,10 +282,20 @@ def main():
         .concurrent_updates(True)
         .build()
     )
-    
+
+    # Команды
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("help", help_command))
+    app.add_handler(CommandHandler("delete_my_data", delete_my_data))
+
+    # 🔐 Кнопки подтверждения
+    app.add_handler(CallbackQueryHandler(handle_confirmation, pattern=r"^(confirm|cancel):"))
+
+    # Сообщения
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+    app.add_handler(MessageHandler(filters.PHOTO, handle_photo))
+    app.add_handler(MessageHandler(filters.VOICE, handle_voice))
+
     app.add_error_handler(error_handler)
 
     logger.info("Fintra запущен... (остановить: Control + C)")
