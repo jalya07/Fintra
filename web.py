@@ -29,6 +29,12 @@ CATEGORY_INFO = {
     "other":         ("📦", "Other",         "#9A8F7A"),
 }
 SOURCE_ICONS = {"text": "💬", "photo": "📸", "voice": "🎙"}
+PERIOD_OPTIONS = [
+    ("today", "Today"),
+    ("week", "This week"),
+    ("month", "This month"),
+    ("all", "All time"),
+]
 
 # Цвета статусов лимитов (из нашей палитры)
 OK_COLOR, WARNING_COLOR, DANGER_COLOR = "#2A9D8F", "#D9922B", "#8B1E2D"
@@ -190,8 +196,50 @@ async def add_expense_from_web(request: Request,
 
 
 @app.get("/expenses", response_class=HTMLResponse)
-async def expenses(request: Request):
-    return render_page(request, "expenses.html", "expenses")
+async def expenses(request: Request, period: str = "month",
+                   category: str = "", source: str = "", deleted: int = 0):
+    user_id = current_user(request)
+    if user_id is None:
+        return RedirectResponse("/welcome", status_code=303)
+
+    # Даты периода считаем так же, как бот (через tools.get_summary)
+    if period not in dict(PERIOD_OPTIONS):
+        period = "month"
+    summary = tools.get_summary(user_id, period)
+    limit = 200
+
+    rows = database.get_expenses(
+        user_id, summary["from"], summary["to"],
+        category=category or None, source=source or None, limit=limit,
+    )
+    expenses_list = []
+    for e in rows:
+        emoji, label, _ = CATEGORY_INFO.get(e["category"], CATEGORY_INFO["other"])
+        expenses_list.append({**e, "emoji": emoji, "label": label,
+                              "source_icon": SOURCE_ICONS.get(e["source"], "💬")})
+
+    total = round(sum(e["amount"] for e in expenses_list), 2)
+    count = len(expenses_list)
+    stats = {"count": count, "total": total,
+             "average": round(total / count, 2) if count else 0}
+
+    return render_page(
+        request, "expenses.html", "expenses",
+        expenses=expenses_list, stats=stats, limit=limit, deleted=deleted,
+        period=period, period_label=dict(PERIOD_OPTIONS)[period],
+        period_options=PERIOD_OPTIONS,
+        category=category, source=source,
+        category_options=[(k, v) for k, v in CATEGORY_INFO.items()],
+    )
+
+
+@app.post("/expenses/{expense_id}/delete")
+async def delete_expense_from_web(request: Request, expense_id: int):
+    user_id = current_user(request)
+    if user_id is None:
+        return RedirectResponse("/welcome", status_code=303)
+    database.delete_expense(user_id, expense_id)  # 🔐 удалит, только если трата твоя
+    return RedirectResponse("/expenses?deleted=1", status_code=303)
 
 
 @app.get("/plan", response_class=HTMLResponse)

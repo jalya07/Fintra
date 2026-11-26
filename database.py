@@ -162,6 +162,34 @@ def count_expenses(user_id, start_date, end_date):
             (user_id, start_date, end_date),
         ).fetchone()[0]
 
+def get_expenses(user_id, start_date, end_date, category=None, source=None, limit=200):
+    """Траты за период с фильтрами (самые новые сверху)."""
+    query = """
+        SELECT id, amount, currency, category, description, card, date, source
+        FROM expenses
+        WHERE user_id = ? AND date BETWEEN ? AND ?
+    """
+    params = [user_id, start_date, end_date]
+    if category:
+        query += " AND category = ?"
+        params.append(category)
+    if source:
+        query += " AND source = ?"
+        params.append(source)
+    query += " ORDER BY date DESC, id DESC LIMIT ?"
+    params.append(limit)
+
+    with get_connection() as conn:
+        return [dict(r) for r in conn.execute(query, params).fetchall()]
+
+
+def delete_expense(user_id, expense_id):
+    """🔐 Удаляет трату, только если она принадлежит этому пользователю."""
+    with get_connection() as conn:
+        cursor = conn.execute(
+            "DELETE FROM expenses WHERE id = ? AND user_id = ?", (expense_id, user_id)
+        )
+        return cursor.rowcount > 0
 # ---------- План бюджета ----------
 
 def save_budget(user_id, income, payday, savings_percent, obligations):

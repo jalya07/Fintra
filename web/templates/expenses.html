@@ -2,559 +2,135 @@
 {% block page_title %}Expenses{% endblock %}
 {% block breadcrumb %}Expenses{% endblock %}
 {% block content %}
-<div class="flex flex-col w-full pb-space-xl">
-<!-- Top Decorative Ambient Glow -->
-<div class="relative w-full">
-<div class="absolute -top-12 right-12 w-96 h-96 rounded-full bg-secondary-fixed/20 blur-3xl pointer-events-none -z-10"></div>
-<div class="absolute top-24 left-1/3 w-80 h-80 rounded-full bg-surface-container-high/40 blur-2xl pointer-events-none -z-10"></div>
-<!-- Editorial Header & Summary Row -->
-<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-lg mb-space-xl">
-<div class="flex flex-col max-w-2xl">
-<div class="flex items-center gap-space-xs mb-space-xs"><span class="font-label-md text-label-md uppercase tracking-widest text-secondary font-bold">Expense Activity</span></div>
-<h1 class="font-headline-lg text-headline-lg text-primary tracking-tight font-semibold">Expense Ledger</h1>
-<p class="font-body-md text-body-md text-on-surface-variant mt-1 leading-relaxed">
-          Synced continuously from Telegram voice notes, receipt photos, and quick texts with high-conviction AI categorization.
-        </p>
-</div>
-<!-- Action Buttons & Export Flow -->
-<div class="flex flex-wrap items-center gap-space-sm shrink-0">
+<div class="flex flex-col w-full">
+<div class="max-w-[1540px] w-full mx-auto space-y-gutter-lg pb-space-xl">
 
-<button class="flex items-center gap-space-xs px-space-lg py-2.5 rounded-lg bg-secondary-container text-primary font-bold shadow-md hover:shadow-lg hover:bg-secondary-fixed transition-all duration-200 active:scale-95" id="addManualBtn">
-<span translate="no" class="notranslate material-symbols-outlined text-xl">add</span>
-<span class="font-title-md text-title-md">+ Manual Expense</span>
-</button>
-</div>
-</div>
-<!-- Quick Stats Cards Strip -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-space-xl">
-<!-- Stat 1 -->
-<div class="relative overflow-hidden rounded-xl bg-surface-container-low p-space-md shadow-sm hover:shadow-md transition-shadow">
-<div class="flex items-center justify-between">
-<span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Ledger Density</span>
-<span translate="no" class="notranslate p-2 rounded-lg bg-surface-container text-primary material-symbols-outlined text-lg">receipt_long</span>
-</div>
-<div class="mt-space-sm flex items-baseline gap-2">
-<span class="font-numeral-lg text-numeral-lg text-primary">48</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant">Entries in October</span>
-</div>
-<div class="mt-2 flex items-center gap-1.5 text-secondary font-semibold font-label-md text-label-md">
-<span translate="no" class="notranslate material-symbols-outlined text-sm">trending_up</span>
-<span>+8 entries vs last week</span>
-</div>
-</div>
-<!-- Stat 2 (Accent Card) -->
-<div class="relative overflow-hidden rounded-xl bg-surface-container-low p-space-md shadow-sm hover:shadow-md transition-shadow">
-<div class="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-secondary-fixed/20 pointer-events-none"></div>
-<div class="flex items-center justify-between">
-<span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Total Disbursed</span>
-<span translate="no" class="notranslate p-2 rounded-lg bg-secondary-container/60 text-secondary material-symbols-outlined text-lg">account_balance_wallet</span>
-</div>
-<div class="mt-space-sm flex items-baseline gap-1">
-<span class="font-numeral-lg text-numeral-lg text-primary tracking-tight">642.80</span>
-<span class="font-headline-sm text-headline-sm text-secondary font-serif">₼</span>
-</div>
-<div class="mt-2 flex items-center justify-between">
-<div class="w-full bg-surface-container-high rounded-full h-1.5 max-w-[120px] overflow-hidden">
-<div class="bg-secondary h-full rounded-full" style="width: 42%;"></div>
-</div>
-<span class="font-label-md text-label-md text-on-surface-variant">42% of monthly cap</span>
-</div>
-</div>
-<!-- Stat 3 -->
-<div class="relative overflow-hidden rounded-xl bg-surface-container-low p-space-md shadow-sm hover:shadow-md transition-shadow">
-<div class="flex items-center justify-between">
-<span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Burn Velocity</span>
-<span translate="no" class="notranslate p-2 rounded-lg bg-surface-container text-primary material-symbols-outlined text-lg">speed</span>
-</div>
-<div class="mt-space-sm flex items-baseline gap-1">
-<span class="font-numeral-lg text-numeral-lg text-primary">49.44</span>
-<span class="font-headline-sm text-headline-sm text-on-surface-variant font-serif">₼</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant ml-1">/ day avg</span>
-</div>
-<div class="mt-2 flex items-center gap-1.5 text-on-tertiary-container font-semibold font-label-md text-label-md">
-<span translate="no" class="notranslate material-symbols-outlined text-sm">shield</span>
-<span>14% below conservative projection</span>
-</div>
-</div>
-</div>
-<!-- Filter & Search Controls Bar -->
-<div class="rounded-xl bg-surface-container-low p-space-md shadow-sm mb-space-lg flex flex-col gap-space-md">
-<!-- Top Line: Search and Date Range Pills -->
-<div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-space-md">
-<!-- Search Input -->
-<div class="relative flex-1 max-w-md">
-<span translate="no" class="notranslate material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-lg">search</span>
-<input class="w-full pl-10 pr-4 py-2 rounded-lg bg-surface-container-lowest text-primary font-body-md text-body-md placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-secondary/40 shadow-inner" id="ledgerSearch" placeholder="Search merchant, note, or amount..." type="text">
-<button class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-primary" id="clearSearch">
-<span translate="no" class="notranslate material-symbols-outlined text-sm">close</span>
-</button>
-</div>
-<!-- Period Selectors -->
-<div class="flex items-center gap-1 overflow-x-auto pb-1 lg:pb-0 scrollbar-none" id="periodFilter">
-<button class="px-space-sm py-1.5 rounded-md font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors shrink-0">All Time</button>
-<button class="px-space-sm py-1.5 rounded-md font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors shrink-0">Last 7 Days</button>
-<button class="px-space-sm py-1.5 rounded-md font-label-md text-label-md bg-secondary-container text-primary font-bold shadow-sm shrink-0">This Month</button>
-<button class="px-space-sm py-1.5 rounded-md font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors shrink-0">September</button>
-<button class="flex items-center gap-1 px-space-sm py-1.5 rounded-md font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors shrink-0">
-<span translate="no" class="notranslate material-symbols-outlined text-sm">calendar_today</span>
-            Custom Range
-          </button>
-</div>
-</div>
-<!-- Bottom Line: Category & Source Filters -->
-<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-sm pt-space-xs">
-<!-- Category Filter -->
-<div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0" id="categoryFilter">
-<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mr-1 hidden sm:inline">Category:</span>
-<button class="cat-pill active px-3 py-1 rounded-full font-label-md text-label-md bg-primary text-on-primary font-semibold transition-all" data-cat="all">All</button>
-<button class="cat-pill px-3 py-1 rounded-full font-label-md text-label-md bg-surface-container text-on-surface hover:bg-surface-container-high transition-all" data-cat="cafe">☕ Cafe</button>
-<button class="cat-pill px-3 py-1 rounded-full font-label-md text-label-md bg-surface-container text-on-surface hover:bg-surface-container-high transition-all" data-cat="groceries">🛒 Groceries</button>
-<button class="cat-pill px-3 py-1 rounded-full font-label-md text-label-md bg-surface-container text-on-surface hover:bg-surface-container-high transition-all" data-cat="transport">🚕 Transport</button>
-<button class="cat-pill px-3 py-1 rounded-full font-label-md text-label-md bg-surface-container text-on-surface hover:bg-surface-container-high transition-all" data-cat="entertainment">🎬 Entertainment</button>
-<button class="cat-pill px-3 py-1 rounded-full font-label-md text-label-md bg-surface-container text-on-surface hover:bg-surface-container-high transition-all" data-cat="health">💊 Health</button>
-</div>
-<!-- Ingestion Source Filter -->
-<div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0" id="sourceFilter">
-<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mr-1 hidden sm:inline">Channel:</span>
-<button class="source-pill active px-2.5 py-1 rounded-lg font-label-md text-label-md bg-surface-container-high text-primary font-bold transition-all shadow-sm" data-source="all">All</button>
-<button class="source-pill px-2.5 py-1 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all flex items-center gap-1" data-source="text">
-<span>💬</span> Text
-          </button>
-<button class="source-pill px-2.5 py-1 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all flex items-center gap-1" data-source="photo"><span>📸</span> Receipt photo</button>
-<button class="source-pill px-2.5 py-1 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all flex items-center gap-1" data-source="voice">
-<span>🎙️</span> Voice Audio
-          </button>
-</div>
-</div>
-</div>
-<!-- Main Rich Ledger Table Card -->
-<div class="rounded-xl bg-surface-container-low shadow-sm overflow-hidden mb-space-lg">
-<div class="overflow-x-auto">
-<table class="w-full text-left border-collapse" id="ledgerTable">
-<thead>
-<tr class="bg-surface-container text-on-surface-variant">
-<th class="py-3 px-space-md font-label-md text-label-md uppercase tracking-wider font-semibold" scope="col">Date &amp; Time</th>
-<th class="py-3 px-space-md font-label-md text-label-md uppercase tracking-wider font-semibold" scope="col">AI Ingestion Channel</th>
-<th class="py-3 px-space-md font-label-md text-label-md uppercase tracking-wider font-semibold" scope="col">Merchant &amp; Context</th>
-<th class="py-3 px-space-md font-label-md text-label-md uppercase tracking-wider font-semibold" scope="col">Category</th>
-<th class="py-3 px-space-md font-label-md text-label-md uppercase tracking-wider font-semibold" scope="col">Settlement Account</th>
-<th class="py-3 px-space-md font-label-md text-label-md uppercase tracking-wider font-semibold text-right" scope="col">Debit</th>
-<th class="py-3 px-space-md font-label-md text-label-md uppercase tracking-wider font-semibold text-center" scope="col">Action</th>
-</tr>
-</thead>
-<tbody class="divide-y divide-surface-container">
-<!-- Row 1: Paul Bakery -->
-<tr class="ledger-row hover:bg-surface-container/60 transition-colors group" data-amount="7.50" data-category="cafe" data-merchant="Paul Bakery Morning coffee croissant client" data-source="text">
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<div class="flex flex-col">
-<span class="font-title-md text-title-md text-primary font-semibold">Oct 13</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant">09:40 AM</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container text-primary font-label-md text-label-md">
-<span>💬</span>
-<span class="font-medium">Telegram Text</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md">
-<div class="flex flex-col max-w-sm">
-<span class="font-title-md text-title-md text-primary font-semibold group-hover:text-secondary transition-colors">Paul Bakery Azerbaijan</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Morning coffee &amp; croissant with corporate client</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-secondary-fixed/40 text-on-secondary-fixed-variant font-label-md text-label-md font-semibold">
-                  ☕ Cafe &amp; Dining
-                </span>
-</td>
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<div class="flex items-center gap-2">
-<span class="w-2.5 h-2.5 rounded-full bg-primary shrink-0"></span>
-<span class="font-body-sm text-body-sm text-on-surface font-medium">Pasha Bank Black</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant font-mono">••4092</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md text-right whitespace-nowrap">
-<span class="font-headline-sm text-headline-sm text-primary font-semibold tracking-tight">-7.50</span>
-<span class="font-title-md text-title-md text-secondary font-serif ml-0.5">₼</span>
-</td>
-<td class="py-3.5 px-space-md text-center whitespace-nowrap">
-<div class="flex items-center justify-center gap-1">
-<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="View in Telegram">
-<span translate="no" class="notranslate material-symbols-outlined text-base">forum</span>
-</button>
-<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="Options">
-<span translate="no" class="notranslate material-symbols-outlined text-base">more_vert</span>
-</button>
-</div>
-</td>
-</tr>
-<!-- Row 2: Bravo Supermarket -->
-<tr class="ledger-row hover:bg-surface-container/60 transition-colors group" data-amount="64.20" data-category="groceries" data-merchant="Bravo Supermarket Ganjlik receipt OCR" data-source="photo">
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<div class="flex flex-col">
-<span class="font-title-md text-title-md text-primary font-semibold">Oct 12</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant">07:15 PM</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-label-md text-label-md"><span>📸</span><span class="font-semibold">Receipt photo</span></div>
-</td>
-<td class="py-3.5 px-space-md">
-<div class="flex flex-col max-w-sm">
-<span class="font-title-md text-title-md text-primary font-semibold group-hover:text-secondary transition-colors">Bravo Supermarket Ganjlik</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Organic produce, pantry staples, sparkling mineral water</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-surface-container text-on-surface font-label-md text-label-md font-semibold">
-                  🛒 Groceries
-                </span>
-</td>
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<div class="flex items-center gap-2">
-<span class="w-2.5 h-2.5 rounded-full bg-surface-tint shrink-0"></span>
-<span class="font-body-sm text-body-sm text-on-surface font-medium">ABB Platinum</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant font-mono">••1184</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md text-right whitespace-nowrap">
-<span class="font-headline-sm text-headline-sm text-primary font-semibold tracking-tight">-64.20</span>
-<span class="font-title-md text-title-md text-secondary font-serif ml-0.5">₼</span>
-</td>
-<td class="py-3.5 px-space-md text-center whitespace-nowrap">
-<div class="flex items-center justify-center gap-1">
-<button class="p-1.5 text-secondary hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="View Scanned Receipt">
-<span translate="no" class="notranslate material-symbols-outlined text-base">receipt</span>
-</button>
-<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="Options">
-<span translate="no" class="notranslate material-symbols-outlined text-base">more_vert</span>
-</button>
-</div>
-</td>
-</tr>
-<!-- Row 3: Mangal Steak House (Voice) -->
-<tr class="ledger-row hover:bg-surface-container/60 transition-colors group" data-amount="12.00" data-category="cafe" data-merchant="Mangal Steak House Port Baku lunch voice transcribed" data-source="voice">
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<div class="flex flex-col">
-<span class="font-title-md text-title-md text-primary font-semibold">Oct 12</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant">02:02 PM</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-fixed/50 text-on-secondary-fixed font-label-md text-label-md">
-<span>🎙️</span>
-<span class="font-semibold">Voice Audio</span>
-<span class="text-xs italic text-secondary">0:04s</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md">
-<div class="flex flex-col max-w-sm">
-<span class="font-title-md text-title-md text-primary font-semibold group-hover:text-secondary transition-colors">Mangal Steak House</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant italic truncate">"Spent 12 manats on lunch near Port Baku"</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-secondary-fixed/40 text-on-secondary-fixed-variant font-label-md text-label-md font-semibold">
-                  ☕ Cafe &amp; Dining
-                </span>
-</td>
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<div class="flex items-center gap-2">
-<span class="w-2.5 h-2.5 rounded-full bg-primary shrink-0"></span>
-<span class="font-body-sm text-body-sm text-on-surface font-medium">Pasha Bank Black</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant font-mono">••4092</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md text-right whitespace-nowrap">
-<span class="font-headline-sm text-headline-sm text-primary font-semibold tracking-tight">-12.00</span>
-<span class="font-title-md text-title-md text-secondary font-serif ml-0.5">₼</span>
-</td>
-<td class="py-3.5 px-space-md text-center whitespace-nowrap">
-<div class="flex items-center justify-center gap-1">
-<button class="p-1.5 text-secondary hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="Play Audio Snippet">
-<span translate="no" class="notranslate material-symbols-outlined text-base">play_circle</span>
-</button>
-<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="Options">
-<span translate="no" class="notranslate material-symbols-outlined text-base">more_vert</span>
-</button>
-</div>
-</td>
-</tr>
-<!-- Row 4: Bolt Azerbaijan -->
-<tr class="ledger-row hover:bg-surface-container/60 transition-colors group" data-amount="4.80" data-category="transport" data-merchant="Bolt Azerbaijan ride Nizami St" data-source="text">
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<div class="flex flex-col">
-<span class="font-title-md text-title-md text-primary font-semibold">Oct 12</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant">08:50 AM</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container text-primary font-label-md text-label-md">
-<span>💬</span>
-<span class="font-medium">Telegram Text</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md">
-<div class="flex flex-col max-w-sm">
-<span class="font-title-md text-title-md text-primary font-semibold group-hover:text-secondary transition-colors">Bolt Azerbaijan</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Premium ride to Landmark Business Center</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-surface-container-high text-on-surface font-label-md text-label-md font-semibold">
-                  🚕 Transport
-                </span>
-</td>
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<div class="flex items-center gap-2">
-<span class="w-2.5 h-2.5 rounded-full bg-primary shrink-0"></span>
-<span class="font-body-sm text-body-sm text-on-surface font-medium">Pasha Bank Black</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant font-mono">••4092</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md text-right whitespace-nowrap">
-<span class="font-headline-sm text-headline-sm text-primary font-semibold tracking-tight">-4.80</span>
-<span class="font-title-md text-title-md text-secondary font-serif ml-0.5">₼</span>
-</td>
-<td class="py-3.5 px-space-md text-center whitespace-nowrap">
-<div class="flex items-center justify-center gap-1">
-<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="View in Telegram">
-<span translate="no" class="notranslate material-symbols-outlined text-base">forum</span>
-</button>
-<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="Options">
-<span translate="no" class="notranslate material-symbols-outlined text-base">more_vert</span>
-</button>
-</div>
-</td>
-</tr>
-<!-- Row 5: CinemaPlus 28 Mall -->
-<tr class="ledger-row hover:bg-surface-container/60 transition-colors group" data-amount="32.00" data-category="entertainment" data-merchant="CinemaPlus 28 Mall tickets cash reserve" data-source="photo">
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<div class="flex flex-col">
-<span class="font-title-md text-title-md text-primary font-semibold">Oct 11</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant">09:00 PM</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-label-md text-label-md"><span>📸</span><span class="font-semibold">Receipt photo</span></div>
-</td>
-<td class="py-3.5 px-space-md">
-<div class="flex flex-col max-w-sm">
-<span class="font-title-md text-title-md text-primary font-semibold group-hover:text-secondary transition-colors">CinemaPlus 28 Mall</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant truncate">VIP Platinum Hall, 2 admissions + refreshment set</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-surface-container text-on-surface font-label-md text-label-md font-semibold">
-                  🎬 Entertainment
-                </span>
-</td>
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<div class="flex items-center gap-2">
-<span class="w-2.5 h-2.5 rounded-full bg-secondary shrink-0"></span>
-<span class="font-body-sm text-body-sm text-on-surface font-medium">Cash Reserve</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant italic">Wallet #1</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md text-right whitespace-nowrap">
-<span class="font-headline-sm text-headline-sm text-primary font-semibold tracking-tight">-32.00</span>
-<span class="font-title-md text-title-md text-secondary font-serif ml-0.5">₼</span>
-</td>
-<td class="py-3.5 px-space-md text-center whitespace-nowrap">
-<div class="flex items-center justify-center gap-1">
-<button class="p-1.5 text-secondary hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="View Scan">
-<span translate="no" class="notranslate material-symbols-outlined text-base">receipt</span>
-</button>
-<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="Options">
-<span translate="no" class="notranslate material-symbols-outlined text-base">more_vert</span>
-</button>
-</div>
-</td>
-</tr>
-<!-- Row 6: Zeytun Aptek -->
-<tr class="ledger-row hover:bg-surface-container/60 transition-colors group" data-amount="18.50" data-category="health" data-merchant="Zeytun Aptek vitamins health wellness" data-source="text">
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<div class="flex flex-col">
-<span class="font-title-md text-title-md text-primary font-semibold">Oct 10</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant">02:20 PM</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container text-primary font-label-md text-label-md">
-<span>💬</span>
-<span class="font-medium">Telegram Text</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md">
-<div class="flex flex-col max-w-sm">
-<span class="font-title-md text-title-md text-primary font-semibold group-hover:text-secondary transition-colors">Zeytun Aptek</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Daily multivitamin complexes &amp; electrolytes</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-surface-container text-on-surface font-label-md text-label-md font-semibold">
-                  💊 Health
-                </span>
-</td>
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<div class="flex items-center gap-2">
-<span class="w-2.5 h-2.5 rounded-full bg-surface-tint shrink-0"></span>
-<span class="font-body-sm text-body-sm text-on-surface font-medium">ABB Platinum</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant font-mono">••1184</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md text-right whitespace-nowrap">
-<span class="font-headline-sm text-headline-sm text-primary font-semibold tracking-tight">-18.50</span>
-<span class="font-title-md text-title-md text-secondary font-serif ml-0.5">₼</span>
-</td>
-<td class="py-3.5 px-space-md text-center whitespace-nowrap">
-<div class="flex items-center justify-center gap-1">
-<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="View in Telegram">
-<span translate="no" class="notranslate material-symbols-outlined text-base">forum</span>
-</button>
-<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="Options">
-<span translate="no" class="notranslate material-symbols-outlined text-base">more_vert</span>
-</button>
-</div>
-</td>
-</tr>
-<!-- Row 7: SOCAR Petroleum (Voice) -->
-<tr class="ledger-row hover:bg-surface-container/60 transition-colors group" data-amount="45.00" data-category="transport" data-merchant="SOCAR Petroleum Babek avenue fuel tank 45 manat" data-source="voice">
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<div class="flex flex-col">
-<span class="font-title-md text-title-md text-primary font-semibold">Oct 09</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant">06:30 PM</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-fixed/50 text-on-secondary-fixed font-label-md text-label-md">
-<span>🎙️</span>
-<span class="font-semibold">Voice Audio</span>
-<span class="text-xs italic text-secondary">0:06s</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md">
-<div class="flex flex-col max-w-sm">
-<span class="font-title-md text-title-md text-primary font-semibold group-hover:text-secondary transition-colors">SOCAR Petroleum</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant italic truncate">"Filled tank at SOCAR Babek avenue 45 manat"</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-surface-container-high text-on-surface font-label-md text-label-md font-semibold">
-                  ⛽ Transport
-                </span>
-</td>
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<div class="flex items-center gap-2">
-<span class="w-2.5 h-2.5 rounded-full bg-surface-tint shrink-0"></span>
-<span class="font-body-sm text-body-sm text-on-surface font-medium">ABB Platinum</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant font-mono">••1184</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md text-right whitespace-nowrap">
-<span class="font-headline-sm text-headline-sm text-primary font-semibold tracking-tight">-45.00</span>
-<span class="font-title-md text-title-md text-secondary font-serif ml-0.5">₼</span>
-</td>
-<td class="py-3.5 px-space-md text-center whitespace-nowrap">
-<div class="flex items-center justify-center gap-1">
-<button class="p-1.5 text-secondary hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="Play Audio Recording">
-<span translate="no" class="notranslate material-symbols-outlined text-base">play_circle</span>
-</button>
-<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="Options">
-<span translate="no" class="notranslate material-symbols-outlined text-base">more_vert</span>
-</button>
-</div>
-</td>
-</tr>
-<!-- Row 8: Entrée Baku -->
-<tr class="ledger-row hover:bg-surface-container/60 transition-colors group" data-amount="11.20" data-category="cafe" data-merchant="Entrée Baku breakfast meeting pastry" data-source="text">
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<div class="flex flex-col">
-<span class="font-title-md text-title-md text-primary font-semibold">Oct 08</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant">11:15 AM</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container text-primary font-label-md text-label-md">
-<span>💬</span>
-<span class="font-medium">Telegram Text</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md">
-<div class="flex flex-col max-w-sm">
-<span class="font-title-md text-title-md text-primary font-semibold group-hover:text-secondary transition-colors">Entrée Baku</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Artisanal sourdough toast &amp; flat white</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-secondary-fixed/40 text-on-secondary-fixed-variant font-label-md text-label-md font-semibold">
-                  ☕ Cafe &amp; Dining
-                </span>
-</td>
-<td class="py-3.5 px-space-md whitespace-nowrap">
-<div class="flex items-center gap-2">
-<span class="w-2.5 h-2.5 rounded-full bg-primary shrink-0"></span>
-<span class="font-body-sm text-body-sm text-on-surface font-medium">Pasha Bank Black</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant font-mono">••4092</span>
-</div>
-</td>
-<td class="py-3.5 px-space-md text-right whitespace-nowrap">
-<span class="font-headline-sm text-headline-sm text-primary font-semibold tracking-tight">-11.20</span>
-<span class="font-title-md text-title-md text-secondary font-serif ml-0.5">₼</span>
-</td>
-<td class="py-3.5 px-space-md text-center whitespace-nowrap">
-<div class="flex items-center justify-center gap-1">
-<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="View in Telegram">
-<span translate="no" class="notranslate material-symbols-outlined text-base">forum</span>
-</button>
-<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-md transition-colors" title="Options">
-<span translate="no" class="notranslate material-symbols-outlined text-base">more_vert</span>
-</button>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<!-- No Results State (Hidden by default) -->
-<div class="hidden p-space-xl text-center flex-col items-center justify-center" id="noResults">
-<span translate="no" class="notranslate material-symbols-outlined text-outline text-4xl mb-2">content_paste_off</span>
-<span class="font-title-lg text-title-lg text-primary font-semibold">No matching entries found</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant mt-1">Try relaxing your search terms or active category filters.</span>
-<button class="mt-space-md px-space-md py-1.5 rounded-lg bg-surface-container text-primary font-title-md text-title-md hover:bg-surface-container-high transition-colors" id="resetFilters">Reset All Filters</button>
-</div>
-<!-- Table Footer & Pagination -->
-<div class="p-space-md bg-surface-container/30 border-t border-surface-container flex flex-col sm:flex-row items-center justify-between gap-space-md">
-<div class="flex items-center gap-2">
-<span class="font-label-md text-label-md text-on-surface-variant" id="paginationNotice">Showing 1-8 of 48 transactions</span>
-<span class="text-outline-variant">•</span>
-<span class="font-label-md text-label-md text-secondary font-medium">Baku Time (GMT+4)</span>
-</div>
-<div class="flex items-center gap-1">
-<button class="p-1.5 rounded-lg text-outline-variant hover:text-primary hover:bg-surface-container transition-colors disabled:opacity-40" disabled="">
-<span translate="no" class="notranslate material-symbols-outlined text-lg">first_page</span>
-</button>
-<button class="p-1.5 rounded-lg text-outline-variant hover:text-primary hover:bg-surface-container transition-colors disabled:opacity-40" disabled="">
-<span translate="no" class="notranslate material-symbols-outlined text-lg">chevron_left</span>
-</button>
-<span class="px-3 py-1 rounded-md bg-surface-container text-primary font-label-md text-label-md font-bold">1</span>
-<button class="px-3 py-1 rounded-md text-on-surface-variant hover:bg-surface-container transition-colors font-label-md text-label-md">2</button>
-<button class="px-3 py-1 rounded-md text-on-surface-variant hover:bg-surface-container transition-colors font-label-md text-label-md">3</button>
-<span class="px-1 text-on-surface-variant text-xs">...</span>
-<button class="px-3 py-1 rounded-md text-on-surface-variant hover:bg-surface-container transition-colors font-label-md text-label-md">6</button>
-<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors">
-<span translate="no" class="notranslate material-symbols-outlined text-lg">chevron_right</span>
-</button>
-<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors">
-<span translate="no" class="notranslate material-symbols-outlined text-lg">last_page</span>
-</button>
-</div>
-</div>
-</div>
-<!-- AI Intelligence Insight Banner -->
-<div class="relative overflow-hidden rounded-xl bg-surface-container-low p-space-lg shadow-sm border-l-4 border-secondary flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md"><div class="flex items-start gap-space-md max-w-3xl"><div class="w-10 h-10 rounded-full bg-secondary/15 flex items-center justify-center shrink-0 mt-0.5"><span translate="no" class="notranslate material-symbols-outlined text-secondary text-2xl">lightbulb</span></div><div class="flex flex-col"><div class="flex items-center gap-2"><span class="font-title-md text-title-md font-semibold text-primary">Helpful Tip</span></div><p class="font-body-md text-body-md text-on-surface-variant mt-1 leading-relaxed">Log expenses anytime by sending a quick message, voice note, or receipt photo directly to <span class="font-semibold text-primary">@myfintra_bot</span>.</p></div></div><div class="flex items-center gap-space-sm shrink-0 self-end md:self-center"><a class="flex items-center gap-space-xs px-space-md py-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-primary font-label-md text-label-md font-semibold transition-all" href="#"><span translate="no" class="notranslate material-symbols-outlined text-lg">chat</span><span>Open Chat</span></a></div></div>
+{% if deleted %}
+<div class="rounded-xl px-space-lg py-space-sm text-white font-title-md text-title-md" style="background-color:#2A9D8F;">🗑 Expense deleted</div>
+{% endif %}
+
+<!-- HEADER -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
+  <div>
+    <span class="font-label-md text-label-md uppercase tracking-widest text-secondary font-bold">Your expenses</span>
+    <h1 class="font-headline-lg text-headline-lg text-primary font-semibold">Expenses</h1>
+    <p class="font-body-md text-body-md text-on-surface-variant mt-1">Everything you sent to Fintra: texts, receipt photos and voice notes.</p>
+  </div>
+  <a href="/" class="inline-flex items-center justify-center gap-space-xs px-space-lg py-2.5 rounded-lg bg-primary text-on-primary font-title-md text-title-md hover:bg-primary-container shadow-md transition-all">
+    <span translate="no" class="notranslate material-symbols-outlined text-secondary-fixed text-lg">add</span> Add expense
+  </a>
+</div>
+
+<!-- METRICS -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+  <div class="rounded-xl bg-surface-container-low p-space-lg shadow-sm">
+    <div class="flex items-center justify-between text-on-surface-variant">
+      <span class="font-label-lg text-label-lg font-semibold tracking-wide uppercase">Expenses</span>
+      <span translate="no" class="notranslate material-symbols-outlined text-xl text-primary">receipt_long</span>
+    </div>
+    <p class="mt-space-md font-numeral-lg text-numeral-lg text-primary tabular-nums">{{ stats.count }}</p>
+    <p class="font-body-sm text-body-sm text-on-surface-variant">{{ period_label }}</p>
+  </div>
+  <div class="rounded-xl bg-surface-container-low p-space-lg shadow-sm">
+    <div class="flex items-center justify-between text-on-surface-variant">
+      <span class="font-label-lg text-label-lg font-semibold tracking-wide uppercase">Total</span>
+      <span translate="no" class="notranslate material-symbols-outlined text-xl text-primary">account_balance_wallet</span>
+    </div>
+    <p class="mt-space-md font-numeral-lg text-numeral-lg text-primary tabular-nums">{{ "%.2f"|format(stats.total) }} <span class="font-title-lg text-title-lg text-on-surface-variant">₼</span></p>
+    <p class="font-body-sm text-body-sm text-on-surface-variant">{{ period_label }}</p>
+  </div>
+  <div class="rounded-xl bg-surface-container-low p-space-lg shadow-sm">
+    <div class="flex items-center justify-between text-on-surface-variant">
+      <span class="font-label-lg text-label-lg font-semibold tracking-wide uppercase">Average expense</span>
+      <span translate="no" class="notranslate material-symbols-outlined text-xl text-secondary">speed</span>
+    </div>
+    <p class="mt-space-md font-numeral-lg text-numeral-lg text-secondary tabular-nums">{{ "%.2f"|format(stats.average) }} <span class="font-title-lg text-title-lg">₼</span></p>
+    <p class="font-body-sm text-body-sm text-on-surface-variant">per expense</p>
+  </div>
+</div>
+
+<!-- FILTERS (обычная GET-форма: фильтры видны в адресе страницы) -->
+<form method="get" action="/expenses" class="rounded-xl bg-surface-container-low p-space-md shadow-sm flex flex-col lg:flex-row lg:items-end gap-space-md">
+  <div class="flex-1">
+    <label class="block font-label-md text-label-md font-semibold text-on-surface-variant uppercase tracking-wider mb-1">Period</label>
+    <select name="period" class="w-full h-10 px-space-sm rounded-lg bg-surface-container text-primary font-body-md text-body-md">
+      {% for value, label in period_options %}
+      <option value="{{ value }}" {% if value == period %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="flex-1">
+    <label class="block font-label-md text-label-md font-semibold text-on-surface-variant uppercase tracking-wider mb-1">Category</label>
+    <select name="category" class="w-full h-10 px-space-sm rounded-lg bg-surface-container text-primary font-body-md text-body-md">
+      <option value="">All</option>
+      {% for key, info in category_options %}
+      <option value="{{ key }}" {% if key == category %}selected{% endif %}>{{ info[0] }} {{ info[1] }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="flex-1">
+    <label class="block font-label-md text-label-md font-semibold text-on-surface-variant uppercase tracking-wider mb-1">Source</label>
+    <select name="source" class="w-full h-10 px-space-sm rounded-lg bg-surface-container text-primary font-body-md text-body-md">
+      <option value="">All</option>
+      <option value="text" {% if source == "text" %}selected{% endif %}>💬 Text</option>
+      <option value="photo" {% if source == "photo" %}selected{% endif %}>📸 Receipt photo</option>
+      <option value="voice" {% if source == "voice" %}selected{% endif %}>🎙 Voice</option>
+    </select>
+  </div>
+  <button type="submit" class="h-10 px-space-lg rounded-lg bg-secondary text-on-primary font-title-md text-title-md hover:opacity-90 transition">Apply</button>
+</form>
+
+<!-- TABLE -->
+<div class="rounded-xl bg-surface-container-low shadow-sm overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr class="bg-surface-container font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">
+          <th class="px-space-md py-space-sm">Date</th>
+          <th class="px-space-md py-space-sm">Description</th>
+          <th class="px-space-md py-space-sm">Category</th>
+          <th class="px-space-md py-space-sm">Card</th>
+          <th class="px-space-md py-space-sm">Source</th>
+          <th class="px-space-md py-space-sm text-right">Amount</th>
+          <th class="px-space-md py-space-sm"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for e in expenses %}
+        <tr class="border-t border-surface-container-high hover:bg-surface-container/60 transition-colors">
+          <td class="px-space-md py-space-sm font-body-sm text-body-sm text-on-surface-variant whitespace-nowrap">{{ e.date }}</td>
+          <td class="px-space-md py-space-sm font-title-md text-title-md text-on-surface">{{ e.description or "—" }}</td>
+          <td class="px-space-md py-space-sm whitespace-nowrap">
+            <span class="font-label-md text-label-md bg-surface-container-high px-2 py-1 rounded">{{ e.emoji }} {{ e.label }}</span>
+          </td>
+          <td class="px-space-md py-space-sm font-body-sm text-body-sm text-on-surface-variant whitespace-nowrap">{{ e.card or "—" }}</td>
+          <td class="px-space-md py-space-sm font-body-sm text-body-sm whitespace-nowrap">{{ e.source_icon }} {{ e.source }}</td>
+          <td class="px-space-md py-space-sm font-title-md text-title-md tabular-nums font-semibold text-primary text-right whitespace-nowrap">-{{ "%.2f"|format(e.amount) }} {{ "₼" if e.currency == "AZN" else e.currency }}</td>
+          <td class="px-space-md py-space-sm text-right">
+            <form method="post" action="/expenses/{{ e.id }}/delete" onsubmit="return confirm('Delete this expense?');">
+              <button type="submit" title="Delete" class="p-1.5 rounded-lg text-on-surface-variant hover:text-white hover:bg-[#8B1E2D] transition-colors">
+                <span translate="no" class="notranslate material-symbols-outlined text-lg">delete</span>
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="7" class="px-space-md py-space-xl text-center font-body-md text-body-md text-on-surface-variant">
+            No expenses for these filters.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% if expenses|length >= limit %}
+  <p class="px-space-md py-space-sm font-body-sm text-body-sm text-on-surface-variant border-t border-surface-container-high">
+    Showing the latest {{ limit }} expenses. Use the filters to narrow the list.
+  </p>
+  {% endif %}
+</div>
+
 </div>
 </div>
 {% endblock %}
