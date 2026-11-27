@@ -88,7 +88,9 @@ def add_expense(amount: float, category: Category, description: Optional[str] = 
 @mcp.tool(annotations=READ_ONLY)
 def get_summary(period: Period = "month", category: Optional[Category] = None) -> dict:
     """Spending totals by category for a period."""
-    return run("get_summary", period=period, category=category)
+    result = run("get_summary", period=period, category=category)
+    result["currency"] = "AZN (₼) unless an expense says otherwise"
+    return result
 
 
 @mcp.tool(annotations=CREATES_FILE)
