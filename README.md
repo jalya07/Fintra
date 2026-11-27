@@ -12,7 +12,7 @@
 <p align="center">
   🤖 Telegram: <a href="https://t.me/myfintra_bot">@myfintra_bot</a> ·
   🌐 Web: <a href="https://fintra-cloud-production.up.railway.app">fintra-cloud-production.up.railway.app</a> ·
-  🎬 Demo video: <i>(link)</i> ·
+    🎬 Demo video: <a href="https://youtu.be/LZ-t5W8D8uI">YouTube</a> ·
   🔐 <a href="#-security--privacy">Security first</a>
 </p>
 
