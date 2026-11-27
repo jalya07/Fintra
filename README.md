@@ -33,7 +33,21 @@ Fintra solves three things in one place, in the language the user speaks (🇦�
 | **Planlayır — Plan** | Build a monthly plan from salary and fixed payments. The agent *suggests* saving 20%, **the user decides**. Shows how much can be spent today. Limits on categories and on card **names**. |
 | **Qoruyur — Protect** | Checks suspicious SMS and links. Blocks card numbers. Removing a limit or deleting data always needs **human confirmation**. |
 
-**Survey:** *(results from 15+ respondents will be added here)*
+## 📊 Survey: is this a real problem?
+
+I asked 14 people (students and young adults in Baku) 7 questions. No names are stored.
+
+| Question | Result |
+|---|---|
+| Money runs out earlier than expected | **11 / 14 (79%)** |
+| Received a suspicious SMS or call "from the bank" | **7 / 14 (50%)** |
+| Have ever tracked their expenses | 7 / 14 (50%) |
+| Would trust an AI assistant with expense data | **13 / 14 (93%)**, 2 only "if the data is protected" |
+
+**Most wanted features:** see where money goes (8), how much I can spend today (7), budget alerts, salary planning and SMS scam check (6 each).
+**Preferred input:** receipt photo (8), text message (6), manual (3), voice (2).
+
+How Fintra answers this: receipt photos and text messages are supported, `get_daily_allowance` shows today's budget, `check_scam` checks suspicious SMS, and security comes first because trust depends on it.
 
 ---
 
@@ -117,6 +131,11 @@ If Gemini fails **in the middle** of a task (for example, after an expense was a
 - In backup mode (OpenRouter / Ollama) only text is supported, so the bot asks the user to type the expense.
 - **No chat history is stored.** Each message is handled on its own with the system prompt and the tools; facts that matter (expenses, plan, limits) live in the database, not in a conversation log. This keeps requests small and private. The trade-off: the agent does not remember the previous message, so multi-step dialogs (like building a plan) ask for all details in one message or step by step through the tools.
 - **SQLite** runs in WAL mode, every operation opens a short connection and every query is scoped by `user_id`. That is enough for a contest-scale load; a real launch would move to PostgreSQL.
+
+### 📱 Install as an app
+
+The website is a **PWA**: on Android, Chrome shows an *Install* banner; on iPhone, Safari → Share → *Add to Home Screen*. The app opens full-screen with the Fintra icon. The service worker caches **only static files and an offline page, never personal pages**. Because an iPhone home-screen app does not share cookies with Safari, the login page also accepts a pasted `/web` link.
+
 ---
 
 ## 🔐 Security & Privacy
@@ -131,11 +150,11 @@ Personal financial data is sensitive, so security was the first requirement, not
 **The AI cannot do dangerous things alone**
 - 🙋 **Human-in-the-loop:** removing a limit or deleting all data requires a button press. Pending confirmations live on the server with a random token, a 5-minute TTL and an owner check.
 - 🧱 **Prompt-injection rule:** text inside photos, voice notes and forwarded messages is treated as *data*, never as instructions.
-- 🚨 **Hybrid scam check:** rules in code (secret-code words, urgency, prizes, link shorteners, fake bank domains) set the **minimum** risk level. The model only explains it and **cannot lower** the risk. The warning banner is added by code.
+- 🚨 **Hybrid scam check:** rules in code (secret-code words, urgency, prizes, link shorteners, fake bank domains) run on **every message before the model** and set the **minimum** risk level. The model only explains it and **cannot lower** the risk. The warning banner is added by code.
 
 **Web & storage**
 - 🔗 **No passwords:** login only by a one-time link from the bot (`secrets.token_urlsafe(32)`), stored as a **SHA-256 hash**, valid 10 minutes, burned atomically on first use.
-- 🍪 Sessions stored as hashes, 24 h; cookies `HttpOnly`, `SameSite=Lax`, `Secure` on HTTPS.
+- 🍪 Sessions stored as hashes, **30 days sliding** (extended on each visit, expire after 30 days without visits); cookies `HttpOnly`, `SameSite=Lax`, `Secure` on HTTPS.
 - 🧍 Every SQL query is parameterized and scoped by `user_id` (no IDOR); a user can only touch their own rows.
 - 🛡 Chat output is inserted with `textContent` (no XSS); chart files are served only to their owner (`os.path.basename`, no path traversal); deletes use POST + Post/Redirect/Get; public FastAPI docs (`/docs`) are disabled; the language parameter accepts only `az/ru/en`.
 - 🗑 **User control:** `/delete_my_data` in Telegram or the Security page (type `DELETE` + confirm) removes expenses, plan, limits, charts and sessions. "Log out on all devices" is one click.
@@ -201,6 +220,21 @@ I tested anonymous models on two real Fintra tasks in **Battle mode** (names are
 - The currency is never left to the model: `AZN` is the default in code and the system prompt uses ₼.
 - Models are good but not equally complete, so the scam check is **hybrid**: rules in code set the minimum risk, the model only explains it.
 - In a blind test a Gemini model gave the most complete answer, which supports Gemini as Fintra's main model.
+
+### 📏 Evaluation
+
+`eval_agent.py` runs **19 test cases** (expenses in AZ/RU/EN, limits, budget plan, daily allowance, scam SMS, prompt injection) plus a card-number filter test. API errors (rate limits, overload) are counted separately, so they are not mixed with wrong answers. Results are saved to `docs/eval_results_<provider>.md`.
+
+| Provider | Correct | API errors | Accuracy* |
+|---|---|---|---|
+| **Gemini** | 16 / 19 | 3 | **100%** |
+| OpenRouter (free) | 7 / 19 | 9 (rate limit) | 70% |
+| Ollama `qwen3:8b` (local) | 9 / 19 | 0 | 47% |
+
+\* Accuracy among answers without an API error. Gemini: median **2.8 s** and ~2,100 tokens per request. Card filter test: **passed**.
+
+**What it changed:** the small local model sometimes missed a scam SMS, so the rule-based scam check now runs **in code on every message, before the model**. Even the weakest backup model cannot miss an obvious scam.
+
 ---
 
 ## 🚀 Run it yourself
@@ -243,6 +277,9 @@ database.py     SQLite: expenses, budgets, limits, login tokens, sessions
 web.py          FastAPI website + web chat API
 i18n.py         AZ / RU / EN translations
 mcp_server.py   MCP server for Claude Desktop and other clients
+eval_agent.py   Evaluation: 19 test cases + card filter test
+docs/           Evaluation results
+web/static/     Logo, icons, PWA manifest, service worker, offline page
 web/templates/  Pages (Overview, Expenses, Plan & Limits, Chat, Security, Privacy)
 web/stitch/     Original Google Stitch export (design source)
 ```
@@ -266,6 +303,7 @@ Real problems from development and how they were solved.
 - **Backup models:** the free GLM 4.5 Air on OpenRouter had no tool calling, so it could not save expenses. Filtered OpenRouter by *free + tools* and picked ERNIE and Ling; rejected a model whose provider may train on prompts.
 - **Ollama:** `qwen3.5:4b` did not call tools and still *claimed* the expense was saved — dangerous for a finance app. `qwen3:8b` works correctly. Its "thinking mode" made answers take minutes; `think=false` is ignored by the OpenAI-compatible endpoint, `reasoning_effort: "none"` works.
 - A `.env` line was accidentally commented out, so the backup list was empty — wrote a small diagnostic script that prints only *whether* variables are set, never their values.
+- The evaluation hit Gemini's free daily quota (`429`) — added a delay between tests, one retry, and a separate API-error count so limits are not counted as wrong answers.
 
 **Design & website**
 - Google Stitch invented features we do not have (encryption enclave, bank sync, investments, CSV export) — removed them with "truth-pass" prompts so the UI never promises something false.
@@ -275,6 +313,8 @@ Real problems from development and how they were solved.
 - `UndefinedError: 'data' is undefined` — the new template was deployed before the backend that passes `data`.
 - New database functions were "missing" — they had been pasted **inside** the `if __name__ == "__main__":` block, so they did not exist on import. Python indentation is part of the syntax.
 - **Translation:** seven templates by hand would be slow and error-prone, so `i18n.py` uses English text as the key and falls back to English if a translation is missing — the site never breaks.
+- **iPhone app showed the login page** even after logging in — a home-screen PWA has its own cookies, separate from Safari. Added a "paste your login link" form on the welcome page.
+- **The bot wrote the risk heading twice** — the code adds the banner, and the model wrote its own. Added a prompt rule: the model starts directly with the explanation.
 
 **MCP**
 - Tutorials use `FastMCP`, but **MCP SDK 2.x** renamed it to `MCPServer` — checked the installed version first.
