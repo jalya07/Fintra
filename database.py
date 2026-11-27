@@ -337,6 +337,7 @@ def extend_session(session_token, hours):
         return False
     new_expiry = (datetime.now() + timedelta(hours=hours)).strftime("%Y-%m-%d %H:%M:%S")
     with get_connection() as conn:
+        conn.execute("PRAGMA journal_mode=WAL")  # чтение и запись не блокируют друг друга (бот, сайт, MCP)
         cursor = conn.execute(
             "UPDATE web_sessions SET expires_at = ? WHERE session_hash = ? AND expires_at > ?",
             (new_expiry, _hash(session_token), now_str()),
