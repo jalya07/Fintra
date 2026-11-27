@@ -67,7 +67,12 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "/start — Başla / Начать / Start\n"
         "/help — Kömək / Помощь / Help\n"
         "/web — Sayt / Сайт / Website\n"
-        "/delete_my_data — Məlumatlarımı sil / Удалить мои данные / Delete my data"
+        "/delete_my_data — Məlumatlarımı sil / Удалить мои данные / Delete my data\n\n"
+
+        "📱 Tətbiq / Приложение / App:\n"
+        "🇦🇿 /web → linki brauzerdə aç → «Əsas ekrana əlavə et»\n"
+        "🇷🇺 /web → открой ссылку в браузере → «На экран Домой»\n"
+        "🇬🇧 /web → open the link in your browser → «Add to Home Screen»"
     )
 # 🔐 Одноразовая ссылка для входа на сайт
 async def web_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
