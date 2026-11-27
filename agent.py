@@ -60,6 +60,8 @@ def build_fallback_providers():
             "client": AsyncOpenAI(base_url=os.getenv("OLLAMA_URL", "http://localhost:11434/v1"),
                                   api_key="ollama", timeout=60),  # 🔐 данные не покидают компьютер
             "models": ollama_models,
+            # Выключаем «режим размышлений»: иначе локальная модель думает минутами
+            "extra": {"reasoning_effort": "none"},
         })
     return providers
 
@@ -210,6 +212,7 @@ async def chat_with_fallback(messages):
             try:
                 response = await provider["client"].chat.completions.create(
                     model=model, messages=messages, tools=OPENAI_TOOLS,
+                    **provider.get("extra", {}),
                 )
                 logger.info("🛟 Ответил резерв: %s / %s", provider["name"], model)
                 return response.choices[0].message
