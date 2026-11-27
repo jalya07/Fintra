@@ -331,6 +331,17 @@ def delete_session(session_token):
     with get_connection() as conn:
         conn.execute("DELETE FROM web_sessions WHERE session_hash = ?", (_hash(session_token),))
 
+def extend_session(session_token, hours):
+    """Скользящая сессия: продлеваем, если она ещё жива. Возвращает True, если продлили."""
+    if not session_token:
+        return False
+    new_expiry = (datetime.now() + timedelta(hours=hours)).strftime("%Y-%m-%d %H:%M:%S")
+    with get_connection() as conn:
+        cursor = conn.execute(
+            "UPDATE web_sessions SET expires_at = ? WHERE session_hash = ? AND expires_at > ?",
+            (new_expiry, _hash(session_token), now_str()),
+        )
+        return cursor.rowcount == 1
 
 def delete_user_sessions(user_id):
     """🔐 Выход на всех устройствах: удаляем все сессии пользователя."""
