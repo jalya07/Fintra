@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="{{ lang|default('az') }}"><head><link rel="icon" type="image/png" href="/static/logo-icon.png"><title>{{ t("Privacy Policy") }} · Fintra</title><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport">
+<!DOCTYPE html><html lang="{{ lang|default('az') }}"><head><link rel="icon" type="image/png" href="/static/logo-icon.png"><link rel="manifest" href="/static/manifest.json"><meta name="theme-color" content="#0B1F44"><link rel="apple-touch-icon" href="/static/icon-192.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Fintra"><title>{{ t("Privacy Policy") }} · Fintra</title><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
@@ -46,5 +46,9 @@
     <a href="https://t.me/myfintra_bot" target="_blank" class="px-5 py-2.5 rounded-lg font-semibold" style="background:#f3e7d0;color:#0B1F44;">@myfintra_bot</a>
   </div>
 </div>
+<script>
+  // 📱 PWA: регистрируем service worker (он кэширует только логотип и офлайн-страницу)
+  if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }
+</script>
 </body>
 </html>
