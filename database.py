@@ -1,9 +1,10 @@
 import sqlite3
 import hashlib
 import secrets
+import os
 from datetime import datetime, timedelta
 
-DB_PATH = "fintra.db"
+DB_PATH = os.getenv("DB_PATH", "fintra.db")
 
 
 def get_connection():
