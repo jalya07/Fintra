@@ -1,4 +1,5 @@
 import os
+import re
 import json
 import logging
 from dotenv import load_dotenv
@@ -26,7 +27,7 @@ client = genai.Client(
 )
 
 # Коды ошибок, при которых есть смысл попробовать другую модель
-RETRYABLE_CODES = {429, 500, 503}
+RETRYABLE_CODES = {429, 500, 502, 503, 504}
 
 # Защита от бесконечного цикла
 MAX_STEPS = 5
@@ -98,7 +99,30 @@ ALL_DOWN = (
     "⚠️ The service is temporarily unavailable, please try again later."
 )
 TOO_MANY_STEPS = "⚠️ Çox addım oldu / Слишком много шагов / Too many steps. 🙏"
+# 🔐 Модель может написать «записала», не вызвав инструмент (так делали резервные модели).
+# Подтверждать сохранение имеет право только код.
+WRITE_TOOLS = {"add_expense", "set_limit", "plan_budget", "request_remove_limit"}
+SAVE_CLAIM = re.compile(
+    r"\b(записал|записала|сохранил|сохранила|добавил|добавила"
+    r"|qeyd etdim|qeydə aldım|yadda saxladım|əlavə etdim|saxlanıldı|qeyd edildi"
+    r"|saved|recorded|logged)\b",
+    re.IGNORECASE,
+)
+NOT_SAVED = (
+    "⚠️ Xərc yadda saxlanmadı. Zəhmət olmasa, bir daha yazın.\n"
+    "⚠️ Расход не сохранён. Пожалуйста, напишите ещё раз.\n"
+    "⚠️ The expense was not saved. Please try again."
+)
 
+
+def verify_claims(reply, executed, banners):
+    """Если модель говорит «сохранено», а ни один инструмент записи не выполнялся,
+    её ответ не показываем: пользователь не должен думать, что расход сохранён."""
+    done = {name for name, _, _ in executed}
+    if not (done & WRITE_TOOLS) and SAVE_CLAIM.search(reply or ""):
+        logger.warning("🔐 Модель заявила о сохранении без инструмента, ответ заменён")
+        return with_banners(NOT_SAVED, banners)
+    return reply
 
 # ---------- Общие помощники ----------
 
@@ -263,6 +287,7 @@ async def run_fallback(user_id, user_text, on_tool_call, executed,
 
             # 🔐 user_id подставляет код, а не модель: чужие данные недоступны
             result = execute_tool(tc.function.name, args, user_id)
+            executed.append((tc.function.name, args, result))
             collect(result, images, confirmations, banners)
             messages.append({"role": "tool", "tool_call_id": tc.id,
                              "content": json.dumps({"result": result}, ensure_ascii=False, default=str)})
@@ -292,7 +317,7 @@ async def run_agent(user_id, user_text, on_tool_call=None, media=None):
     try:
         reply = await run_gemini(user_id, user_text, on_tool_call, media, executed,
                                  images, confirmations, banners)
-        return reply, images, confirmations
+        return verify_claims(reply, executed, banners), images, confirmations
     except Exception as e:
         logger.error("Gemini недоступен (%s), включаю резерв", type(e).__name__)
 
@@ -306,4 +331,4 @@ async def run_agent(user_id, user_text, on_tool_call=None, media=None):
     except Exception as e:
         logger.error("Резерв тоже недоступен (%s)", type(e).__name__)
         reply = with_banners(ALL_DOWN, banners)
-    return reply, images, confirmations
+    return verify_claims(reply, executed, banners), images, confirmations

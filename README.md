@@ -152,6 +152,7 @@ Personal financial data is sensitive, so security was the first requirement, not
 - 🙋 **Human-in-the-loop:** removing a limit or deleting all data requires a button press. Pending confirmations live on the server with a random token, a 5-minute TTL and an owner check.
 - 🧱 **Prompt-injection rule:** text inside photos, voice notes and forwarded messages is treated as *data*, never as instructions.
 - 🚨 **Hybrid scam check:** rules in code (secret-code words, urgency, prizes, link shorteners, fake bank domains) run on **every message before the model** and set the **minimum** risk level. The model only explains it and **cannot lower** the risk. The warning banner is added by code.
+- ✅ **Saving is confirmed by code, not by the model:** if a model says "saved" but no write tool ran, the reply is replaced with an honest "not saved" message.
 
 **Web & storage**
 - 🔗 **No passwords:** login only by a one-time link from the bot (`secrets.token_urlsafe(32)`), stored as a **SHA-256 hash**, valid 10 minutes, burned atomically on first use.
@@ -326,6 +327,7 @@ Real problems from development and how they were solved.
 - **Ollama:** `qwen3.5:4b` did not call tools and still *claimed* the expense was saved — dangerous for a finance app. `qwen3:8b` works correctly. Its "thinking mode" made answers take minutes; `think=false` is ignored by the OpenAI-compatible endpoint, `reasoning_effort: "none"` works.
 - A `.env` line was accidentally commented out, so the backup list was empty — wrote a small diagnostic script that prints only *whether* variables are set, never their values.
 - The evaluation hit Gemini's free daily quota (`429`) — added a delay between tests, one retry, and a separate API-error count so limits are not counted as wrong answers.
+- In the cloud, with Gemini over its quota (`429`), the backup model ERNIE answered "coffee saved" **without calling `add_expense`** — nothing was saved. Added `verify_claims()`: only code can confirm a save. Also `502`/`504` now move to the next Gemini model instead of skipping straight to the backup.
 
 **Design & website**
 - Google Stitch invented features we do not have (encryption enclave, bank sync, investments, CSV export) — removed them with "truth-pass" prompts so the UI never promises something false.
