@@ -20,8 +20,15 @@ import security
 import i18n
 from agent import run_agent
 from tools import CHARTS_DIR
+from dotenv import load_dotenv
+load_dotenv()
 
-app = FastAPI(title="Fintra")
+# 🔐 Документация API (/docs) не нужна посторонним: выключаем
+app = FastAPI(title="Fintra", docs_url=None, redoc_url=None, openapi_url=None)
+
+# 🔐 Если сайт открыт по HTTPS, cookie отправляются только по защищённому соединению
+COOKIE_SECURE = os.getenv("WEB_URL", "").startswith("https://")
+
 templates = Jinja2Templates(directory="web/templates")
 app.mount("/static", StaticFiles(directory="web/static"), name="static")
 
@@ -49,7 +56,7 @@ async def language_middleware(request: Request, call_next):
     response = await call_next(request)
     if query_lang in i18n.LANGS:  # 🔐 сохраняем только az / ru / en
         response.set_cookie(i18n.LANG_COOKIE, query_lang, max_age=365 * 24 * 3600,
-                            httponly=True, samesite="lax")
+                            httponly=True, samesite="lax", secure=COOKIE_SECURE)
     return response
 
 
@@ -156,7 +163,7 @@ async def login(token: str = ""):
         httponly=True,                   # JavaScript не может прочитать cookie
         samesite="lax",                  # защита от запросов с чужих сайтов
         max_age=SESSION_HOURS * 3600,
-        secure=False,                    # True, когда сайт будет на HTTPS
+        secure=COOKIE_SECURE,  # 🔐 только HTTPS, когда сайт публичный
     )
     return response
 
