@@ -1,21 +1,21 @@
 {% extends "base.html" %}
-{% block page_title %}Plan &amp; Limits{% endblock %}
-{% block breadcrumb %}Plan &amp; Limits{% endblock %}
+{% block page_title %}{{ t("Plan & Limits") }}{% endblock %}
+{% block breadcrumb %}{{ t("Plan & Limits") }}{% endblock %}
 {% block content %}
 <div class="flex flex-col w-full">
 <div class="max-w-[1540px] w-full mx-auto space-y-gutter-lg pb-space-xl">
 
 {% if message %}
-<div class="rounded-xl px-space-lg py-space-sm text-white font-title-md text-title-md" style="background-color:#2A9D8F;">✅ {{ message }}</div>
+<div class="rounded-xl px-space-lg py-space-sm text-white font-title-md text-title-md" style="background-color:#2A9D8F;">✅ {{ t(message) }}</div>
 {% endif %}
 {% if error %}
-<div class="rounded-xl px-space-lg py-space-sm text-white font-title-md text-title-md" style="background-color:#8B1E2D;">⚠️ {{ error }}</div>
+<div class="rounded-xl px-space-lg py-space-sm text-white font-title-md text-title-md" style="background-color:#8B1E2D;">⚠️ {{ t(error) }}</div>
 {% endif %}
 
 <div>
-  <span class="font-label-md text-label-md uppercase tracking-widest text-secondary font-bold">Planlayır</span>
-  <h1 class="font-headline-lg text-headline-lg text-primary font-semibold">Plan &amp; Limits</h1>
-  <p class="font-body-md text-body-md text-on-surface-variant mt-1">Your monthly plan and spending limits. The same data as in the Telegram bot.</p>
+  <span class="font-label-md text-label-md uppercase tracking-widest text-secondary font-bold">{{ t("Plans") }}</span>
+  <h1 class="font-headline-lg text-headline-lg text-primary font-semibold">{{ t("Plan & Limits") }}</h1>
+  <p class="font-body-md text-body-md text-on-surface-variant mt-1">{{ t("Your monthly plan and spending limits. The same data as in the Telegram bot.") }}</p>
 </div>
 
 <div class="grid grid-cols-1 xl:grid-cols-12 gap-gutter">
@@ -26,44 +26,44 @@
     {% if plan %}
     <div class="rounded-xl bg-surface-container-low p-space-lg shadow-sm">
       <div class="flex items-center justify-between">
-        <h2 class="font-headline-sm text-headline-sm text-primary font-semibold">Your monthly plan</h2>
-        <span class="font-label-md text-label-md bg-surface-container-high px-2 py-1 rounded">Payday: day {{ plan.payday }}</span>
+        <h2 class="font-headline-sm text-headline-sm text-primary font-semibold">{{ t("Your monthly plan") }}</h2>
+        <span class="font-label-md text-label-md bg-surface-container-high px-2 py-1 rounded">{{ t("Payday: day {day}", day=plan.payday) }}</span>
       </div>
 
       <div class="mt-space-md grid grid-cols-2 md:grid-cols-4 gap-space-sm">
         <div class="p-space-sm rounded-lg bg-surface-container">
-          <p class="font-label-md text-label-md uppercase text-on-surface-variant">Income</p>
+          <p class="font-label-md text-label-md uppercase text-on-surface-variant">{{ t("Income") }}</p>
           <p class="font-title-lg text-title-lg text-primary tabular-nums">{{ "%.2f"|format(plan.income) }} ₼</p>
         </div>
         <div class="p-space-sm rounded-lg bg-surface-container">
-          <p class="font-label-md text-label-md uppercase text-on-surface-variant">Fixed payments</p>
+          <p class="font-label-md text-label-md uppercase text-on-surface-variant">{{ t("Fixed payments") }}</p>
           <p class="font-title-lg text-title-lg text-primary tabular-nums">{{ "%.2f"|format(plan.obligations_total) }} ₼</p>
         </div>
         <div class="p-space-sm rounded-lg bg-surface-container">
-          <p class="font-label-md text-label-md uppercase text-on-surface-variant">Savings ({{ "%g"|format(plan.savings_percent) }}%)</p>
+          <p class="font-label-md text-label-md uppercase text-on-surface-variant">{{ t("Savings") }} ({{ "%g"|format(plan.savings_percent) }}%)</p>
           <p class="font-title-lg text-title-lg tabular-nums" style="color:#2A9D8F;">{{ "%.2f"|format(plan.savings) }} ₼</p>
         </div>
         <div class="p-space-sm rounded-lg bg-surface-container">
-          <p class="font-label-md text-label-md uppercase text-on-surface-variant">To live on</p>
+          <p class="font-label-md text-label-md uppercase text-on-surface-variant">{{ t("To live on") }}</p>
           <p class="font-title-lg text-title-lg text-secondary tabular-nums">{{ "%.2f"|format(plan.spendable) }} ₼</p>
         </div>
       </div>
 
       <!-- Полоса распределения дохода -->
       <div class="mt-space-md w-full h-3 rounded-full overflow-hidden flex bg-surface-container-highest">
-        <div style="width: {{ plan.share_obligations }}%; background-color:#0B1F44;" title="Fixed payments"></div>
-        <div style="width: {{ plan.share_savings }}%; background-color:#2A9D8F;" title="Savings"></div>
-        <div style="width: {{ plan.share_spendable }}%; background-color:#C9A227;" title="To live on"></div>
+        <div style="width: {{ plan.share_obligations }}%; background-color:#0B1F44;" title="{{ t('Fixed payments') }}"></div>
+        <div style="width: {{ plan.share_savings }}%; background-color:#2A9D8F;" title="{{ t('Savings') }}"></div>
+        <div style="width: {{ plan.share_spendable }}%; background-color:#C9A227;" title="{{ t('To live on') }}"></div>
       </div>
       <div class="mt-1 flex flex-wrap gap-space-md font-body-sm text-body-sm text-on-surface-variant">
-        <span><span class="inline-block w-2.5 h-2.5 rounded-full align-middle" style="background-color:#0B1F44;"></span> Fixed payments {{ plan.share_obligations }}%</span>
-        <span><span class="inline-block w-2.5 h-2.5 rounded-full align-middle" style="background-color:#2A9D8F;"></span> Savings {{ plan.share_savings }}%</span>
-        <span><span class="inline-block w-2.5 h-2.5 rounded-full align-middle" style="background-color:#C9A227;"></span> To live on {{ plan.share_spendable }}%</span>
+        <span><span class="inline-block w-2.5 h-2.5 rounded-full align-middle" style="background-color:#0B1F44;"></span> {{ t("Fixed payments") }} {{ plan.share_obligations }}%</span>
+        <span><span class="inline-block w-2.5 h-2.5 rounded-full align-middle" style="background-color:#2A9D8F;"></span> {{ t("Savings") }} {{ plan.share_savings }}%</span>
+        <span><span class="inline-block w-2.5 h-2.5 rounded-full align-middle" style="background-color:#C9A227;"></span> {{ t("To live on") }} {{ plan.share_spendable }}%</span>
       </div>
 
       {% if plan.obligations %}
       <div class="mt-space-md">
-        <p class="font-label-md text-label-md uppercase text-on-surface-variant mb-1">Fixed payments</p>
+        <p class="font-label-md text-label-md uppercase text-on-surface-variant mb-1">{{ t("Fixed payments") }}</p>
         {% for o in plan.obligations %}
         <div class="flex justify-between py-1 border-b border-surface-container-high font-body-md text-body-md">
           <span>{{ o.name }}</span><span class="tabular-nums">{{ "%.2f"|format(o.amount) }} ₼</span>
@@ -75,8 +75,8 @@
       {% if allowance %}
       <div class="mt-space-md p-space-sm rounded-lg bg-secondary/10">
         <p class="font-title-md text-title-md text-primary">
-          You can spend today: <span class="text-secondary">{{ "%.2f"|format(allowance.daily_allowance) }} ₼</span>
-          · {{ allowance.days_until_payday }} days until payday
+          {{ t("You can spend today:") }} <span class="text-secondary">{{ "%.2f"|format(allowance.daily_allowance) }} ₼</span>
+          · {{ t("{days} days until payday", days=allowance.days_until_payday) }}
         </p>
       </div>
       {% endif %}
@@ -85,33 +85,33 @@
 
     <!-- Форма плана (создать или изменить) -->
     <div class="rounded-xl bg-surface-container-low p-space-lg shadow-sm">
-      <h2 class="font-headline-sm text-headline-sm text-primary font-semibold">{{ "Change your plan" if plan else "Create your plan" }}</h2>
-      <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">You decide how much to save. 20% is a common choice, 0 is fine too.</p>
+      <h2 class="font-headline-sm text-headline-sm text-primary font-semibold">{{ t("Change your plan") if plan else t("Create your plan") }}</h2>
+      <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">{{ t("You decide how much to save. 20% is a common choice, 0 is fine too.") }}</p>
       <form method="post" action="/plan/save" class="mt-space-md space-y-space-md">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-space-sm">
           <div>
-            <label class="block font-label-md text-label-md font-semibold uppercase tracking-wider text-on-surface-variant mb-1">Monthly income (₼)</label>
+            <label class="block font-label-md text-label-md font-semibold uppercase tracking-wider text-on-surface-variant mb-1">{{ t("Monthly income (₼)") }}</label>
             <input name="income" type="number" step="0.01" min="0.01" required value="{{ plan.income if plan else '' }}"
                    class="w-full h-10 px-space-sm rounded-lg bg-surface-container text-primary">
           </div>
           <div>
-            <label class="block font-label-md text-label-md font-semibold uppercase tracking-wider text-on-surface-variant mb-1">Payday (day of month)</label>
+            <label class="block font-label-md text-label-md font-semibold uppercase tracking-wider text-on-surface-variant mb-1">{{ t("Payday (day of month)") }}</label>
             <input name="payday" type="number" min="1" max="31" required value="{{ plan.payday if plan else '' }}"
                    class="w-full h-10 px-space-sm rounded-lg bg-surface-container text-primary">
           </div>
           <div>
-            <label class="block font-label-md text-label-md font-semibold uppercase tracking-wider text-on-surface-variant mb-1">Savings (%)</label>
+            <label class="block font-label-md text-label-md font-semibold uppercase tracking-wider text-on-surface-variant mb-1">{{ t("Savings (%)") }}</label>
             <input name="savings_percent" type="number" step="1" min="0" max="90" required value="{{ '%g'|format(plan.savings_percent) if plan else 20 }}"
                    class="w-full h-10 px-space-sm rounded-lg bg-surface-container text-primary">
           </div>
         </div>
         <div>
-          <label class="block font-label-md text-label-md font-semibold uppercase tracking-wider text-on-surface-variant mb-1">Fixed payments (rent, loans, utilities)</label>
+          <label class="block font-label-md text-label-md font-semibold uppercase tracking-wider text-on-surface-variant mb-1">{{ t("Fixed payments (rent, loans, utilities)") }}</label>
           <div class="space-y-space-xs">
             {% for i in range(5) %}
             {% set ob = plan.obligations[i] if plan and plan.obligations|length > i else None %}
             <div class="grid grid-cols-3 gap-space-sm">
-              <input name="ob_name" type="text" maxlength="40" placeholder="e.g. rent" value="{{ ob.name if ob else '' }}"
+              <input name="ob_name" type="text" maxlength="40" placeholder="{{ t('e.g. rent') }}" value="{{ ob.name if ob else '' }}"
                      class="col-span-2 h-10 px-space-sm rounded-lg bg-surface-container text-primary">
               <input name="ob_amount" type="number" step="0.01" min="0" placeholder="0.00" value="{{ ob.amount if ob else '' }}"
                      class="h-10 px-space-sm rounded-lg bg-surface-container text-primary">
@@ -119,7 +119,7 @@
             {% endfor %}
           </div>
         </div>
-        <button type="submit" class="h-10 px-space-lg rounded-lg bg-primary text-on-primary font-title-md text-title-md hover:bg-primary-container shadow-md transition-all">Save plan</button>
+        <button type="submit" class="h-10 px-space-lg rounded-lg bg-primary text-on-primary font-title-md text-title-md hover:bg-primary-container shadow-md transition-all">{{ t("Save plan") }}</button>
       </form>
     </div>
   </div>
@@ -127,19 +127,19 @@
   <!-- ===================== LIMITS ===================== -->
   <div class="xl:col-span-5 space-y-gutter">
     <div class="rounded-xl bg-surface-container-low p-space-lg shadow-sm">
-      <h2 class="font-headline-sm text-headline-sm text-primary font-semibold">Your limits</h2>
-      <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Monthly limits. Fintra warns you at 80% and 100%.</p>
+      <h2 class="font-headline-sm text-headline-sm text-primary font-semibold">{{ t("Your limits") }}</h2>
+      <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">{{ t("Monthly limits. Fintra warns you at 80% and 100%.") }}</p>
       <div class="mt-space-md space-y-space-sm">
         {% for l in limits %}
         <div class="p-space-md rounded-xl bg-surface-container">
           <div class="flex items-center justify-between gap-2">
-            <span class="font-title-md text-title-md text-on-surface">{{ l.emoji }} {{ l.label }}</span>
+            <span class="font-title-md text-title-md text-on-surface">{{ l.emoji }} {{ t(l.label) }}</span>
             <div class="flex items-center gap-2">
-              <span class="font-label-md text-label-md font-bold px-2 py-0.5 rounded text-white" style="background-color: {{ l.color }};">{{ l.status }} ({{ l.percent }}%)</span>
-              <form method="post" action="/limits/remove" onsubmit="return confirm('Remove this limit?');">
+              <span class="font-label-md text-label-md font-bold px-2 py-0.5 rounded text-white" style="background-color: {{ l.color }};">{{ t(l.status) }} ({{ l.percent }}%)</span>
+              <form method="post" action="/limits/remove" onsubmit="return confirm({{ t('Remove this limit?')|tojson|forceescape }});">
                 <input type="hidden" name="scope" value="{{ l.scope }}">
                 <input type="hidden" name="target" value="{{ l.target }}">
-                <button type="submit" title="Remove limit" class="p-1 rounded-lg text-on-surface-variant hover:text-white hover:bg-[#8B1E2D] transition-colors">
+                <button type="submit" title="{{ t('Remove limit') }}" class="p-1 rounded-lg text-on-surface-variant hover:text-white hover:bg-[#8B1E2D] transition-colors">
                   <span translate="no" class="notranslate material-symbols-outlined text-lg">delete</span>
                 </button>
               </form>
@@ -149,46 +149,46 @@
             <div class="h-2 rounded-full" style="width: {{ [l.percent, 100]|min }}%; background-color: {{ l.color }};"></div>
           </div>
           <p class="mt-space-xs font-body-sm text-body-sm text-on-surface-variant">
-            Spent: <strong class="text-primary">{{ "%.2f"|format(l.spent) }} ₼</strong> of {{ "%.2f"|format(l.amount) }} ₼
+            {{ t("Spent: {spent} ₼ of {amount} ₼", spent="%.2f"|format(l.spent), amount="%.2f"|format(l.amount)) }}
           </p>
         </div>
         {% else %}
-        <p class="font-body-md text-body-md text-on-surface-variant">No limits yet.</p>
+        <p class="font-body-md text-body-md text-on-surface-variant">{{ t("No limits yet.") }}</p>
         {% endfor %}
       </div>
     </div>
 
     <!-- Новый лимит -->
     <div class="rounded-xl bg-surface-container-low p-space-lg shadow-sm">
-      <h2 class="font-headline-sm text-headline-sm text-primary font-semibold">Add a limit</h2>
+      <h2 class="font-headline-sm text-headline-sm text-primary font-semibold">{{ t("Add a limit") }}</h2>
       <form method="post" action="/limits/add" class="mt-space-md space-y-space-sm">
         <div class="grid grid-cols-2 gap-space-sm">
           <div>
-            <label class="block font-label-md text-label-md font-semibold uppercase tracking-wider text-on-surface-variant mb-1">For</label>
+            <label class="block font-label-md text-label-md font-semibold uppercase tracking-wider text-on-surface-variant mb-1">{{ t("For") }}</label>
             <select name="scope" id="limit-scope" class="w-full h-10 px-space-sm rounded-lg bg-surface-container text-primary">
-              <option value="category">Category</option>
-              <option value="card">Card</option>
+              <option value="category">{{ t("Category") }}</option>
+              <option value="card">{{ t("Card") }}</option>
             </select>
           </div>
           <div>
-            <label class="block font-label-md text-label-md font-semibold uppercase tracking-wider text-on-surface-variant mb-1">Monthly limit (₼)</label>
+            <label class="block font-label-md text-label-md font-semibold uppercase tracking-wider text-on-surface-variant mb-1">{{ t("Monthly limit (₼)") }}</label>
             <input name="amount" type="number" step="0.01" min="0.01" required class="w-full h-10 px-space-sm rounded-lg bg-surface-container text-primary">
           </div>
         </div>
         <div id="limit-category">
-          <label class="block font-label-md text-label-md font-semibold uppercase tracking-wider text-on-surface-variant mb-1">Category</label>
+          <label class="block font-label-md text-label-md font-semibold uppercase tracking-wider text-on-surface-variant mb-1">{{ t("Category") }}</label>
           <select name="category" class="w-full h-10 px-space-sm rounded-lg bg-surface-container text-primary">
             {% for key, info in category_options %}
-            <option value="{{ key }}">{{ info[0] }} {{ info[1] }}</option>
+            <option value="{{ key }}">{{ info[0] }} {{ t(info[1]) }}</option>
             {% endfor %}
           </select>
         </div>
         <div id="limit-card" class="hidden">
-          <label class="block font-label-md text-label-md font-semibold uppercase tracking-wider text-on-surface-variant mb-1">Card name</label>
-          <input name="card" type="text" maxlength="30" placeholder="e.g. Birbank" class="w-full h-10 px-space-sm rounded-lg bg-surface-container text-primary">
-          <p class="mt-1 font-body-sm text-body-sm text-on-surface-variant">🔐 Only a name, never the card number.</p>
+          <label class="block font-label-md text-label-md font-semibold uppercase tracking-wider text-on-surface-variant mb-1">{{ t("Card name") }}</label>
+          <input name="card" type="text" maxlength="30" placeholder="{{ t('e.g. Birbank') }}" class="w-full h-10 px-space-sm rounded-lg bg-surface-container text-primary">
+          <p class="mt-1 font-body-sm text-body-sm text-on-surface-variant">{{ t("🔐 Only a name, never the card number.") }}</p>
         </div>
-        <button type="submit" class="h-10 px-space-lg rounded-lg bg-secondary text-on-primary font-title-md text-title-md hover:opacity-90 transition">Add limit</button>
+        <button type="submit" class="h-10 px-space-lg rounded-lg bg-secondary text-on-primary font-title-md text-title-md hover:opacity-90 transition">{{ t("Add limit") }}</button>
       </form>
     </div>
   </div>
