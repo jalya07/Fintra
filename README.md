@@ -111,6 +111,12 @@ Ollama (local): qwen3:8b — data never leaves the computer
 
 If Gemini fails **in the middle** of a task (for example, after an expense was already saved), the backup model receives the steps that were already done, so nothing is saved twice. Photos and voice notes need Gemini; in backup mode the bot politely asks to type the message.
 
+### Photos, voice and memory
+
+- **Photos and voice notes go straight to Gemini** as files (`image/jpeg`, `audio/ogg`) in the same request as the text; there is no separate OCR or speech-to-text step. Gemini reads the receipt or the voice note and calls the same tools.
+- In backup mode (OpenRouter / Ollama) only text is supported, so the bot asks the user to type the expense.
+- **No chat history is stored.** Each message is handled on its own with the system prompt and the tools; facts that matter (expenses, plan, limits) live in the database, not in a conversation log. This keeps requests small and private. The trade-off: the agent does not remember the previous message, so multi-step dialogs (like building a plan) ask for all details in one message or step by step through the tools.
+- **SQLite** runs in WAL mode, every operation opens a short connection and every query is scoped by `user_id`. That is enough for a contest-scale load; a real launch would move to PostgreSQL.
 ---
 
 ## 🔐 Security & Privacy
@@ -179,7 +185,7 @@ Tested with **MCP Inspector** (`npx @modelcontextprotocol/inspector python mcp_s
 | **MCP** | `mcp_server.py`, tested with MCP Inspector and Claude Desktop |
 | **DeepSeek Harness idea** | Showing every agent step in the web chat |
 | **LMArena** | Blind comparison of models on real Fintra tasks (see below) |
-| **NotebookLM** | *(README check — to be added)* |
+| **NotebookLM** | Read the README as a "jury": it summarized Fintra correctly and pointed out gaps (no metrics, unclear multimodal flow and memory), which led to the evaluation script and the sections below |
 | **Lovable / v0** | Considered; not used because Fintra needs a real Python backend. I chose the code path (level 3 of the workshop's three levels). |
 
 ### LMArena: blind model comparison

@@ -6,6 +6,7 @@ from google import genai
 from google.genai import types, errors
 from openai import AsyncOpenAI
 
+import security
 from tools import TOOL_DECLARATIONS, execute_tool
 from prompts import build_system_prompt
 
@@ -108,7 +109,7 @@ def collect(result, images, confirmations, banners):
             images.append(result["chart_path"])
         if result.get("confirmation"):
             confirmations.append(result["confirmation"])
-        if result.get("risk_banner"):
+        if result.get("risk_banner") and result["risk_banner"] not in banners:
             banners.append(result["risk_banner"])
 
 
@@ -116,7 +117,7 @@ def with_banners(reply, banners):
     """🔐 Плашки риска от кода ставим перед ответом: модель не может их убрать."""
     reply = reply or ""
     if banners:
-        reply = "\n".join(banners) + "\n\n" + reply
+        reply = "\n".join(dict.fromkeys(banners)) + "\n\n" + reply   # без повторов
     return reply
 
 
@@ -278,6 +279,15 @@ async def run_agent(user_id, user_text, on_tool_call=None, media=None):
     confirmations = []  # 🔐 действия, которые должен подтвердить человек
     banners = []        # 🔐 плашки риска от кода (модель не может их изменить)
     executed = []       # уже выполненные шаги: (имя, аргументы, результат)
+
+    # 🔐 Правила мошенничества проверяют КАЖДОЕ сообщение ещё до модели.
+    # Даже если модель забудет вызвать check_scam (так делала локальная модель в тестах),
+    # пользователь всё равно увидит предупреждение от кода.
+    rules = security.analyze_scam(user_text or "")
+    if rules.get("rule_risk") in ("high", "medium"):
+        banner = security.RISK_BANNERS.get(rules["rule_risk"])
+        if banner:
+            banners.append(banner)
 
     try:
         reply = await run_gemini(user_id, user_text, on_tool_call, media, executed,
