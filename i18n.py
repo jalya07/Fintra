@@ -303,6 +303,59 @@ T = {
     "Data was NOT deleted: type DELETE exactly to confirm.": {
         "az": "Məlumatlar SİLİNMƏDİ: təsdiq üçün dəqiq DELETE yazın.",
         "ru": "Данные НЕ удалены: для подтверждения введите ровно DELETE."},
+    # ---------- Privacy Policy ----------
+    "Privacy Policy": {"az": "Məxfilik siyasəti", "ru": "Политика конфиденциальности"},
+    "Last updated: {date}": {"az": "Son yenilənmə: {date}", "ru": "Обновлено: {date}"},
+    "Open Fintra": {"az": "Fintra-nı aç", "ru": "Открыть Fintra"},
+    "privacy_intro": {
+        "en": "Fintra is an AI finance assistant in Telegram and on the web. Your financial data is personal, so here we explain in plain words what we store, why, who processes it and how you can delete it.",
+        "az": "Fintra Telegram-da və saytda işləyən AI maliyyə köməkçisidir. Maliyyə məlumatlarınız şəxsidir, ona görə burada sadə sözlərlə izah edirik: nəyi saxlayırıq, nə üçün, kim emal edir və onu necə silə bilərsiniz.",
+        "ru": "Fintra — AI-помощник по финансам в Telegram и на сайте. Финансовые данные — это личное, поэтому здесь простыми словами объясняем, что мы храним, зачем, кто это обрабатывает и как всё удалить."},
+    "privacy_h1": {"en": "Who we are", "az": "Biz kimik", "ru": "Кто мы"},
+    "privacy_p1": {
+        "en": "Fintra is a student project created for the \"Agentic AI: From Models to Systems\" workshop (IMechE ASOIU Student Chapter, UFAZ). It is not a bank and not a commercial service. We do not show ads and do not sell or share your data for marketing.",
+        "az": "Fintra \"Agentic AI: From Models to Systems\" vorkşopu (IMechE ASOIU Student Chapter, UFAZ) üçün hazırlanmış tələbə layihəsidir. Bu, bank və ya kommersiya xidməti deyil. Reklam göstərmirik, məlumatlarınızı satmırıq və marketinq üçün paylaşmırıq.",
+        "ru": "Fintra — студенческий проект, созданный для воркшопа «Agentic AI: From Models to Systems» (IMechE ASOIU Student Chapter, UFAZ). Это не банк и не коммерческий сервис. Мы не показываем рекламу, не продаём ваши данные и не передаём их для маркетинга."},
+    "privacy_h2": {"en": "What we store", "az": "Nəyi saxlayırıq", "ru": "Что мы храним"},
+    "privacy_p2": {
+        "en": "• Your Telegram ID, to keep your data separate from other users.\n• Expenses: amount, currency, category, short description, date, card name (for example \"Birbank\") and how it was added (text, photo or voice).\n• Your budget plan: income, payday, savings percent and fixed payments.\n• Your spending limits.\n• Chart images that Fintra draws for you.\n• Website login links and sessions, stored only as SHA-256 hashes.",
+        "az": "• Telegram ID-niz, məlumatlarınızı digər istifadəçilərdən ayırmaq üçün.\n• Xərclər: məbləğ, valyuta, kateqoriya, qısa təsvir, tarix, kartın adı (məsələn \"Birbank\") və necə əlavə edildiyi (mətn, şəkil və ya səs).\n• Büdcə planınız: gəlir, maaş günü, qənaət faizi və sabit ödənişlər.\n• Xərc limitləriniz.\n• Fintra-nın sizin üçün çəkdiyi diaqramlar.\n• Sayta giriş linkləri və sessiyalar, yalnız SHA-256 heş kimi.",
+        "ru": "• Ваш Telegram ID, чтобы отделять ваши данные от других пользователей.\n• Расходы: сумма, валюта, категория, короткое описание, дата, название карты (например «Birbank») и способ добавления (текст, фото или голос).\n• План бюджета: доход, день зарплаты, процент сбережений и обязательные платежи.\n• Лимиты расходов.\n• Графики, которые Fintra рисует для вас.\n• Ссылки для входа на сайт и сессии — только в виде SHA-256 хешей."},
+    "privacy_h3": {"en": "What we never collect", "az": "Heç vaxt nəyi toplamırıq", "ru": "Что мы никогда не собираем"},
+    "privacy_p3": {
+        "en": "Card numbers, CVV, PIN, SMS codes, passwords or bank logins. A message with a card number is blocked before it reaches the AI, and in Telegram it is deleted from the chat. Fintra has no access to your bank account and cannot make payments. We do not save your chat history, receipt photos or voice messages.",
+        "az": "Kart nömrələri, CVV, PIN, SMS kodları, parollar və ya bank girişləri. Kart nömrəsi olan mesaj AI-yə çatmazdan əvvəl bloklanır, Telegram-da isə söhbətdən silinir. Fintra-nın bank hesabınıza çıxışı yoxdur və ödəniş edə bilməz. Söhbət tarixçənizi, çek şəkillərini və səsli mesajları saxlamırıq.",
+        "ru": "Номера карт, CVV, PIN, SMS-коды, пароли и логины от банка. Сообщение с номером карты блокируется до того, как попадёт в AI, а в Telegram удаляется из чата. У Fintra нет доступа к вашему банковскому счёту, она не может проводить платежи. Мы не сохраняем историю переписки, фото чеков и голосовые сообщения."},
+    "privacy_h4": {"en": "Who processes your messages", "az": "Mesajlarınızı kim emal edir", "ru": "Кто обрабатывает ваши сообщения"},
+    "privacy_p4": {
+        "en": "• Telegram delivers messages between you and the bot.\n• Google Gemini reads your message, receipt photo or voice note to understand it and returns an answer.\n• If Gemini is unavailable, the text message goes to a backup model through OpenRouter. We turned off providers that may train on user data.\n• As the last backup, a model runs locally with Ollama on the computer where Fintra works: the data does not leave that computer.\nThese services process data under their own privacy policies.",
+        "az": "• Telegram sizinlə bot arasında mesajları çatdırır.\n• Google Gemini mesajınızı, çek şəklini və ya səsli mesajı başa düşmək üçün oxuyur və cavab qaytarır.\n• Gemini əlçatan olmadıqda mətn mesajı OpenRouter vasitəsilə ehtiyat modelə gedir. İstifadəçi məlumatları ilə model öyrədə bilən provayderləri söndürmüşük.\n• Son ehtiyat kimi Fintra-nın işlədiyi kompüterdə Ollama ilə yerli model işləyir: məlumat həmin kompüterdən çıxmır.\nBu xidmətlər məlumatları öz məxfilik siyasətlərinə uyğun emal edir.",
+        "ru": "• Telegram доставляет сообщения между вами и ботом.\n• Google Gemini читает сообщение, фото чека или голосовое, чтобы понять его, и возвращает ответ.\n• Если Gemini недоступен, текстовое сообщение уходит резервной модели через OpenRouter. Провайдеров, которые могут обучаться на данных пользователей, мы отключили.\n• Последний резерв — модель, которая работает локально через Ollama на компьютере, где запущена Fintra: данные не покидают этот компьютер.\nЭти сервисы обрабатывают данные по своим политикам конфиденциальности."},
+    "privacy_h5": {"en": "How long we keep data", "az": "Məlumatları nə qədər saxlayırıq", "ru": "Сколько мы храним данные"},
+    "privacy_p5": {
+        "en": "Expenses, plan, limits and charts are kept until you delete them. A website session ends after 24 hours, a login link expires after 10 minutes and works only once. Technical server logs may briefly contain the actions the agent performed (for example, \"add expense 3 AZN, cafe\") to find errors.",
+        "az": "Xərclər, plan, limitlər və diaqramlar siz silənə qədər saxlanılır. Sayt sessiyası 24 saatdan sonra bitir, giriş linki 10 dəqiqədən sonra etibarsız olur və yalnız bir dəfə işləyir. Xətaları tapmaq üçün serverin texniki loqlarında agentin etdiyi əməliyyatlar (məsələn, \"xərc əlavə et 3 AZN, kafe\") qısa müddət qala bilər.",
+        "ru": "Расходы, план, лимиты и графики хранятся, пока вы их не удалите. Сессия сайта заканчивается через 24 часа, ссылка для входа истекает через 10 минут и работает один раз. В технических логах сервера могут ненадолго оставаться действия агента (например, «добавить расход 3 AZN, кафе»), чтобы находить ошибки."},
+    "privacy_h6": {"en": "You are in control", "az": "Nəzarət sizdədir", "ru": "Всё под вашим контролем"},
+    "privacy_p6": {
+        "en": "• See all your expenses, plan and limits on the website.\n• Delete a single expense on the Expenses page.\n• Delete all your data with the /delete_my_data command in Telegram or on the Security page. It is permanent and needs your confirmation.\n• Log out on all devices on the Security page.",
+        "az": "• Bütün xərclərinizi, planınızı və limitlərinizi saytda görün.\n• Ayrı bir xərci Xərclər səhifəsində silin.\n• Bütün məlumatlarınızı Telegram-da /delete_my_data əmri ilə və ya Təhlükəsizlik səhifəsində silin. Bu, həmişəlikdir və təsdiqinizi tələb edir.\n• Təhlükəsizlik səhifəsində bütün cihazlardan çıxın.",
+        "ru": "• Смотрите все расходы, план и лимиты на сайте.\n• Удаляйте отдельный расход на странице «Расходы».\n• Удалите все данные командой /delete_my_data в Telegram или на странице «Безопасность». Это навсегда и требует вашего подтверждения.\n• Выйдите на всех устройствах на странице «Безопасность»."},
+    "privacy_h7": {"en": "How we protect data", "az": "Məlumatları necə qoruyuruq", "ru": "Как мы защищаем данные"},
+    "privacy_p7": {
+        "en": "Each request works only with the data of the signed-in user. Login links and sessions are stored as hashes, cookies are HttpOnly. Important actions (removing a limit, deleting data) happen only after your confirmation, the AI can only ask. Text inside photos and forwarded messages is treated as data, never as commands. Suspicious SMS are checked by rules in code, and the AI cannot lower the risk level. API keys are never stored in the code.",
+        "az": "Hər sorğu yalnız daxil olmuş istifadəçinin məlumatları ilə işləyir. Giriş linkləri və sessiyalar heş kimi saxlanılır, cookie-lər HttpOnly-dir. Vacib əməliyyatlar (limitin silinməsi, məlumatların silinməsi) yalnız təsdiqinizdən sonra baş verir, AI yalnız soruşa bilər. Şəkillərdəki və yönləndirilmiş mesajlardakı mətn əmr deyil, məlumat kimi qəbul edilir. Şübhəli SMS-lər koddakı qaydalarla yoxlanılır və AI risk səviyyəsini azalda bilməz. API açarları heç vaxt kodda saxlanılmır.",
+        "ru": "Каждый запрос работает только с данными вошедшего пользователя. Ссылки для входа и сессии хранятся в виде хешей, cookie — HttpOnly. Важные действия (удаление лимита, удаление данных) выполняются только после вашего подтверждения, AI может только спросить. Текст на фото и в пересланных сообщениях считается данными, а не командами. Подозрительные SMS проверяются правилами в коде, и AI не может понизить уровень риска. API-ключи никогда не хранятся в коде."},
+    "privacy_h8": {"en": "Important", "az": "Vacibdir", "ru": "Важно"},
+    "privacy_p8": {
+        "en": "Fintra helps you track and plan your money, but it does not give investment, legal or tax advice. Always check important financial decisions yourself. If this policy changes, we will update the date at the top of this page.",
+        "az": "Fintra pulunuzu izləməyə və planlaşdırmağa kömək edir, lakin investisiya, hüquqi və ya vergi məsləhəti vermir. Vacib maliyyə qərarlarını həmişə özünüz yoxlayın. Bu siyasət dəyişsə, səhifənin yuxarısındakı tarixi yeniləyəcəyik.",
+        "ru": "Fintra помогает учитывать и планировать деньги, но не даёт инвестиционных, юридических и налоговых советов. Важные финансовые решения всегда проверяйте сами. Если политика изменится, мы обновим дату вверху страницы."},
+    "privacy_h9": {"en": "Contact", "az": "Əlaqə", "ru": "Связь"},
+    "privacy_p9": {
+        "en": "Questions or found a problem? Write to us on GitHub:",
+        "az": "Sualınız var və ya problem tapdınız? GitHub-da bizə yazın:",
+        "ru": "Есть вопросы или нашли проблему? Напишите нам на GitHub:"},
 }
 
 
