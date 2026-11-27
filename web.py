@@ -137,6 +137,10 @@ async def welcome(request: Request, error: int = 0, info: str = ""):
         "error": error, "info": WELCOME_INFO.get(info, ""), "lang": request.state.lang,
     })
 
+@app.get("/privacy", response_class=HTMLResponse)
+async def privacy(request: Request):
+    """Политика конфиденциальности: открыта всем, вход не нужен."""
+    return templates.TemplateResponse(request, "privacy.html", {"lang": request.state.lang})
 
 @app.get("/login")
 async def login(token: str = ""):

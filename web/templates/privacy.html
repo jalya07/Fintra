@@ -1,0 +1,50 @@
+<!DOCTYPE html><html lang="{{ lang|default('az') }}"><head><link rel="icon" type="image/png" href="/static/logo-icon.png"><title>{{ t("Privacy Policy") }} · Fintra</title><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: "Plus Jakarta Sans", sans-serif; background:#fff8f1; color:#211b0d; }
+  h1, h2 { font-family: "Playfair Display", serif; color:#0B1F44; }
+</style></head>
+<body class="min-h-screen p-4 sm:p-8">
+<div class="max-w-3xl mx-auto">
+
+  <!-- Шапка -->
+  <div class="flex items-center justify-between gap-4 flex-wrap">
+    <a href="/welcome" class="flex items-center gap-3">
+      <img src="/static/logo-icon.png" alt="Fintra logo" class="w-12 h-12 rounded-xl">
+      <div>
+        <span translate="no" class="notranslate text-2xl font-semibold" style="font-family:'Playfair Display',serif;color:#0B1F44;">Fintra</span>
+        <p class="text-xs uppercase tracking-wider font-semibold" style="color:#755b00;">{{ t("Count · Plan · Protect") }}</p>
+      </div>
+    </a>
+    <div class="inline-flex items-center p-0.5 rounded-lg shadow-sm" style="background:#f3e7d0;">
+      {% for code in ["az", "ru", "en"] %}
+      <a href="?lang={{ code }}" class="px-2 py-1 text-xs font-semibold rounded-md {% if lang == code %}shadow-sm{% endif %}"
+         style="{% if lang == code %}background:#755b00;color:#fff;{% else %}color:#44464e;{% endif %}">{{ code|upper }}</a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="mt-8 rounded-xl p-6 sm:p-8 shadow-sm" style="background:#fff2dc;">
+    <h1 class="text-3xl sm:text-4xl font-semibold">{{ t("Privacy Policy") }}</h1>
+    <p class="mt-2 text-sm" style="color:#44464e;">{{ t("Last updated: {date}", date="2026-11-27") }}</p>
+    <p class="mt-4">{{ t("privacy_intro") }}</p>
+
+    {% for n in range(1, 9) %}
+    <h2 class="mt-8 text-xl font-semibold">{{ n }}. {{ t("privacy_h" ~ n) }}</h2>
+    <p class="mt-2 leading-relaxed whitespace-pre-line">{{ t("privacy_p" ~ n) }}</p>
+    {% endfor %}
+
+    <h2 class="mt-8 text-xl font-semibold">9. {{ t("privacy_h9") }}</h2>
+    <p class="mt-2 leading-relaxed">{{ t("privacy_p9") }}
+      <a href="https://github.com/jalya07/Fintra/issues" target="_blank" class="font-semibold underline" style="color:#755b00;">github.com/jalya07/Fintra</a>
+    </p>
+  </div>
+
+  <div class="mt-6 flex flex-wrap gap-3">
+    <a href="/" class="px-5 py-2.5 rounded-lg text-white font-semibold" style="background:#0B1F44;">{{ t("Open Fintra") }}</a>
+    <a href="https://t.me/myfintra_bot" target="_blank" class="px-5 py-2.5 rounded-lg font-semibold" style="background:#f3e7d0;color:#0B1F44;">@myfintra_bot</a>
+  </div>
+</div>
+</body>
+</html>
