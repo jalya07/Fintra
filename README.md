@@ -178,10 +178,23 @@ Tested with **MCP Inspector** (`npx @modelcontextprotocol/inspector python mcp_s
 | **Ollama** | Local private backup (`qwen3:8b`), works offline |
 | **MCP** | `mcp_server.py`, tested with MCP Inspector and Claude Desktop |
 | **DeepSeek Harness idea** | Showing every agent step in the web chat |
-| **LMArena** | *(model comparison — to be added)* |
+| **LMArena** | Blind comparison of models on real Fintra tasks (see below) |
 | **NotebookLM** | *(README check — to be added)* |
 | **Lovable / v0** | Considered; not used because Fintra needs a real Python backend. I chose the code path (level 3 of the workshop's three levels). |
 
+### LMArena: blind model comparison
+
+I tested anonymous models on two real Fintra tasks in **Battle mode** (names are hidden until you vote).
+
+| Task | Models (revealed after voting) | Result |
+|---|---|---|
+| Parse expenses from mixed Azerbaijani / Latin text: *"kofe 3 manat, taksi 5.5, Bravo-da 12 manat ərzaq aldım"* | inkling-2-small vs inkling-2-small | Both correct: 3 expenses, 5.5 understood, "Bravo … ərzaq" → groceries. Both wrote the currency as `"manat"`, not `AZN`. |
+| Is this SMS a scam? *"Kartınız bloklanıb. Kodu göndərin: kapitalbank-az-secure.com"* | deepseek-v4.1-flash-high vs **gemini-3.8-flash-high** | Both detected phishing; **Gemini** was better: it named all three red flags (urgency, fake domain vs. `kapitalbank.az`, request for a code). |
+
+**What it changed in Fintra**
+- The currency is never left to the model: `AZN` is the default in code and the system prompt uses ₼.
+- Models are good but not equally complete, so the scam check is **hybrid**: rules in code set the minimum risk, the model only explains it.
+- In a blind test a Gemini model gave the most complete answer, which supports Gemini as Fintra's main model.
 ---
 
 ## 🚀 Run it yourself
