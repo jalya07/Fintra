@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-{% block page_title %}Chat{% endblock %}
-{% block breadcrumb %}Chat{% endblock %}
+{% block page_title %}{{ t("Chat") }}{% endblock %}
+{% block breadcrumb %}{{ t("Chat") }}{% endblock %}
 {% block content %}
 <div class="max-w-[1540px] w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-gutter pb-space-lg">
 
@@ -11,17 +11,17 @@
         <img src="/static/logo-icon.png" alt="Fintra logo" class="w-12 h-12 rounded-lg">
         <div>
           <h2 translate="no" class="notranslate font-headline-sm text-headline-sm text-primary font-semibold">Fintra</h2>
-          <p class="font-body-sm text-body-sm text-on-surface-variant">The same AI agent as in Telegram</p>
+          <p class="font-body-sm text-body-sm text-on-surface-variant">{{ t("The same AI agent as in Telegram") }}</p>
         </div>
       </div>
       <p class="mt-space-md font-body-md text-body-md text-on-surface-variant">
-        Type an expense, ask about your spending or paste a suspicious SMS.
-        Everything you save here is also visible in <a href="https://t.me/myfintra_bot" target="_blank" class="text-secondary font-semibold underline">@myfintra_bot</a>.
+        {{ t("Type an expense, ask about your spending or paste a suspicious SMS. Everything you save here is also visible in the Telegram bot.") }}
+        <a href="https://t.me/myfintra_bot" target="_blank" class="text-secondary font-semibold underline">@myfintra_bot</a>
       </p>
     </div>
 
     <div class="rounded-xl bg-surface-container-low p-space-lg shadow-sm">
-      <span class="font-label-md text-label-md uppercase tracking-widest text-secondary font-bold">Try asking</span>
+      <span class="font-label-md text-label-md uppercase tracking-widest text-secondary font-bold">{{ t("Try asking") }}</span>
       <div class="mt-space-sm space-y-space-xs">
         {% for icon, text in suggestions %}
         <button type="button" data-suggestion="{{ text }}"
@@ -34,10 +34,10 @@
     </div>
 
     <div class="rounded-xl bg-primary-container text-on-primary p-space-lg shadow-sm">
-      <p class="font-title-md text-title-md">📸 🎙 Photos and voice notes</p>
-      <p class="mt-1 font-body-sm text-body-sm text-on-primary-container">Send receipt photos and voice messages in Telegram. The website chat supports text.</p>
+      <p class="font-title-md text-title-md">{{ t("📸 🎙 Photos and voice notes") }}</p>
+      <p class="mt-1 font-body-sm text-body-sm text-on-primary-container">{{ t("Send receipt photos and voice messages in Telegram. The website chat supports text.") }}</p>
       <a href="https://t.me/myfintra_bot" target="_blank" class="mt-space-sm inline-flex items-center gap-1 font-title-md text-title-md text-secondary-fixed hover:underline">
-        Open @myfintra_bot <span translate="no" class="notranslate material-symbols-outlined text-base">open_in_new</span>
+        {{ t("Open @myfintra_bot") }} <span translate="no" class="notranslate material-symbols-outlined text-base">open_in_new</span>
       </a>
     </div>
   </div>
@@ -47,7 +47,7 @@
     <div class="flex items-center justify-between px-space-lg py-space-md border-b border-surface-container-high">
       <div class="flex items-center gap-space-sm">
         <span class="w-2.5 h-2.5 rounded-full" style="background-color:#2A9D8F;"></span>
-        <span class="font-title-md text-title-md text-on-surface">Chat with Fintra</span>
+        <span class="font-title-md text-title-md text-on-surface">{{ t("Chat with Fintra") }}</span>
       </div>
       <span class="font-body-sm text-body-sm text-on-surface-variant">AZ · RU · EN</span>
     </div>
@@ -56,7 +56,7 @@
     <div id="messages" class="flex-1 overflow-y-auto px-space-lg py-space-md space-y-space-md">
       <div class="flex justify-start">
         <div class="max-w-[85%] rounded-2xl rounded-tl-sm bg-surface-container px-space-md py-space-sm">
-          <p class="font-body-md text-body-md text-on-surface">Salam! Привет! Hi! 👋 I am Fintra. How can I help with your money today?</p>
+          <p class="font-body-md text-body-md text-on-surface">{{ t("Salam! Привет! Hi! 👋 I am Fintra. How can I help with your money today?") }}</p>
         </div>
       </div>
     </div>
@@ -64,14 +64,14 @@
     <!-- Поле ввода -->
     <form id="chat-form" class="px-space-lg py-space-md border-t border-surface-container-high">
       <div class="flex items-end gap-space-sm">
-        <textarea id="chat-input" rows="1" maxlength="1000" placeholder="Type a message… e.g. coffee 3 manat"
+        <textarea id="chat-input" rows="1" maxlength="1000" placeholder="{{ t('Type a message… e.g. coffee 3 manat') }}"
                   class="flex-1 resize-none max-h-40 px-space-md py-2.5 rounded-lg bg-surface-container text-on-surface font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-secondary/50"></textarea>
         <button id="chat-send" type="submit"
                 class="h-11 px-space-lg rounded-lg bg-primary text-on-primary font-title-md text-title-md hover:bg-primary-container disabled:opacity-50 transition-all flex items-center gap-1">
           <span translate="no" class="notranslate material-symbols-outlined text-secondary-fixed">send</span>
         </button>
       </div>
-      <p class="mt-1 font-body-sm text-body-sm text-on-surface-variant">Processed by Google Gemini. Messages with card numbers are blocked automatically.</p>
+      <p class="mt-1 font-body-sm text-body-sm text-on-surface-variant">{{ t("Processed by Google Gemini. Messages with card numbers are blocked automatically.") }}</p>
     </form>
   </div>
 </div>
@@ -79,6 +79,13 @@
 
 {% block scripts %}
 <script>
+// Переводы для JavaScript (вставлены сервером, tojson экранирует их безопасно)
+const I18N = {
+  yes: {{ t("✅ Yes")|tojson }},
+  no: {{ t("❌ No")|tojson }},
+  error: {{ t("⚠️ Something went wrong. Please try again.")|tojson }},
+  chart: {{ t("Chart")|tojson }},
+};
 (function () {
   const messages = document.getElementById('messages');
   const form = document.getElementById('chat-form');
@@ -121,7 +128,7 @@
   function image(url) {
     const img = document.createElement('img');
     img.src = url;
-    img.alt = 'Chart';
+    img.alt = I18N.chart;
     img.className = 'max-w-xs rounded-xl shadow-md';
     messages.appendChild(img);
   }
@@ -131,7 +138,7 @@
     const box = bubble(conf.text, 'agent');
     const row = document.createElement('div');
     row.className = 'mt-2 flex gap-2';
-    [['confirm', '✅ Yes', '#2A9D8F'], ['cancel', '❌ No', '#8B1E2D']].forEach(([action, label, color]) => {
+    [['confirm', I18N.yes, '#2A9D8F'], ['cancel', I18N.no, '#8B1E2D']].forEach(([action, label, color]) => {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.textContent = label;
@@ -171,7 +178,7 @@
       bubble(data.reply, 'agent');
       (data.confirmations || []).forEach(confirmation);
     } catch (e) {
-      typing.querySelector('p').textContent = '⚠️ Something went wrong. Please try again.';
+      typing.querySelector('p').textContent = I18N.error;
     } finally {
       sendBtn.disabled = false;
       input.focus();

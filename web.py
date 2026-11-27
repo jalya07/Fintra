@@ -13,15 +13,50 @@ import time
 import secrets
 
 from fastapi.responses import FileResponse, JSONResponse
+from jinja2 import pass_context
 from pydantic import BaseModel
 
 import security
+import i18n
 from agent import run_agent
 from tools import CHARTS_DIR
 
 app = FastAPI(title="Fintra")
 templates = Jinja2Templates(directory="web/templates")
 app.mount("/static", StaticFiles(directory="web/static"), name="static")
+
+
+# ---------- 🌍 Язык сайта ----------
+
+@pass_context
+def jinja_t(context, text, **kwargs):
+    """В шаблонах: {{ t("Add expense") }}. Язык берётся из контекста страницы."""
+    return i18n.translate(context.get("lang", i18n.DEFAULT_LANG), text, **kwargs)
+
+
+templates.env.globals["t"] = jinja_t
+
+
+@app.middleware("http")
+async def language_middleware(request: Request, call_next):
+    """Определяем язык для каждого запроса и запоминаем выбор в cookie."""
+    query_lang = request.query_params.get("lang")
+    request.state.lang = i18n.pick_lang(
+        query_lang,
+        request.cookies.get(i18n.LANG_COOKIE),
+        request.headers.get("accept-language"),
+    )
+    response = await call_next(request)
+    if query_lang in i18n.LANGS:  # 🔐 сохраняем только az / ru / en
+        response.set_cookie(i18n.LANG_COOKIE, query_lang, max_age=365 * 24 * 3600,
+                            httponly=True, samesite="lax")
+    return response
+
+
+def tr(request: Request, text, **kwargs):
+    """Перевод в Python-коде (для ответов API)."""
+    return i18n.translate(request.state.lang, text, **kwargs)
+
 
 SESSION_COOKIE = "fintra_session"
 SESSION_HOURS = 24
@@ -49,13 +84,27 @@ PERIOD_OPTIONS = [
 
 # Цвета статусов лимитов (из нашей палитры)
 OK_COLOR, WARNING_COLOR, DANGER_COLOR = "#2A9D8F", "#D9922B", "#8B1E2D"
-# Подсказки на странице чата
-CHAT_SUGGESTIONS = [
-    ("local_cafe", "coffee 3.5 manat"),
-    ("today", "How much can I spend today?"),
-    ("donut_large", "Show a chart of my spending this month"),
-    ("shield", "Kartınız bloklanıb, SMS kodu göndərin: kapitalbank-az-secure.com"),
-]
+# Подсказки на странице чата (на языке сайта; пример мошеннического SMS всегда на азербайджанском)
+SCAM_EXAMPLE = "Kartınız bloklanıb, SMS kodu göndərin: kapitalbank-az-secure.com"
+CHAT_SUGGESTIONS = {
+    "az": [("local_cafe", "qəhvə 3.5 manat"),
+           ("today", "Bu gün nə qədər xərcləyə bilərəm?"),
+           ("donut_large", "Bu ayın xərclərinin diaqramını göstər"),
+           ("shield", SCAM_EXAMPLE)],
+    "ru": [("local_cafe", "кофе 3.5 маната"),
+           ("today", "Сколько я могу потратить сегодня?"),
+           ("donut_large", "Покажи график моих расходов за месяц"),
+           ("shield", SCAM_EXAMPLE)],
+    "en": [("local_cafe", "coffee 3.5 manat"),
+           ("today", "How much can I spend today?"),
+           ("donut_large", "Show a chart of my spending this month"),
+           ("shield", SCAM_EXAMPLE)],
+}
+# Сообщения на странице входа (?info=...)
+WELCOME_INFO = {
+    "logged_out": "You have been logged out.",
+    "deleted": "All your data has been deleted.",
+}
 
 # 🔐 Запросы на подтверждение из веб-чата (хранятся только в памяти сервера)
 PENDING = {}
@@ -83,8 +132,10 @@ def current_user(request: Request):
 
 
 @app.get("/welcome", response_class=HTMLResponse)
-async def welcome(request: Request, error: int = 0):
-    return templates.TemplateResponse(request, "welcome.html", {"error": error})
+async def welcome(request: Request, error: int = 0, info: str = ""):
+    return templates.TemplateResponse(request, "welcome.html", {
+        "error": error, "info": WELCOME_INFO.get(info, ""), "lang": request.state.lang,
+    })
 
 
 @app.get("/login")
@@ -109,7 +160,7 @@ async def login(token: str = ""):
 @app.get("/logout")
 async def logout(request: Request):
     database.delete_session(request.cookies.get(SESSION_COOKIE))
-    response = RedirectResponse("/welcome", status_code=303)
+    response = RedirectResponse("/welcome?info=logged_out", status_code=303)
     response.delete_cookie(SESSION_COOKIE)
     return response
 
@@ -120,7 +171,8 @@ def render_page(request: Request, template: str, active: str, **context):
     if user_id is None:
         return RedirectResponse("/welcome", status_code=303)
     return templates.TemplateResponse(
-        request, template, {"active": active, "user_id": user_id, **context}
+        request, template,
+        {"active": active, "user_id": user_id, "lang": request.state.lang, **context}
     )
 
 
@@ -376,7 +428,8 @@ async def remove_limit(request: Request, scope: str = Form(...), target: str = F
 
 @app.get("/chat", response_class=HTMLResponse)
 async def chat(request: Request):
-    return render_page(request, "chat.html", "chat", suggestions=CHAT_SUGGESTIONS)
+    return render_page(request, "chat.html", "chat",
+                       suggestions=CHAT_SUGGESTIONS[request.state.lang])
 
 SECURITY_MESSAGES = {
     "logged_out": "You have been logged out on all devices.",
@@ -405,7 +458,7 @@ async def security_logout_all(request: Request):
     if user_id is None:
         return RedirectResponse("/welcome", status_code=303)
     database.delete_user_sessions(user_id)
-    response = RedirectResponse("/welcome", status_code=303)
+    response = RedirectResponse("/welcome?info=logged_out", status_code=303)
     response.delete_cookie(SESSION_COOKIE)
     return response
 
@@ -422,7 +475,7 @@ async def security_delete_data(request: Request, confirm_text: str = Form("")):
     for path in glob.glob(os.path.join(CHARTS_DIR, f"{user_id}_*.png")):
         os.remove(path)
 
-    response = RedirectResponse("/welcome", status_code=303)
+    response = RedirectResponse("/welcome?info=deleted", status_code=303)
     response.delete_cookie(SESSION_COOKIE)
     return response
 
@@ -443,8 +496,8 @@ async def api_chat(request: Request, body: ChatRequest):
 
     # 🔐 Номер карты не уходит в модель (как в боте)
     if security.find_card_numbers(text):
-        return {"reply": "🚫 Your message contained a card number, so it was not sent. "
-                         "Never share card numbers, CVV or PIN — not even with me.",
+        return {"reply": tr(request, "🚫 Your message contained a card number, so it was not sent. "
+                                     "Never share card numbers, CVV or PIN — not even with me."),
                 "steps": [], "images": [], "confirmations": []}
 
     # Собираем шаги агента, чтобы показать их на странице
@@ -462,7 +515,11 @@ async def api_chat(request: Request, body: ChatRequest):
         PENDING[token] = {"user_id": user_id, "data": conf, "created": time.time()}
         confirmation_list.append({
             "token": token,
-            "text": f"🔐 Remove limit? {conf['scope']}: {conf['target']} — {conf['amount']} ₼",
+            "text": tr(request, "🔐 Remove limit? {scope}: {target} — {amount} ₼",
+                       scope=tr(request, "Card" if conf["scope"] == "card" else "Category"),
+                       target=tr(request, CATEGORY_INFO[conf["target"]][1])
+                       if conf["target"] in CATEGORY_INFO else conf["target"],
+                       amount=conf["amount"]),
         })
 
     return {
@@ -481,17 +538,17 @@ async def api_confirm(request: Request, body: ConfirmRequest):
 
     item = PENDING.pop(body.token, None)
     if item is None or item["user_id"] != user_id:
-        return {"message": "⚠️ Request not found"}
+        return {"message": tr(request, "⚠️ Request not found")}
     if time.time() - item["created"] > CONFIRM_TTL_SECONDS:
-        return {"message": "⌛ Request expired"}
+        return {"message": tr(request, "⌛ Request expired")}
     if body.action != "confirm":
-        return {"message": "❌ Cancelled"}
+        return {"message": tr(request, "❌ Cancelled")}
 
     conf = item["data"]
     if conf["action"] == "remove_limit":
         removed = database.remove_limit(user_id, conf["scope"], conf["target"])
-        return {"message": "✅ Limit removed" if removed else "⚠️ Limit not found"}
-    return {"message": "⚠️ Unknown action"}
+        return {"message": tr(request, "✅ Limit removed" if removed else "⚠️ Limit not found")}
+    return {"message": tr(request, "⚠️ Unknown action")}
 
 
 @app.get("/charts/{filename}")
