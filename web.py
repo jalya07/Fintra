@@ -59,6 +59,15 @@ async def language_middleware(request: Request, call_next):
                             httponly=True, samesite="lax", secure=COOKIE_SECURE)
     return response
 
+@app.middleware("http")
+async def refresh_session(request: Request, call_next):
+    """🔐 Скользящая сессия: пока человек пользуется сайтом, вход продлевается на 30 дней."""
+    response = await call_next(request)
+    token = request.cookies.get(SESSION_COOKIE)
+    if not request.url.path.startswith("/static") and database.extend_session(token, SESSION_HOURS):
+        response.set_cookie(SESSION_COOKIE, token, httponly=True, samesite="lax",
+                            max_age=SESSION_HOURS * 3600, secure=COOKIE_SECURE)
+    return response
 
 def tr(request: Request, text, **kwargs):
     """Перевод в Python-коде (для ответов API)."""
@@ -66,7 +75,7 @@ def tr(request: Request, text, **kwargs):
 
 
 SESSION_COOKIE = "fintra_session"
-SESSION_HOURS = 24
+SESSION_HOURS = 24 * 30
 
 # Как показывать категории на сайте: эмодзи, название, цвет для графика
 CATEGORY_INFO = {
@@ -143,6 +152,12 @@ async def welcome(request: Request, error: int = 0, info: str = ""):
     return templates.TemplateResponse(request, "welcome.html", {
         "error": error, "info": WELCOME_INFO.get(info, ""), "lang": request.state.lang,
     })
+
+@app.get("/sw.js", include_in_schema=False)
+async def service_worker():
+    """📱 Service worker должен лежать в корне сайта, чтобы работать на всех страницах."""
+    return FileResponse("web/static/sw.js", media_type="application/javascript",
+                        headers={"Cache-Control": "no-cache"})
 
 @app.get("/privacy", response_class=HTMLResponse)
 async def privacy(request: Request):

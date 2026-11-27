@@ -252,9 +252,9 @@ T = {
         "az": "✅ Xərclər: məbləğ, kateqoriya, qısa təsvir, tarix, kartın adı (məs. \"Birbank\")",
         "ru": "✅ Расходы: сумма, категория, короткое описание, дата, название карты (напр. «Birbank»)"},
     "✅ Your budget plan and spending limits": {"az": "✅ Büdcə planınız və xərc limitləriniz", "ru": "✅ Ваш план бюджета и лимиты"},
-    "✅ Website sessions (only as a SHA-256 hash, they expire after 24 hours)": {
-        "az": "✅ Sayt sessiyaları (yalnız SHA-256 heş kimi, 24 saatdan sonra bitir)",
-        "ru": "✅ Сессии сайта (только в виде SHA-256 хеша, истекают через 24 часа)"},
+    "✅ Website sessions (only as a SHA-256 hash; they end after 30 days without visits)": {
+        "az": "✅ Sayt sessiyaları (yalnız SHA-256 heş kimi; 30 gün daxil olmasanız bitir)",
+        "ru": "✅ Сессии сайта (только в виде SHA-256 хеша; заканчиваются через 30 дней без визитов)"},
     "Your data right now": {"az": "Hazırda məlumatlarınız", "ru": "Ваши данные сейчас"},
     "Limits": {"az": "Limitlər", "ru": "Лимиты"},
     "Budget plan": {"az": "Büdcə planı", "ru": "План бюджета"},
@@ -333,9 +333,9 @@ T = {
         "ru": "• Telegram доставляет сообщения между вами и ботом.\n• Google Gemini читает сообщение, фото чека или голосовое, чтобы понять его, и возвращает ответ.\n• Если Gemini недоступен, текстовое сообщение уходит резервной модели через OpenRouter. Провайдеров, которые могут обучаться на данных пользователей, мы отключили.\n• Последний резерв — модель, которая работает локально через Ollama на компьютере, где запущена Fintra: данные не покидают этот компьютер.\nЭти сервисы обрабатывают данные по своим политикам конфиденциальности."},
     "privacy_h5": {"en": "How long we keep data", "az": "Məlumatları nə qədər saxlayırıq", "ru": "Сколько мы храним данные"},
     "privacy_p5": {
-        "en": "Expenses, plan, limits and charts are kept until you delete them. A website session ends after 24 hours, a login link expires after 10 minutes and works only once. Technical server logs may briefly contain the actions the agent performed (for example, \"add expense 3 AZN, cafe\") to find errors.",
-        "az": "Xərclər, plan, limitlər və diaqramlar siz silənə qədər saxlanılır. Sayt sessiyası 24 saatdan sonra bitir, giriş linki 10 dəqiqədən sonra etibarsız olur və yalnız bir dəfə işləyir. Xətaları tapmaq üçün serverin texniki loqlarında agentin etdiyi əməliyyatlar (məsələn, \"xərc əlavə et 3 AZN, kafe\") qısa müddət qala bilər.",
-        "ru": "Расходы, план, лимиты и графики хранятся, пока вы их не удалите. Сессия сайта заканчивается через 24 часа, ссылка для входа истекает через 10 минут и работает один раз. В технических логах сервера могут ненадолго оставаться действия агента (например, «добавить расход 3 AZN, кафе»), чтобы находить ошибки."},
+        "en": "Expenses, plan, limits and charts are kept until you delete them. A website session ends after 30 days without visits, a login link expires after 10 minutes and works only once. Technical server logs may briefly contain the actions the agent performed (for example, \"add expense 3 AZN, cafe\") to find errors.",
+        "az": "Xərclər, plan, limitlər və diaqramlar siz silənə qədər saxlanılır. Sayt sessiyası 30 gün daxil olmasanız bitir, giriş linki 10 dəqiqədən sonra etibarsız olur və yalnız bir dəfə işləyir. Xətaları tapmaq üçün serverin texniki loqlarında agentin etdiyi əməliyyatlar (məsələn, \"xərc əlavə et 3 AZN, kafe\") qısa müddət qala bilər.",
+        "ru": "Расходы, план, лимиты и графики хранятся, пока вы их не удалите. Сессия сайта заканчивается через 30 дней без визитов, ссылка для входа истекает через 10 минут и работает один раз. В технических логах сервера могут ненадолго оставаться действия агента (например, «добавить расход 3 AZN, кафе»), чтобы находить ошибки."},
     "privacy_h6": {"en": "You are in control", "az": "Nəzarət sizdədir", "ru": "Всё под вашим контролем"},
     "privacy_p6": {
         "en": "• See all your expenses, plan and limits on the website.\n• Delete a single expense on the Expenses page.\n• Delete all your data with the /delete_my_data command in Telegram or on the Security page. It is permanent and needs your confirmation.\n• Log out on all devices on the Security page.",
@@ -356,6 +356,17 @@ T = {
         "en": "Questions or found a problem? Write to us on GitHub:",
         "az": "Sualınız var və ya problem tapdınız? GitHub-da bizə yazın:",
         "ru": "Есть вопросы или нашли проблему? Напишите нам на GitHub:"},
+    # ---------- PWA: установка и вход ----------
+    "Install Fintra on your phone": {"az": "Fintra-nı telefonunuza quraşdırın", "ru": "Установите Fintra на телефон"},
+    "Install": {"az": "Quraşdır", "ru": "Установить"},
+    "iPhone: tap Share, then \u201cAdd to Home Screen\u201d.": {
+        "az": "iPhone: \u201cPaylaş\u201d, sonra \u201cƏsas ekrana əlavə et\u201d düyməsinə toxunun.",
+        "ru": "iPhone: нажмите \u201cПоделиться\u201d, затем \u201cНа экран Домой\u201d."},
+    "Close": {"az": "Bağla", "ru": "Закрыть"},
+    "Have a link from the bot? Paste it here:": {"az": "Botdan link var? Buraya yapışdırın:", "ru": "Есть ссылка от бота? Вставьте её сюда:"},
+    "Paste the link": {"az": "Linki yapışdırın", "ru": "Вставьте ссылку"},
+    "Sign in": {"az": "Daxil ol", "ru": "Войти"},
+    "This does not look like a Fintra login link.": {"az": "Bu, Fintra giriş linkinə oxşamır.", "ru": "Это не похоже на ссылку для входа в Fintra."},
 }
 
 
