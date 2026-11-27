@@ -10,7 +10,7 @@ import database
 import security
 
 # Папка для графиков (она в .gitignore)
-CHARTS_DIR = "charts"
+CHARTS_DIR = os.getenv("CHARTS_DIR", "charts")
 # Фирменные цвета категорий (те же, что на сайте)
 CATEGORY_COLORS = {
     "food": "#0B1F44", "groceries": "#C9A227", "cafe": "#D9922B",

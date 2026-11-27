@@ -11,6 +11,7 @@
 
 <p align="center">
   🤖 Telegram: <a href="https://t.me/myfintra_bot">@myfintra_bot</a> ·
+  🌐 Web: <a href="https://fintra-cloud-production.up.railway.app">fintra-cloud-production.up.railway.app</a> ·
   🎬 Demo video: <i>(link)</i> ·
   🔐 <a href="#-security--privacy">Security first</a>
 </p>
@@ -160,6 +161,7 @@ Personal financial data is sensitive, so security was the first requirement, not
 - 🗑 **User control:** `/delete_my_data` in Telegram or the Security page (type `DELETE` + confirm) removes expenses, plan, limits, charts and sessions. "Log out on all devices" is one click.
 - 🔑 **No secrets in the repo:** keys live in `.env` (git-ignored); the whole git history was checked for leaked keys. The OpenRouter key has a $0 credit limit and expires after the contest.
 - 🧪 OpenRouter providers that may train on user data were **disabled**; a free model whose provider may train on prompts was rejected.
+- 📵 The web server's access log is turned off, so one-time login links never end up in server logs.
 - 📜 A public **Privacy Policy** (`/privacy`, 3 languages) explains what is stored, who processes it and how to delete it.
 
 ---
@@ -265,6 +267,24 @@ cloudflared tunnel --url http://127.0.0.1:8000    # optional: public HTTPS addre
 
 Open the website by sending `/web` to the bot.
 
+### ☁️ Deploy to Railway (how Fintra runs 24/7)
+
+Fintra runs in the cloud on **Railway**: the bot and the website run in one service (`start.sh`), and the database and charts live on a persistent **volume**, so they survive restarts and redeploys.
+
+1. New project → **Deploy from GitHub repo** (the Railway GitHub App gets access to this repository only).
+2. Attach a volume mounted at `/data`.
+3. Add the variables from the table above (not Ollama; no local model in the cloud) plus:
+
+| Variable | Value |
+|---|---|
+| `DB_PATH` | `/data/fintra.db` |
+| `CHARTS_DIR` | `/data/charts` |
+| `WEB_URL` | the domain from **Networking → Generate Domain** |
+
+4. Deploy. `railway.json` starts `bash start.sh` and restarts the service if the bot or the website stops. Locally nothing changes: without these variables the code uses `fintra.db` and `charts/`.
+
+In production logs the fallback chain can be seen working: when `gemini-3.7-flash` returned `503` and `gemini-3.6-flash` returned `504`, the agent switched to OpenRouter (ERNIE) and the user still got an answer.
+
 ### Project structure
 
 ```
@@ -280,6 +300,8 @@ mcp_server.py   MCP server for Claude Desktop and other clients
 eval_agent.py   Evaluation: 19 test cases + card filter test
 docs/           Evaluation results
 web/static/     Logo, icons, PWA manifest, service worker, offline page
+start.sh        Cloud start: bot + website in one service
+railway.json    Railway start command and restart policy
 web/templates/  Pages (Overview, Expenses, Plan & Limits, Chat, Security, Privacy)
 web/stitch/     Original Google Stitch export (design source)
 ```
@@ -322,11 +344,20 @@ Real problems from development and how they were solved.
 - `stdout` belongs to the MCP protocol, so errors are printed to `stderr`.
 - Claude Desktop's config already had app settings; instead of editing JSON by hand (one missing comma breaks it), a small script added the server with Python's `json` module and made a backup first.
 
+**Cloud deploy**
+- AWS EC2 was the first choice, but the AWS sign-in kept returning server errors, even for a new account, so I moved to Railway.
+- Railway showed `Could not load branches` — the Railway GitHub App was not installed. Installed it with access to **one repository only**.
+- The first deploy crashed with `InvalidToken` — a placeholder from my template was still in the variables. The logs showed the exact reason.
+- Files in a cloud container are lost on restart, so the database path and charts folder now come from environment variables and point to a persistent volume. Checked by restarting the service: the expenses were still there.
+- The production logs showed full login URLs with one-time tokens — turned off the access log (`--no-access-log`).
+- The cloud version was tested with a **separate test bot** first, because one Telegram token cannot run in two places at once.
+
 ---
 
 ## ⚠️ Limitations (honest list)
 
-- During the contest Fintra runs on my laptop and is published through a Cloudflare quick tunnel: the laptop must be on, and the tunnel address changes on restart (the QR code points to the bot, which always gives the current link).
+- Fintra runs on Railway's trial plan (30 days, $5 of usage), which covers the contest; after that it needs a paid plan or another host.
+- The local Ollama backup works only when Fintra runs on my laptop; in the cloud the chain is Gemini → OpenRouter.
 - The local Ollama model sometimes answers in a different language; it is the last backup level only.
 - Fintra is not a bank and gives no investment, legal or tax advice.
 
